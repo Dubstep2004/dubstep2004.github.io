@@ -72,6 +72,12 @@
   .lead { color: var(--dim); font-size: 18px; max-width: 58ch; margin: 0 0 40px; }
 
   /* Возможности: список, не одинаковые карточки */
+  /* Живые обои */
+  .walls { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px; margin: 8px 0 40px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .walls figure { flex: 0 0 auto; width: 120px; margin: 0; scroll-snap-align: start; }
+  .walls img { width: 120px; height: 213px; object-fit: cover; border-radius: 18px; display: block; background: #ffffff10; }
+  .walls figcaption { font-size: 13px; opacity: .7; margin-top: 6px; text-align: center; }
+  .wallsbox h3 { margin: 32px 0 4px; } .wallsbox .wlead { opacity: .75; margin: 0; }
   .feats { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; }
   .feat { display: flex; gap: 18px; padding: 24px 0; border-top: 1px solid var(--line); }
   .feat .ic { flex: 0 0 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 24px; }
@@ -266,9 +272,10 @@
       <div class="feat"><div class="ic" style="background:#f0616d26">🛡</div><div><h3>No ads, no scams</h3><p>Over 200,000 ad and tracking domains and dangerous fake sites never load. The lists update daily.</p></div></div>
       <div class="feat"><div class="ic" style="background:#22d3ee26">🏦</div><div><h3>Banks don’t see the VPN</h3><p>Banking and government apps that dislike VPNs go direct — everything else goes through the encrypted tunnel.</p></div></div>
       <div class="feat"><div class="ic" style="background:#f5b75926">🇷🇺</div><div><h3>Smart mode</h3><p>Russian sites open directly and fast, foreign ones go through the VPN. No manual lists.</p></div></div>
-      <div class="feat"><div class="ic" style="background:#b06cff26">🎨</div><div><h3>Beautiful</h3><p>Dozens of themes, custom backgrounds, live wallpapers, dark and light mode. The app interface is in Russian.</p></div></div>
+      <div class="feat"><div class="ic" style="background:#b06cff26">🎨</div><div><h3>Beautiful</h3><p>20+ designs (new: Sunset, Forest, Arctic, Mocha) and 10 colors. 1080p live wallpapers and wallpaper search: anime, games, space, nature. The app interface is in Russian.</p></div></div>
     </div>
 
+    <div class="wallsbox"><h3>Live wallpapers</h3><p class="wlead">Downloaded in the app with one tap, delete the ones you don’t need. Appearance → Live wallpapers from the internet.</p><div class="walls" aria-label="Live wallpapers"><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/neoncity.jpg" alt="Neon city" loading="lazy" width="120" height="213"><figcaption>Neon city</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelsunset.jpg" alt="Pixel sunset" loading="lazy" width="120" height="213"><figcaption>Pixel sunset</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/sakura.jpg" alt="Sakura night" loading="lazy" width="120" height="213"><figcaption>Sakura night</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelspace.jpg" alt="Pixel space" loading="lazy" width="120" height="213"><figcaption>Pixel space</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/aurora2.jpg" alt="Aurora" loading="lazy" width="120" height="213"><figcaption>Aurora</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/nebula.jpg" alt="Nebula" loading="lazy" width="120" height="213"><figcaption>Nebula</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/hyper.jpg" alt="Hyperjump" loading="lazy" width="120" height="213"><figcaption>Hyperjump</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/waves.jpg" alt="Neon waves" loading="lazy" width="120" height="213"><figcaption>Neon waves</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/bokeh.jpg" alt="Bokeh" loading="lazy" width="120" height="213"><figcaption>Bokeh</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/fireflies.jpg" alt="Fireflies" loading="lazy" width="120" height="213"><figcaption>Fireflies</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/lava.jpg" alt="Lava lamp" loading="lazy" width="120" height="213"><figcaption>Lava lamp</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/mesh.jpg" alt="Gradient" loading="lazy" width="120" height="213"><figcaption>Gradient</figcaption></figure></div></div>
     <div class="wl" id="whitelists">
       <div>
         <h3>Whitelists? Autopilot handles it</h3>

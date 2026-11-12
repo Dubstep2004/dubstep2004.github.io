@@ -72,6 +72,12 @@
   .lead { color: var(--dim); font-size: 18px; max-width: 58ch; margin: 0 0 40px; }
 
   /* Возможности: список, не одинаковые карточки */
+  /* Живые обои */
+  .walls { display: flex; gap: 12px; overflow-x: auto; padding: 4px 2px 12px; margin: 8px 0 40px; scroll-snap-type: x mandatory; -webkit-overflow-scrolling: touch; }
+  .walls figure { flex: 0 0 auto; width: 120px; margin: 0; scroll-snap-align: start; }
+  .walls img { width: 120px; height: 213px; object-fit: cover; border-radius: 18px; display: block; background: #ffffff10; }
+  .walls figcaption { font-size: 13px; opacity: .7; margin-top: 6px; text-align: center; }
+  .wallsbox h3 { margin: 32px 0 4px; } .wallsbox .wlead { opacity: .75; margin: 0; }
   .feats { display: grid; grid-template-columns: 1fr 1fr; gap: 0 56px; }
   .feat { display: flex; gap: 18px; padding: 24px 0; border-top: 1px solid var(--line); }
   .feat .ic { flex: 0 0 52px; height: 52px; border-radius: 16px; display: grid; place-items: center; font-size: 24px; }
@@ -266,9 +272,10 @@
       <div class="feat"><div class="ic" style="background:#f0616d26">🛡</div><div><h3>Без рекламы и мошенников</h3><p>Больше 200 тысяч рекламных и следящих адресов и опасные сайты-подделки не загружаются. Базы обновляются каждый день.</p></div></div>
       <div class="feat"><div class="ic" style="background:#22d3ee26">🏦</div><div><h3>Банки не видят VPN</h3><p>Банки, Госуслуги и приложения, которые не любят VPN, работают напрямую — остальное идёт через защищённый туннель.</p></div></div>
       <div class="feat"><div class="ic" style="background:#f5b75926">🇷🇺</div><div><h3>Умный режим</h3><p>Российские сайты открываются напрямую и быстро, зарубежные — через VPN. Без ручных списков.</p></div></div>
-      <div class="feat"><div class="ic" style="background:#b06cff26">🎨</div><div><h3>Красиво</h3><p>Десятки оформлений, свой фон, живые обои, тёмная и светлая тема. Приложение на русском.</p></div></div>
+      <div class="feat"><div class="ic" style="background:#b06cff26">🎨</div><div><h3>Красиво</h3><p>Больше 20 дизайнов (новые — Закат, Лес, Арктика, Мокко) и 10 цветов. Живые обои 1080p и поиск обоев-картинок: аниме, игры, космос, природа.</p></div></div>
     </div>
 
+    <div class="wallsbox"><h3>Живые обои</h3><p class="wlead">Скачиваются в приложении по нажатию, ненужные удаляются. Оформление → Живые обои из интернета.</p><div class="walls" aria-label="Живые обои"><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/neoncity.jpg" alt="Неон-город" loading="lazy" width="120" height="213"><figcaption>Неон-город</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelsunset.jpg" alt="Пиксель-закат" loading="lazy" width="120" height="213"><figcaption>Пиксель-закат</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/sakura.jpg" alt="Сакура ночью" loading="lazy" width="120" height="213"><figcaption>Сакура ночью</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelspace.jpg" alt="Пиксель-космос" loading="lazy" width="120" height="213"><figcaption>Пиксель-космос</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/aurora2.jpg" alt="Полярное сияние" loading="lazy" width="120" height="213"><figcaption>Полярное сияние</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/nebula.jpg" alt="Туманность" loading="lazy" width="120" height="213"><figcaption>Туманность</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/hyper.jpg" alt="Гиперпрыжок" loading="lazy" width="120" height="213"><figcaption>Гиперпрыжок</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/waves.jpg" alt="Неоновые волны" loading="lazy" width="120" height="213"><figcaption>Неоновые волны</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/bokeh.jpg" alt="Боке" loading="lazy" width="120" height="213"><figcaption>Боке</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/fireflies.jpg" alt="Светлячки" loading="lazy" width="120" height="213"><figcaption>Светлячки</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/lava.jpg" alt="Лава-лампа" loading="lazy" width="120" height="213"><figcaption>Лава-лампа</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/mesh.jpg" alt="Переливы" loading="lazy" width="120" height="213"><figcaption>Переливы</figcaption></figure></div></div>
     <div class="wl" id="whitelists">
       <div>
         <h3>Белые списки? Автопилот разберётся</h3>
