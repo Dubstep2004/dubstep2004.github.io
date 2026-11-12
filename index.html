@@ -321,7 +321,7 @@
     </div>
   </div></section>
 
-  <section><div class="wrap">
+  <section id="devices"><div class="wrap">
     <h2>Телефон, телевизор и часы</h2>
     <p class="lead">Одна подписка — на всех устройствах.</p>
     <div class="devices">
@@ -350,7 +350,7 @@
     <details><summary>Куда писать, если что-то не работает?</summary><p>В приложении: Настройки → О приложении → «Написать в поддержку». Там же можно одной кнопкой отправить отчёт — без ссылки подписки, ключей и IP.</p></details>
   </div></section>
 
-  <div class="wrap"><div class="final">
+  <div class="wrap" id="finalWrap"><div class="final">
     <h2>Нажмите на щит — остальное APEX сделает сам</h2>
     <p id="ver2">Бесплатно, для Android 7 и новее</p>
     <div class="cta"><a class="btn main" data-dl href="https://github.com/Dubstep2004/apex-vpn/releases/latest">⬇ Скачать APEX VPN</a></div>
@@ -389,10 +389,10 @@ fetch('https://api.github.com/repos/Dubstep2004/apex-vpn/releases?per_page=100')
     if (watch) $('watchDl').href = watch.browser_download_url
     const total = list.reduce((s, r) => s + r.assets.filter(a => /^apex-vpn-.*\.apk$/.test(a.name)).reduce((x, a) => x + a.download_count, 0), 0)
     const mb = apk ? ' · ' + (apk.size / 1048576).toFixed(0) + ' МБ' : ''
-    const dl = total > 0 ? ' · скачали ' + nf(total) + ' ' + plural(total, 'раз', 'раза', 'раз') : ''
+    window.__dlText = () => (window.__noDl || !(total > 0)) ? '' : ' · скачали ' + nf(total) + ' ' + plural(total, 'раз', 'раза', 'раз')
     const ago = Math.floor((Date.now() - new Date(rel.published_at)) / 864e5)
     const fresh = ago <= 0 ? 'обновлено сегодня' : ago === 1 ? 'обновлено вчера' : 'обновлено ' + ago + ' ' + plural(ago, 'день', 'дня', 'дней') + ' назад'
-    $('ver').textContent = 'Версия ' + v + mb + ' · ' + fresh + dl + ' · бесплатно · Android 7 и новее'
+    window.__ver = () => { $('ver').textContent = 'Версия ' + v + mb + ' · ' + fresh + window.__dlText() + ' · бесплатно · Android 7 и новее' }; window.__ver()
     $('ver2').textContent = 'Версия ' + v + ', бесплатно, для Android 7 и новее'
     // Что нового: пункты из описаний трёх последних версий
     const items = []
@@ -404,7 +404,7 @@ fetch('https://api.github.com/repos/Dubstep2004/apex-vpn/releases?per_page=100')
       $('newsList').innerHTML = ''
       items.slice(0, 6).forEach(([ver, text]) => { const li = document.createElement('li'); const b = document.createElement('span'); b.className = 'v'; b.textContent = ver; const t = document.createElement('span'); t.textContent = text; li.append(b, t); $('newsList').append(li) })
       $('newsLead').textContent = 'Версия ' + v + ' вышла ' + new Date(rel.published_at).toLocaleDateString('ru', { day: 'numeric', month: 'long' }) + '. Обновления приходят сами.'
-      $('news').hidden = false
+      if (!$('news').dataset.off) $('news').hidden = false
     }
   }).catch(() => {})
 
@@ -435,7 +435,7 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/app.json?t
     else if (slow.length) { el.textContent = '🐢 Медленнее обычного: ' + slow.map(([n]) => n).join(', ') }
     else el.textContent = '🟢 Все серверы работают'
     if (planned.length && !el.dataset.s) el.textContent += ' · техработы: ' + planned.map(([n, v]) => n + ' ' + fmt(v.from)).join(', ')
-    el.hidden = false
+    el.hidden = !!window.__noStatus
   }).catch(() => {})
 
 // Демо: состояния щита и автопилот при белых списках
@@ -481,6 +481,32 @@ $('copyBtn').onclick = async () => {
   try { await navigator.clipboard.writeText('https://dubstep2004.github.io/'); $('copyBtn').textContent = '✓ Скопировано' } catch { $('copyBtn').textContent = 'dubstep2004.github.io' }
   setTimeout(() => { $('copyBtn').textContent = '🔗 Скопировать ссылку' }, 2000)
 }
+
+
+// Настройки визитки из пульта (docs/config/site.json): порядок и показ блоков, заголовок, кнопка, вопросы
+fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/site.json?t=' + t)
+  .then(r => r.ok ? r.json() : Promise.reject())
+  .catch(() => fetch('https://cdn.jsdelivr.net/gh/' + CFG + '@main/docs/config/site.json').then(r => r.ok ? r.json() : Promise.reject()))
+  .then(c => {
+    const main = document.querySelector('main'), end = $('finalWrap')
+    ;(c.sections || []).forEach(x => {
+      const el = $(x.id); if (!el || el.tagName !== 'SECTION') return
+      main.insertBefore(el, end)
+      if (x.on === false) { el.dataset.off = '1'; el.hidden = true; document.querySelectorAll('header nav a[href="#' + x.id + '"]').forEach(a => a.hidden = true) }
+    })
+    if (c.show && c.show.downloads === false) { window.__noDl = true; window.__ver && window.__ver() }
+    if (c.show && c.show.status === false) { window.__noStatus = true; $('status').hidden = true }
+    if (c.hero && c.hero.title) document.querySelector('.hero h1').textContent = c.hero.title
+    if (c.hero && c.hero.sub) document.querySelector('.hero p.sub').textContent = c.hero.sub
+    if (c.cta && /^https:\/\//.test(c.cta.url || '')) {
+      const a = document.createElement('a'); a.className = 'btn ghost'; a.href = c.cta.url; a.target = '_blank'; a.rel = 'noopener'; a.textContent = c.cta.text || 'Подробнее'
+      $('download').insertBefore(a, $('download').children[1])
+    }
+    if (Array.isArray(c.faq) && c.faq.length) {
+      const box = document.querySelector('#faq .wrap'); box.querySelectorAll('details').forEach(d => d.remove())
+      c.faq.forEach(f => { const d = document.createElement('details'), sm = document.createElement('summary'), p = document.createElement('p'); sm.textContent = f.q; p.textContent = f.a; d.append(sm, p); box.append(d) })
+    }
+  }).catch(() => {})
 
 // QR-код на страницу скачивания — только на компьютере
 if (matchMedia('(min-width: 861px)').matches) {
