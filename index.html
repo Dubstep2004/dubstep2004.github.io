@@ -15,6 +15,7 @@
 <meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)">
 <meta name="color-scheme" content="dark light">
 <link rel="icon" href="/apex-vpn/invite/icon.png">
+<link rel="alternate" hreflang="en" href="https://dubstep2004.github.io/en/"><link rel="alternate" hreflang="ru" href="https://dubstep2004.github.io/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
@@ -126,6 +127,50 @@
   .dev .get { display: inline-block; margin-top: 14px; font-weight: 800; font-size: 15px; color: var(--cyan); text-decoration: none; }
   @media (max-width: 860px) { .qr { display: none !important; } }
 
+  /* Демо: макет приложения, на который можно нажимать */
+  .demo { display: grid; grid-template-columns: 340px 1fr; gap: 56px; align-items: center; }
+  .phone { width: 300px; height: 600px; margin: 0 auto; border-radius: 46px; padding: 12px; background: #05060d; border: 1px solid #ffffff1a; box-shadow: 0 30px 80px #0008; }
+  .scr { position: relative; height: 100%; border-radius: 36px; overflow: hidden; background: radial-gradient(260px 300px at 50% 32%, var(--glow, #6d5cff33), transparent 70%), linear-gradient(#11152a, #0a0d1c); color: #eef1fa; display: flex; flex-direction: column; align-items: center; padding: 28px 18px 18px; transition: background .5s; }
+  .scr .bar { width: 100%; display: flex; justify-content: space-between; font-size: 12px; font-weight: 800; color: #8c93b0; }
+  .scr .pill { font-size: 12px; font-weight: 800; padding: 4px 10px; border-radius: 99px; background: #ffffff12; }
+  .scr[data-st=on] .pill { background: #2fd38b26; color: #2fd38b; } .scr[data-st=wait] .pill { background: #f5b75926; color: #f5b759; }
+  .dshield { margin: 54px 0 22px; width: 150px; height: 174px; border: 0; cursor: pointer; border-radius: 50% 50% 46% 46% / 30% 30% 70% 70%; background: linear-gradient(160deg, #3a4060, #262b45); display: grid; place-items: center; color: #fff; transition: background .5s, box-shadow .5s, transform .15s; }
+  .dshield:active { transform: scale(.96); }
+  .scr[data-st=on] .dshield { background: linear-gradient(160deg, #3fb8ff, #6d5cff); box-shadow: 0 0 80px #4c7dffaa; }
+  .scr[data-st=wait] .dshield { background: linear-gradient(160deg, #6a6fa0, #45497a); animation: pulse 1s ease-in-out infinite; }
+  @keyframes pulse { 50% { box-shadow: 0 0 50px #6d5cff88; } }
+  .dshield svg { width: 64px; height: 64px; }
+  .dstate { font-family: var(--display); font-size: 22px; font-weight: 700; } .dsub { color: #8c93b0; font-size: 13px; min-height: 20px; text-align: center; margin-top: 4px; }
+  .dservers { margin-top: auto; width: 100%; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .dservers button { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; border: 1px solid #222842; background: #ffffff08; color: #eef1fa; border-radius: 14px; padding: 9px 6px; font: inherit; font-size: 13px; font-weight: 700; cursor: pointer; }
+  .dservers button[aria-pressed=true] { border-color: #6d5cff; background: #6d5cff26; }
+  .dtoggle { display: flex; align-items: center; gap: 14px; margin-top: 18px; padding: 14px 16px; border: 1px solid var(--line); border-radius: 18px; cursor: pointer; font-weight: 700; max-width: 440px; background: var(--ink2); }
+  .dtoggle input { width: 22px; height: 22px; accent-color: var(--green); }
+  .dlog { list-style: none; padding: 0; margin: 18px 0 0; color: var(--dim); font-size: 15px; display: grid; gap: 6px; max-width: 460px; }
+  .dlog li::before { content: "› "; color: var(--faint); }
+  .demo-note { color: var(--faint); font-size: 14px; margin-top: 16px; }
+
+  /* Сравнение */
+  .cmp { overflow-x: auto; border: 1px solid var(--line); border-radius: 24px; background: var(--ink2); }
+  .cmp table { width: 100%; border-collapse: collapse; min-width: 620px; font-size: 16px; }
+  .cmp th, .cmp td { padding: 15px 18px; text-align: left; border-top: 1px solid var(--line); vertical-align: top; }
+  .cmp thead th { border-top: 0; font-size: 14px; color: var(--dim); font-weight: 700; }
+  .cmp thead th.us { color: var(--text); } .cmp td.us { background: #6d5cff12; font-weight: 700; }
+  .cmp td:first-child { color: var(--dim); }
+  .y { color: var(--green); } .n { color: #f0616d; } .m { color: #f5b759; }
+
+  /* Безопасность */
+  .sec { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .sec div { border-top: 2px solid var(--green); padding-top: 18px; }
+  .sec b { display: block; font-size: 18px; margin-bottom: 6px; } .sec p { margin: 0; color: var(--dim); font-size: 15.5px; }
+  .fp { margin-top: 26px; font: 13px/1.6 ui-monospace, "SF Mono", Menlo, monospace; color: var(--dim); word-break: break-all; background: var(--ink2); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; }
+
+  .share { display: inline-flex; gap: 8px; flex-wrap: wrap; justify-content: center; margin-top: 18px; }
+  .share a, .share button { font: inherit; font-size: 14px; font-weight: 700; color: var(--dim); background: none; border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; cursor: pointer; text-decoration: none; }
+  .share a:hover, .share button:hover { color: var(--text); }
+  .lang { color: var(--dim); text-decoration: none; font-weight: 800; font-size: 14px; border: 1px solid var(--line); border-radius: 99px; padding: 6px 11px; }
+
+
   /* Светлая тема телефона */
   @media (prefers-color-scheme: light) {
     :root { --ink: #f5f6fb; --ink2: #ffffff; --line: #e1e4ee; --text: #12152a; --dim: #525a78; --faint: #767d99; }
@@ -137,6 +182,7 @@
     .dev, .final { box-shadow: 0 10px 30px #12152a0d; }
     .wl { background: linear-gradient(135deg, #2fd38b1a, #22d3ee14); }
     .more-link, .dev .get { color: #0b8fb0; }
+    .cmp td.us { background: #6d5cff0d; } .phone { box-shadow: 0 30px 70px #12152a40; }
   }
 
   @media (max-width: 860px) {
@@ -147,19 +193,22 @@
     .devices, .steps { grid-template-columns: 1fr; } .wl { padding: 26px; } section { padding-top: 70px; }
     .strip img { border-radius: 18px; }
     footer nav { margin-left: 0; width: 100%; }
+    .demo, .sec { grid-template-columns: 1fr; } .demo { gap: 30px; } .demo > div:last-child { order: -1; } .dservers button { font-size: 12px; }
+    .cmp::after { content: attr(data-hint); display: block; padding: 10px 18px; color: var(--faint); font-size: 13px; position: sticky; left: 0; }
   }
   @media (max-width: 520px) {
     .flow div { flex-direction: column; align-items: flex-start; gap: 2px; }
     .flow span { margin-left: 0; }
   }
-  @media (prefers-reduced-motion: reduce) { .shield { animation: none; } html { scroll-behavior: auto; } }
+  @media (prefers-reduced-motion: reduce) { .shield, .dshield { animation: none !important; } html { scroll-behavior: auto; } }
 </style>
 </head>
 <body>
 
 <header class="top"><div class="wrap">
   <a class="logo" href="/"><img src="/apex-vpn/invite/icon.png" alt="">APEX VPN</a>
-  <nav><a href="#features">Возможности</a><a href="#news">Что нового</a><a href="#install">Установка</a><a href="#faq">Вопросы</a><a href="/help/">Помощь</a></nav>
+  <nav><a href="#demo">Попробовать</a><a href="#features">Возможности</a><a href="#compare">Сравнение</a><a href="#install">Установка</a><a href="/help/">Помощь</a></nav>
+  <a class="lang" href="/en/" hreflang="en" lang="en">EN</a>
   <a class="dl-mini" href="#download" data-dl>Скачать</a>
 </div></header>
 <div class="notice" id="siteBanner" hidden><div class="wrap"><span id="sbIcon">ℹ️</span><span id="sbText"></span><a id="sbLink" hidden target="_blank" rel="noopener">Подробнее</a></div></div>
@@ -187,6 +236,26 @@
   </div>
   <div class="wrap strip"><img src="/apex-vpn/img/screens.webp" alt="Экраны APEX VPN: кнопка, режимы автопилота, тест скорости, серверы, проверка утечек" loading="lazy" width="1280" height="615"></div>
   </div>
+
+  <section id="demo"><div class="wrap demo">
+    <div class="phone"><div class="scr" id="dScr" data-st="off">
+      <div class="bar"><span>APEX VPN</span><span class="pill" id="dPill">Выключен</span></div>
+      <button class="dshield" id="dShield" aria-label="Включить VPN в демонстрации"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path id="dIcon" d="M12 7v6M12 17h.01"/></svg></button>
+      <div class="dstate" id="dState">Не защищено</div>
+      <div class="dsub" id="dSub">Нажмите на щит</div>
+      <div class="dservers" role="group" aria-label="Сервер">
+        <button aria-pressed="true" data-s="auto">🧭 Автопилот</button><button aria-pressed="false" data-s="🇳🇱 Нидерланды">🇳🇱 Нидерланды</button>
+        <button aria-pressed="false" data-s="🇩🇪 Германия">🇩🇪 Германия</button><button aria-pressed="false" data-s="🇫🇮 Финляндия">🇫🇮 Финляндия</button>
+      </div>
+    </div></div>
+    <div>
+      <h2>Попробуйте прямо здесь</h2>
+      <p class="lead">Нажмите на щит, выберите страну — и включите белые списки у «оператора», чтобы увидеть, как автопилот выходит из ситуации.</p>
+      <label class="dtoggle"><input type="checkbox" id="dWl"> 📶 У оператора включились белые списки</label>
+      <ul class="dlog" id="dLog" aria-live="polite"><li>VPN выключен</li></ul>
+      <p class="demo-note">Это демонстрация: настоящий VPN на этой странице не включается.</p>
+    </div>
+  </div></section>
 
   <section id="features"><div class="wrap">
     <h2>Всё, что нужно, уже внутри</h2>
@@ -218,7 +287,38 @@
     <h2>Что нового</h2>
     <p class="lead" id="newsLead">Последние изменения в приложении. Обновления приходят сами.</p>
     <ul class="news" id="newsList"></ul>
-    <a class="more-link" href="https://github.com/Dubstep2004/apex-vpn/releases" target="_blank" rel="noopener">Все версии на GitHub</a>
+    <a class="more-link" href="/versions/">Все версии и изменения</a>
+  </div></section>
+
+  <section id="compare"><div class="wrap">
+    <h2>Чем APEX отличается</h2>
+    <p class="lead">Сравнение с тем, как обычно устроены бесплатные и платные VPN-приложения. У конкретных приложений бывает по-разному.</p>
+    <div class="cmp" data-hint="← таблицу можно листать →"><table>
+      <thead><tr><th></th><th class="us">APEX VPN</th><th>Обычный бесплатный VPN</th><th>Обычный платный VPN</th></tr></thead>
+      <tbody>
+        <tr><td>Реклама в приложении</td><td class="us"><span class="y">нет</span></td><td><span class="n">обычно есть</span></td><td><span class="y">нет</span></td></tr>
+        <tr><td>Белые списки оператора</td><td class="us"><span class="y">сам переходит на LTE-обход</span></td><td><span class="n">перестаёт работать</span></td><td><span class="m">редко умеет</span></td></tr>
+        <tr><td>Блокировка рекламы на сайтах</td><td class="us"><span class="y">200 тысяч адресов, каждый день</span></td><td><span class="n">нет</span></td><td><span class="m">иногда, за доплату</span></td></tr>
+        <tr><td>Российские сайты и банки</td><td class="us"><span class="y">напрямую, сами</span></td><td><span class="n">всё через VPN</span></td><td><span class="m">вручную, списками</span></td></tr>
+        <tr><td>Открытый код</td><td class="us"><span class="y">да, на GitHub</span></td><td><span class="n">редко</span></td><td><span class="m">иногда</span></td></tr>
+        <tr><td>Аналитика и трекеры в приложении</td><td class="us"><span class="y">нет</span></td><td><span class="n">часто</span></td><td><span class="m">бывает</span></td></tr>
+        <tr><td>Android TV и часы</td><td class="us"><span class="y">да</span></td><td><span class="n">редко</span></td><td><span class="m">TV — часто, часы — редко</span></td></tr>
+        <tr><td>Цена приложения</td><td class="us"><span class="y">бесплатно</span>, серверы — по подписке</td><td>бесплатно, платите рекламой и данными</td><td>подписка</td></tr>
+      </tbody>
+    </table></div>
+  </div></section>
+
+  <section id="security"><div class="wrap">
+    <h2>Безопасность и приватность</h2>
+    <p class="lead">Что APEX делает с вашими данными — коротко и проверяемо.</p>
+    <div class="sec">
+      <div><b>Открытый код</b><p>Весь код приложения <a href="https://github.com/Dubstep2004/apex-vpn">на GitHub</a>. Каждая версия собирается там же, автоматически, из этого кода.</p></div>
+      <div><b>Без аналитики</b><p>В приложении нет рекламы и сервисов аналитики. Статистика и журнал соединений хранятся только на телефоне.</p></div>
+      <div><b>Отчёт без секретов</b><p>Отчёт в поддержку отправляете вы сами, и в нём нет ссылки подписки, ключей и IP-адресов.</p></div>
+      <div><b>Проверка оригинала</b><p>Все версии подписаны одним ключом. Приложение само проверяет подпись и предупредит, если копию подменили. <a href="/original/">Как проверить</a></p></div>
+      <div><b>Защита от утечек</b><p>«Проверка утечек» показывает, что сайты, DNS, IPv6 и звонки видят только адрес VPN. IPv6 мимо туннеля не уходит.</p></div>
+      <div><b>Обновления с GitHub</b><p>Новые версии и базы сайтов приходят из открытого репозитория — их видно и можно проверить.</p></div>
+    </div>
   </div></section>
 
   <section><div class="wrap">
@@ -245,7 +345,7 @@
     <h2>Вопросы</h2>
     <details><summary>Это бесплатно?</summary><p>Приложение бесплатное и с открытым кодом (лицензия GPL-3.0). Для работы нужна подписка — ссылка на ваши серверы.</p></details>
     <details><summary>Откуда взять подписку?</summary><p>Её выдаёт сервис, к которому вы подключаетесь. Ссылку можно вставить вручную, отсканировать QR-код или открыть ссылку-приглашение.</p></details>
-    <details><summary>Безопасно ли ставить не из Google Play?</summary><p>Каждая версия собирается на GitHub из открытого кода и подписана одним ключом. Приложение само проверяет, что это оригинал, и предупредит, если копию подменили.</p></details>
+    <details><summary>Безопасно ли ставить не из Google Play?</summary><p>Каждая версия собирается на GitHub из открытого кода и подписана одним ключом. Приложение само проверяет, что это оригинал, и предупредит, если копию подменили. <a href="/original/">Как отличить оригинал</a>.</p></details>
     <details><summary>Сайты не открываются при белых списках</summary><p>Выберите «Автопилот» — он сам найдёт LTE-обход. Если обход выбран вручную, весь трафик идёт через VPN, чтобы открывались и российские сайты.</p></details>
     <details><summary>Куда писать, если что-то не работает?</summary><p>В приложении: Настройки → О приложении → «Написать в поддержку». Там же можно одной кнопкой отправить отчёт — без ссылки подписки, ключей и IP.</p></details>
   </div></section>
@@ -254,12 +354,19 @@
     <h2>Нажмите на щит — остальное APEX сделает сам</h2>
     <p id="ver2">Бесплатно, для Android 7 и новее</p>
     <div class="cta"><a class="btn main" data-dl href="https://github.com/Dubstep2004/apex-vpn/releases/latest">⬇ Скачать APEX VPN</a></div>
+    <div class="share" aria-label="Поделиться">
+      <button type="button" id="shareBtn">📤 Поделиться</button>
+      <a href="https://t.me/share/url?url=https%3A%2F%2Fdubstep2004.github.io%2F&text=APEX%20VPN%20%E2%80%94%20VPN%2C%20%D0%BA%D0%BE%D1%82%D0%BE%D1%80%D1%8B%D0%B9%20%D1%81%D0%B0%D0%BC%20%D0%BD%D0%B0%D1%85%D0%BE%D0%B4%D0%B8%D1%82%20%D0%B4%D0%BE%D1%80%D0%BE%D0%B3%D1%83" target="_blank" rel="noopener">Telegram</a>
+      <a href="https://wa.me/?text=APEX%20VPN%20%E2%80%94%20https%3A%2F%2Fdubstep2004.github.io%2F" target="_blank" rel="noopener">WhatsApp</a>
+      <a href="https://vk.com/share.php?url=https%3A%2F%2Fdubstep2004.github.io%2F" target="_blank" rel="noopener">ВКонтакте</a>
+      <button type="button" id="copyBtn">🔗 Скопировать ссылку</button>
+    </div>
   </div></div>
 </main>
 
 <footer><div class="wrap">
   <span>© 2026 Dubstep2004 · APEX VPN</span>
-  <nav><a href="/help/">Помощь</a><a href="https://github.com/Dubstep2004/apex-vpn">GitHub</a><a href="https://t.me/Apexx_support">Поддержка</a><a href="/apex-vpn/invite/">Пригласить друга</a></nav>
+  <nav><a href="/help/">Помощь</a><a href="/versions/">Все версии</a><a href="/original/">Проверка оригинала</a><a href="/en/" hreflang="en">English</a><a href="https://github.com/Dubstep2004/apex-vpn">GitHub</a><a href="https://t.me/Apexx_support">Поддержка</a><a href="/apex-vpn/invite/">Пригласить друга</a></nav>
 </div></footer>
 
 <script>
@@ -283,7 +390,9 @@ fetch('https://api.github.com/repos/Dubstep2004/apex-vpn/releases?per_page=100')
     const total = list.reduce((s, r) => s + r.assets.filter(a => /^apex-vpn-.*\.apk$/.test(a.name)).reduce((x, a) => x + a.download_count, 0), 0)
     const mb = apk ? ' · ' + (apk.size / 1048576).toFixed(0) + ' МБ' : ''
     const dl = total > 0 ? ' · скачали ' + nf(total) + ' ' + plural(total, 'раз', 'раза', 'раз') : ''
-    $('ver').textContent = 'Версия ' + v + mb + dl + ' · бесплатно · Android 7 и новее'
+    const ago = Math.floor((Date.now() - new Date(rel.published_at)) / 864e5)
+    const fresh = ago <= 0 ? 'обновлено сегодня' : ago === 1 ? 'обновлено вчера' : 'обновлено ' + ago + ' ' + plural(ago, 'день', 'дня', 'дней') + ' назад'
+    $('ver').textContent = 'Версия ' + v + mb + ' · ' + fresh + dl + ' · бесплатно · Android 7 и новее'
     $('ver2').textContent = 'Версия ' + v + ', бесплатно, для Android 7 и новее'
     // Что нового: пункты из описаний трёх последних версий
     const items = []
@@ -316,15 +425,62 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/app.json?t
       $('siteBanner').hidden = false
     }
     const fmt = ms => new Date(ms).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
-    const marks = Object.entries((c.servers || {}).status || {}).filter(([, v]) => !v.preview && (!v.until || now < v.until))
+    const all = Object.entries((c.servers || {}).status || {}).filter(([, v]) => !v.preview && (!v.until || now < v.until))
+    const marks = all.filter(([, v]) => !v.from || now >= v.from)
+    const planned = all.filter(([, v]) => v.from && now < v.from && v.state === 'maintenance')
     const maint = marks.filter(([, v]) => v.state === 'maintenance'), slow = marks.filter(([, v]) => v.state === 'slow')
     const el = $('status')
     if (banners.some(b => b.level === 'alert')) { el.textContent = '🛑 Есть сбой у части серверов — уже чиним'; el.dataset.s = 'bad' }
     else if (maint.length) { el.textContent = '🔧 На обслуживании: ' + maint.map(([n, v]) => n + (v.until ? ' до ' + fmt(v.until) : '')).join(', '); el.dataset.s = 'bad' }
     else if (slow.length) { el.textContent = '🐢 Медленнее обычного: ' + slow.map(([n]) => n).join(', ') }
     else el.textContent = '🟢 Все серверы работают'
+    if (planned.length && !el.dataset.s) el.textContent += ' · техработы: ' + planned.map(([n, v]) => n + ' ' + fmt(v.from)).join(', ')
     el.hidden = false
   }).catch(() => {})
+
+// Демо: состояния щита и автопилот при белых списках
+;(() => {
+  const scr = $('dScr'), log = $('dLog')
+  let st = 'off', srv = 'auto', wl = false, timer
+  const OK = 'M5 12.5l4.5 4.5L19 7.5', WARN = 'M12 7v6M12 17h.01'
+  const say = t => { const li = document.createElement('li'); li.textContent = t; log.prepend(li); while (log.children.length > 4) log.lastChild.remove() }
+  const pick = () => srv === 'auto' ? (wl ? '📶 LTE-обход' : '🇳🇱 Нидерланды · 38 мс') : srv
+  function render() {
+    scr.dataset.st = st
+    $('dIcon').setAttribute('d', st === 'on' ? OK : WARN)
+    $('dPill').textContent = st === 'on' ? 'Подключён' : st === 'wait' ? 'Подключение…' : 'Выключен'
+    $('dState').textContent = st === 'on' ? (wl && srv !== 'auto' ? 'Нет интернета' : 'Защищено') : st === 'wait' ? 'Подключаемся' : 'Не защищено'
+    $('dSub').textContent = st === 'on' ? (wl && srv !== 'auto' ? 'Белые списки: выберите автопилот' : pick()) : st === 'wait' ? 'Ищем лучший сервер…' : 'Нажмите на щит'
+    scr.style.setProperty('--glow', st === 'on' ? (wl && srv !== 'auto' ? '#f0616d33' : wl ? '#2fd38b40' : '#4c7dff55') : '#6d5cff22')
+    document.querySelectorAll('.dservers button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.s === srv)))
+  }
+  function connect() { clearTimeout(timer); st = 'wait'; render(); timer = setTimeout(() => { st = 'on'; render(); say('Подключено: ' + pick()) }, 1100) }
+  $('dShield').onclick = () => { if (st === 'off') connect(); else { clearTimeout(timer); st = 'off'; render(); say('VPN выключен') } }
+  document.querySelector('.dservers').onclick = e => {
+    const b = e.target.closest('button'); if (!b) return
+    srv = b.dataset.s; say(srv === 'auto' ? 'Выбран автопилот' : 'Выбран сервер ' + srv)
+    if (st !== 'off') connect(); else render()
+  }
+  $('dWl').onchange = e => {
+    wl = e.target.checked
+    if (!wl) { say('Белые списки сняты — автопилот вернулся на обычные серверы'); render(); return }
+    say('Оператор включил белые списки')
+    if (st === 'on' && srv === 'auto') { st = 'wait'; render(); timer = setTimeout(() => { st = 'on'; render(); say('Автопилот: обычные серверы не отвечают → LTE-обход, интернет есть ✓') }, 1400) }
+    else if (st === 'on') { render(); say('Сервер выбран вручную — сайты не открываются') }
+    else render()
+  }
+  render()
+})()
+
+// Поделиться
+$('shareBtn').onclick = async () => {
+  const data = { title: 'APEX VPN', text: 'APEX VPN — VPN, который сам находит дорогу', url: 'https://dubstep2004.github.io/' }
+  if (navigator.share) { try { await navigator.share(data) } catch {} } else $('copyBtn').click()
+}
+$('copyBtn').onclick = async () => {
+  try { await navigator.clipboard.writeText('https://dubstep2004.github.io/'); $('copyBtn').textContent = '✓ Скопировано' } catch { $('copyBtn').textContent = 'dubstep2004.github.io' }
+  setTimeout(() => { $('copyBtn').textContent = '🔗 Скопировать ссылку' }, 2000)
+}
 
 // QR-код на страницу скачивания — только на компьютере
 if (matchMedia('(min-width: 861px)').matches) {

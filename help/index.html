@@ -38,6 +38,19 @@
   .help-cta { margin: 40px 0 60px; padding: 26px; border-radius: 24px; background: var(--ink2); border: 1px solid var(--line); text-align: center; }
   .btn { display: inline-block; margin-top: 12px; text-decoration: none; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--violet), #22d3ee); border-radius: 14px; padding: 13px 20px; }
   footer { color: var(--faint); font-size: 14px; padding: 0 0 50px; } footer a { color: var(--faint); }
+  .search { width: 100%; font: inherit; color: var(--text); background: var(--ink2); border: 1px solid var(--line); border-radius: 14px; padding: 13px 16px; margin: 0 0 24px; }
+  .rel { border-top: 1px solid var(--line); padding: 22px 0 6px; }
+  .rel h2 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; } .rel h2 small { color: var(--faint); font-size: 14px; font-weight: 600; }
+  .rel .tag { font-size: 12px; font-weight: 800; color: #f5b759; border: 1px solid #f5b75966; border-radius: 99px; padding: 1px 8px; }
+  .rel h3 { font-size: 15px; margin: 12px 0 4px; color: var(--text); }
+  .rel a.dl { font-weight: 800; font-size: 14px; text-decoration: none; }
+  mark { background: #f5b75955; color: inherit; border-radius: 4px; }
+  .fp { font: 14px/1.7 ui-monospace, "SF Mono", Menlo, monospace; word-break: break-all; background: var(--ink2); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; color: var(--text); }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 18px; }
+  .tabs button { font: inherit; font-weight: 700; font-size: 14px; color: var(--dim); background: var(--ink2); border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; cursor: pointer; }
+  .tabs button[aria-selected=true] { color: var(--text); border-color: #6d5cff; background: #6d5cff22; }
+  .shot { display: flex; gap: 12px; align-items: center; margin: 10px 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--ink2); font-size: 15px; color: var(--dim); }
+  .shot .ic { flex: 0 0 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #6d5cff22; }
 </style>
 </head>
 <body>
@@ -47,7 +60,7 @@
   <p class="lead">Частые проблемы и что с ними делать. Не помогло — напишите в поддержку, ответим.</p>
   <nav class="toc" aria-label="Разделы">
     <a href="#nointernet">Нет интернета</a><a href="#whitelist">Белые списки</a><a href="#drops">VPN отключается</a>
-    <a href="#banks">Банки и Госуслуги</a><a href="#update">Обновление</a><a href="#tv">Android TV</a><a href="#watch">Часы</a><a href="#install">Установка</a>
+    <a href="#banks">Банки и Госуслуги</a><a href="#update">Обновление</a><a href="#tv">Android TV</a><a href="#watch">Часы</a><a href="#install">Установка</a><a href="#phones">Xiaomi, Samsung, Huawei</a>
   </nav>
 
   <section id="nointernet"><h2>VPN включён, а интернета нет</h2>
@@ -114,12 +127,53 @@
     <p class="note">Каждая версия собирается на GitHub из открытого кода и подписана одним ключом. Приложение само проверяет, что это оригинал, и предупредит, если копию подменили.</p>
   </section>
 
+
+  <section id="phones"><h2>Настройка под ваш телефон</h2>
+    <p>Чтобы APEX ставился без ошибок и не отключался в фоне. Названия пунктов на разных версиях прошивки чуть отличаются.</p>
+    <div class="tabs" role="tablist">
+      <button role="tab" aria-selected="true" data-p="xiaomi">Xiaomi · Redmi · POCO</button>
+      <button role="tab" aria-selected="false" data-p="samsung">Samsung</button>
+      <button role="tab" aria-selected="false" data-p="huawei">Huawei · Honor</button>
+      <button role="tab" aria-selected="false" data-p="other">Другие</button>
+    </div>
+    <div data-panel="xiaomi">
+      <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> откройте скачанный файл → «Настройки» → включите «Разрешить установку из этого источника» → назад → «Установить».</span></div>
+      <div class="shot"><span class="ic">🔋</span><span><b>Батарея:</b> Настройки → Приложения → Все приложения → APEX VPN → Контроль активности → <b>Нет ограничений</b>.</span></div>
+      <div class="shot"><span class="ic">🚀</span><span><b>Автозапуск:</b> там же, в карточке APEX VPN → включите <b>Автозапуск</b>.</span></div>
+      <div class="shot"><span class="ic">🔒</span><span><b>Закрепить:</b> откройте недавние приложения, зажмите APEX VPN → значок замка. Тогда «Очистить всё» его не закроет.</span></div>
+    </div>
+    <div data-panel="samsung" hidden>
+      <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> откройте файл → «Настройки» → разрешите «Установка неизвестных приложений» для браузера или «Мои файлы».</span></div>
+      <div class="shot"><span class="ic">🔋</span><span><b>Батарея:</b> Настройки → Приложения → APEX VPN → Батарея → <b>Без ограничений</b>.</span></div>
+      <div class="shot"><span class="ic">💤</span><span><b>Спящие приложения:</b> Настройки → Обслуживание устройства (Батарея) → Ограничения в фоновом режиме → уберите APEX VPN из «Спящих» и «Глубоко спящих».</span></div>
+    </div>
+    <div data-panel="huawei" hidden>
+      <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> откройте файл → разрешите установку из этого источника. Если телефон предлагает «проверку безопасности» — пропустите её для APEX.</span></div>
+      <div class="shot"><span class="ic">🔋</span><span><b>Запуск приложений:</b> Настройки → Батарея → Запуск приложений → APEX VPN → выключите «Автоматическое управление» и включите все три переключателя.</span></div>
+      <div class="shot"><span class="ic">🔒</span><span><b>Закрепить:</b> в недавних приложениях потяните карточку APEX VPN вниз — появится замок.</span></div>
+    </div>
+    <div data-panel="other" hidden>
+      <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> при открытии файла разрешите установку из браузера или файлового менеджера.</span></div>
+      <div class="shot"><span class="ic">🔋</span><span><b>Батарея:</b> Настройки → Приложения → APEX VPN → Батарея → <b>Без ограничений</b> (или «Не оптимизировать»).</span></div>
+      <div class="shot"><span class="ic">🛡</span><span><b>Постоянный VPN:</b> Настройки → Сеть → VPN → ⚙️ у APEX VPN → «Постоянная VPN» — Android будет держать VPN включённым сам.</span></div>
+    </div>
+  </section>
+
   <div class="help-cta">
     <b>Не помогло?</b>
     <p>В приложении: <b>Настройки → О приложении → «Написать в поддержку»</b>. Там же можно одной кнопкой отправить отчёт — без ссылки подписки, ключей и IP.</p>
     <a class="btn" href="https://t.me/Apexx_support">Написать в поддержку</a>
   </div>
 </main>
-<footer><div class="wrap">© 2026 Dubstep2004 · <a href="/">APEX VPN</a></div></footer>
+<footer><div class="wrap">© 2026 Dubstep2004 · <a href="/">APEX VPN</a> · <a href="/versions/">Все версии</a> · <a href="/original/">Проверка оригинала</a></div></footer>
+<script>
+document.querySelector('.tabs').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return
+  document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)))
+  document.querySelectorAll('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== b.dataset.p)
+}
+if (/xiaomi|redmi|poco/i.test(navigator.userAgent)) {} else if (/SM-|samsung/i.test(navigator.userAgent)) document.querySelector('[data-p=samsung]').click()
+else if (/huawei|honor|HMA-|ELE-|VOG-/i.test(navigator.userAgent)) document.querySelector('[data-p=huawei]').click()
+</script>
 </body>
 </html>
