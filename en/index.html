@@ -335,7 +335,7 @@
     <h2>Install in a minute</h2>
     <p class="lead">The app isn’t on Google Play — you download it as a file from GitHub, where its open source code lives.</p>
     <ol class="steps">
-      <li><b>Download the file</b><p>Tap “Download for Android” — the file <span id="apkName">apex-vpn.apk</span> downloads.</p></li>
+      <li><b>Download the file</b><p>Tap “Download for Android” — the file <span id="apkName">apex-client.apk</span> downloads.</p></li>
       <li><b>Allow installation</b><p>Open the file. Android asks to allow installs from your browser — allow it once.</p></li>
       <li><b>Add your subscription</b><p>Open APEX CLIENT, paste your subscription link and tap the shield. Updates install by themselves after that.</p></li>
     </ol>
@@ -381,14 +381,14 @@ fetch('https://api.github.com/repos/Dubstep2004/apex-client/releases?per_page=10
   .then(list => {
     const stable = list.filter(r => !r.draft && !r.prerelease), rel = stable[0]
     if (!rel) return
-    const apk = rel.assets.find(a => /^apex-vpn-.*\.apk$/.test(a.name)), watch = rel.assets.find(a => /^apex-watch-.*\.apk$/.test(a.name))
+    const apk = rel.assets.find(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name)), watch = rel.assets.find(a => /^apex-watch-.*\.apk$/.test(a.name))
     const v = rel.tag_name.replace(/^v/, '')
     if (apk) {
       document.querySelectorAll('a[data-dl]').forEach(a => { if (!a.classList.contains('dl-mini')) a.href = apk.browser_download_url })
       $('apkName').textContent = apk.name
     }
     if (watch) $('watchDl').href = watch.browser_download_url
-    const total = list.reduce((s, r) => s + r.assets.filter(a => /^apex-vpn-.*\.apk$/.test(a.name)).reduce((x, a) => x + a.download_count, 0), 0)
+    const total = list.reduce((s, r) => s + r.assets.filter(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name)).reduce((x, a) => x + a.download_count, 0), 0)
     const mb = apk ? ' · ' + (apk.size / 1048576).toFixed(0) + ' MB' : ''
     window.__dlText = () => (window.__noDl || !(total > 0)) ? '' : ' · ' + nf(total) + ' ' + plural(total, 'download', 'downloads')
     const ago = Math.floor((Date.now() - new Date(rel.published_at)) / 864e5)

@@ -82,7 +82,7 @@ function render() {
   const q = document.getElementById('q').value.trim()
   const shown = rels.filter(r => !q || (r.tag_name + ' ' + (r.body || '')).toLowerCase().includes(q.toLowerCase()))
   document.getElementById('list').innerHTML = shown.length ? shown.map(r => {
-    const apk = r.assets.find(a => /^apex-vpn-.*\.apk$/.test(a.name))
+    const apk = r.assets.find(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name))
     return `<div class="rel"><h2>${esc(r.tag_name.replace(/^v/, ''))} <small>${new Date(r.published_at).toLocaleDateString('ru', { day: 'numeric', month: 'long', year: 'numeric' })}</small>${r.prerelease ? '<span class="tag">бета</span>' : ''}</h2>
       ${md(r.body, q)}${apk ? `<p><a class="dl" href="${apk.browser_download_url}">Скачать ${esc(apk.name)}</a></p>` : ''}</div>`
   }).join('') : '<p class="note">Ничего не нашлось. Попробуйте другое слово.</p>'

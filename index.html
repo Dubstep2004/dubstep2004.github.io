@@ -335,7 +335,7 @@
     <h2>Установка за минуту</h2>
     <p class="lead">Приложения нет в Google Play — оно скачивается файлом с GitHub, где лежит его открытый код.</p>
     <ol class="steps">
-      <li><b>Скачайте файл</b><p>Нажмите «Скачать для Android» — загрузится файл <span id="apkName">apex-vpn.apk</span>.</p></li>
+      <li><b>Скачайте файл</b><p>Нажмите «Скачать для Android» — загрузится файл <span id="apkName">apex-client.apk</span>.</p></li>
       <li><b>Разрешите установку</b><p>Откройте файл. Android попросит разрешить установку из браузера — разрешите один раз.</p></li>
       <li><b>Вставьте подписку</b><p>Откройте APEX CLIENT, вставьте ссылку подписки и нажмите на щит. Обновления дальше ставятся сами.</p></li>
     </ol>
@@ -381,14 +381,14 @@ fetch('https://api.github.com/repos/Dubstep2004/apex-client/releases?per_page=10
   .then(list => {
     const stable = list.filter(r => !r.draft && !r.prerelease), rel = stable[0]
     if (!rel) return
-    const apk = rel.assets.find(a => /^apex-vpn-.*\.apk$/.test(a.name)), watch = rel.assets.find(a => /^apex-watch-.*\.apk$/.test(a.name))
+    const apk = rel.assets.find(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name)), watch = rel.assets.find(a => /^apex-watch-.*\.apk$/.test(a.name))
     const v = rel.tag_name.replace(/^v/, '')
     if (apk) {
       document.querySelectorAll('a[data-dl]').forEach(a => { if (!a.classList.contains('dl-mini')) a.href = apk.browser_download_url })
       $('apkName').textContent = apk.name
     }
     if (watch) $('watchDl').href = watch.browser_download_url
-    const total = list.reduce((s, r) => s + r.assets.filter(a => /^apex-vpn-.*\.apk$/.test(a.name)).reduce((x, a) => x + a.download_count, 0), 0)
+    const total = list.reduce((s, r) => s + r.assets.filter(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name)).reduce((x, a) => x + a.download_count, 0), 0)
     const mb = apk ? ' · ' + (apk.size / 1048576).toFixed(0) + ' МБ' : ''
     window.__dlText = () => (window.__noDl || !(total > 0)) ? '' : ' · скачали ' + nf(total) + ' ' + plural(total, 'раз', 'раза', 'раз')
     const ago = Math.floor((Date.now() - new Date(rel.published_at)) / 864e5)
