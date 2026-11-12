@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Живые обои — APEX CLIENT</title>
+<meta name="description" content="Живые обои APEX CLIENT в 1080×1920: аниме-стиль, город, пиксель-арт, космос. Скачиваются в приложении одним нажатием.">
+<meta property="og:title" content="Живые обои — APEX CLIENT">
+<meta property="og:image" content="https://dubstep2004.github.io/og.png">
+<meta name="theme-color" content="#0a0d1c" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="/apex-client/invite/icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root { --ink: #0a0d1c; --ink2: #11152a; --line: #222842; --text: #eef1fa; --dim: #8c93b0; --faint: #5b6283; --cyan: #22d3ee; --violet: #6d5cff;
+    --display: "Unbounded", "Manrope", system-ui, sans-serif; }
+  @media (prefers-color-scheme: light) { :root { --ink: #f5f6fb; --ink2: #ffffff; --line: #e1e4ee; --text: #12152a; --dim: #525a78; --faint: #767d99; --cyan: #0b8fb0; } }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+  body { margin: 0; background: var(--ink); color: var(--text); font: 17px/1.6 "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--cyan); } :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 20px; }
+  header { border-bottom: 1px solid var(--line); } header .wrap { display: flex; align-items: center; gap: 12px; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-family: var(--display); font-weight: 700; font-size: 18px; }
+  .logo img { width: 34px; height: 34px; border-radius: 10px; }
+  header nav { margin-left: auto; font-weight: 700; font-size: 15px; } header nav a { color: var(--dim); text-decoration: none; }
+  h1 { font-family: var(--display); font-size: clamp(30px, 5vw, 44px); letter-spacing: -.03em; line-height: 1.1; margin: 48px 0 12px; }
+  .lead { color: var(--dim); font-size: 18px; margin: 0 0 30px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 34px; }
+  .toc a { text-decoration: none; color: var(--text); border: 1px solid var(--line); background: var(--ink2); border-radius: 99px; padding: 7px 14px; font-size: 14px; font-weight: 700; }
+  section { border-top: 1px solid var(--line); padding: 26px 0 8px; scroll-margin-top: 16px; }
+  h2 { font-size: 21px; margin: 0 0 10px; }
+  p, li { color: var(--dim); } b { color: var(--text); }
+  ol, ul { padding-left: 22px; } li { margin: 6px 0; }
+  .note { background: var(--ink2); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px; font-size: 15px; color: var(--dim); }
+  .help-cta { margin: 40px 0 60px; padding: 26px; border-radius: 24px; background: var(--ink2); border: 1px solid var(--line); text-align: center; }
+  .btn { display: inline-block; margin-top: 12px; text-decoration: none; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--violet), #22d3ee); border-radius: 14px; padding: 13px 20px; }
+  footer { color: var(--faint); font-size: 14px; padding: 0 0 50px; } footer a { color: var(--faint); }
+
+  .search { width: 100%; font: inherit; color: var(--text); background: var(--ink2); border: 1px solid var(--line); border-radius: 14px; padding: 13px 16px; margin: 0 0 24px; }
+  .rel { border-top: 1px solid var(--line); padding: 22px 0 6px; }
+  .rel h2 { display: flex; gap: 10px; align-items: baseline; flex-wrap: wrap; } .rel h2 small { color: var(--faint); font-size: 14px; font-weight: 600; }
+  .rel .tag { font-size: 12px; font-weight: 800; color: #f5b759; border: 1px solid #f5b75966; border-radius: 99px; padding: 1px 8px; }
+  .rel h3 { font-size: 15px; margin: 12px 0 4px; color: var(--text); }
+  .rel a.dl { font-weight: 800; font-size: 14px; text-decoration: none; }
+  mark { background: #f5b75955; color: inherit; border-radius: 4px; }
+  .fp { font: 14px/1.7 ui-monospace, "SF Mono", Menlo, monospace; word-break: break-all; background: var(--ink2); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px; color: var(--text); }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 6px 0 18px; }
+  .tabs button { font: inherit; font-weight: 700; font-size: 14px; color: var(--dim); background: var(--ink2); border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; cursor: pointer; }
+  .tabs button[aria-selected=true] { color: var(--text); border-color: #6d5cff; background: #6d5cff22; }
+  .shot { display: flex; gap: 12px; align-items: center; margin: 10px 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--ink2); font-size: 15px; color: var(--dim); }
+  .shot .ic { flex: 0 0 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #6d5cff22; }
+
+  .cats { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 22px; }
+  .cats button { font: inherit; font-weight: 700; font-size: 15px; padding: 8px 16px; border-radius: 99px; border: 1px solid var(--line); background: var(--ink2); color: var(--dim); cursor: pointer; }
+  .cats button[aria-pressed="true"] { background: var(--cyan); border-color: var(--cyan); color: var(--ink); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 14px; margin: 0 0 40px; }
+  .grid button { all: unset; cursor: pointer; display: block; text-align: center; }
+  .grid img { width: 100%; aspect-ratio: 9 / 16; object-fit: cover; border-radius: 20px; display: block; background: var(--ink2); border: 1px solid var(--line); transition: transform .2s; }
+  .grid button:hover img, .grid button:focus-visible img { transform: translateY(-3px); }
+  .grid span { display: block; margin-top: 8px; font-weight: 700; font-size: 14px; }
+  .grid small { display: block; color: var(--faint); font-size: 12.5px; }
+  .cta { display: flex; flex-wrap: wrap; gap: 14px; align-items: center; justify-content: space-between; padding: 22px; border: 1px solid var(--line); border-radius: 24px; background: var(--ink2); margin: 0 0 60px; }
+  .cta p { margin: 0; color: var(--dim); max-width: 46ch; }
+  .btn { display: inline-block; padding: 14px 22px; border-radius: 14px; background: linear-gradient(135deg, var(--violet), var(--cyan)); color: #fff; font-weight: 800; text-decoration: none; }
+  dialog { border: 0; padding: 0; background: transparent; max-width: min(92vw, 380px); }
+  dialog::backdrop { background: #000c; }
+  dialog video { width: 100%; aspect-ratio: 9 / 16; border-radius: 24px; display: block; background: #000; }
+  dialog .bar { display: flex; justify-content: space-between; align-items: center; gap: 10px; color: #fff; margin-top: 12px; font-weight: 700; }
+  dialog .bar button { font: inherit; font-weight: 700; padding: 10px 18px; border-radius: 12px; border: 0; cursor: pointer; background: #ffffff22; color: #fff; }
+  .empty { color: var(--dim); }
+  footer { border-top: 1px solid var(--line); color: var(--faint); font-size: 14px; padding: 24px 0 40px; }
+</style>
+</head>
+<body>
+<header><div class="wrap">
+  <a class="logo" href="/"><img src="/apex-client/invite/icon.png" alt="">APEX CLIENT</a>
+  <nav><a href="/#download">Скачать</a></nav>
+</div></header>
+<main class="wrap">
+  <h1>Живые обои</h1>
+  <p class="lead">Видео-обои 1080×1920 для главного экрана APEX CLIENT. В приложении: «Настройки → Оформление → Живые обои из интернета» — нажали, скачалось, стоит на экране.</p>
+  <div class="cats" id="cats" role="group" aria-label="Разделы"></div>
+  <div class="grid" id="grid"><p class="empty">Загружаем обои…</p></div>
+  <div class="cta"><p>Ещё там: поиск живых обоев по темам, эффекты снега и сакуры поверх, «Обои дня» и избранное.</p><a class="btn" href="/#download">Скачать APEX CLIENT</a></div>
+</main>
+<dialog id="dlg" aria-label="Предпросмотр обоев"><video id="vid" muted loop playsinline autoplay></video>
+  <div class="bar"><span id="vt"></span><button type="button" id="close">Закрыть</button></div></dialog>
+<footer><div class="wrap">Обои нарисованы для APEX CLIENT · <a href="/">Главная</a> · <a href="/help/">Помощь</a></div></footer>
+<script>
+const $ = id => document.getElementById(id)
+const BASE = 'https://dubstep2004.github.io/apex-client/'
+const CATS = { anime: 'Аниме-стиль', city: 'Город', nature: 'Природа', space: 'Космос', pixel: 'Пиксель-арт', cozy: 'Уют', abstract: 'Абстракция', games: 'Игры' }
+const src = u => /^https:\/\//.test(u) ? u : BASE + String(u).replace(/^\/+/, '')
+const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+let all = [], cur = ''
+function draw() {
+  const list = all.filter(w => !cur || w.cat === cur)
+  $('grid').innerHTML = list.map((w, i) => `<button type="button" data-i="${all.indexOf(w)}"><img src="${esc(src(w.thumb || ''))}" alt="" loading="lazy" width="140" height="249"><span>${esc(w.title)}</span><small>${esc(CATS[w.cat] || '')}${w.sizeMb ? ' · ' + w.sizeMb + ' МБ' : ''}</small></button>`).join('') || '<p class="empty">В этом разделе пока пусто.</p>'
+  $('cats').querySelectorAll('button').forEach(b => b.setAttribute('aria-pressed', String(b.dataset.c === cur)))
+}
+fetch(BASE + 'config/wallpapers.json', { cache: 'no-cache' }).then(r => r.json()).then(c => {
+  all = (c.live || []).filter(w => !w.hidden && w.url && /\.mp4$/i.test(w.url) && !/^https?:/.test(w.url))
+  const cs = [...new Set(all.map(w => w.cat).filter(Boolean))]
+  $('cats').innerHTML = ['<button type="button" data-c="">Все</button>', ...cs.map(k => `<button type="button" data-c="${esc(k)}">${esc(CATS[k] || k)}</button>`)].join('')
+  draw()
+}).catch(() => { $('grid').innerHTML = '<p class="empty">Не удалось загрузить обои — обновите страницу.</p>' })
+$('cats').onclick = e => { const b = e.target.closest('button'); if (!b) return; cur = b.dataset.c; draw() }
+$('grid').onclick = e => {
+  const b = e.target.closest('button'); if (!b) return; const w = all[+b.dataset.i]
+  $('vid').src = src(w.url); $('vt').textContent = w.title; $('dlg').showModal(); $('vid').play().catch(() => {})
+}
+$('close').onclick = () => $('dlg').close()
+$('dlg').addEventListener('close', () => { $('vid').pause(); $('vid').removeAttribute('src'); $('vid').load() })
+$('dlg').addEventListener('click', e => { if (e.target === $('dlg')) $('dlg').close() })
+</script>
+</body>
+</html>

@@ -10,7 +10,7 @@ const srv = http.createServer((q, r) => {
   const p = file(q.url); if (!p) { r.writeHead(404, { 'content-type': 'text/html; charset=utf-8' }); return r.end(fs.readFileSync(path.join(ROOT, '404.html'))) }
   r.setHeader('content-type', { '.html': 'text/html; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' }[path.extname(p)] || 'application/octet-stream'); r.end(fs.readFileSync(p))
 })
-const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/404.html']
+const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/wallpapers/', '/404.html']
 const rel = [{ tag_name: 'v9.9.9', draft: false, prerelease: false, published_at: new Date().toISOString(), body: '- проверка\n', assets: [{ name: 'apex-client-9.9.9.apk', size: 6e7, download_count: 5, browser_download_url: 'https://github.com/x.apk' }, { name: 'apex-watch-9.9.9.apk', size: 1e7, download_count: 1, browser_download_url: 'https://github.com/w.apk' }] }]
 const cfg = { banners: [{ id: 'b', text: 'Проверка баннера', level: 'warn', devices: ['site'] }], servers: { status: { 'Германия': { state: 'maintenance', until: Date.now() + 36e5 } } } }
 const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log('::error title=' + w + '::' + m) }

@@ -207,6 +207,11 @@
     .flow span { margin-left: 0; }
   }
   @media (prefers-reduced-motion: reduce) { .shield, .dshield { animation: none !important; } html { scroll-behavior: auto; } }
+  /* Новогоднее оформление */
+  .snow { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
+  .garland { position: fixed; top: 0; left: 0; right: 0; height: 18px; display: flex; justify-content: space-around; pointer-events: none; z-index: 61; background: linear-gradient(#0003, transparent); }
+  .garland i { width: 9px; height: 13px; border-radius: 50% 50% 45% 45%; background: var(--c); margin-top: 4px; box-shadow: 0 0 10px var(--c); animation: blink 1.6s var(--d) infinite alternate; }
+  @keyframes blink { to { opacity: .35; box-shadow: none; } }
 </style>
 </head>
 <body>
@@ -275,7 +280,7 @@
       <div class="feat"><div class="ic" style="background:#b06cff26">🎨</div><div><h3>Красиво</h3><p>Больше 20 дизайнов (новые — Закат, Лес, Арктика, Мокко) и 10 цветов. Живые обои 1080p и поиск обоев-картинок: аниме, игры, космос, природа.</p></div></div>
     </div>
 
-    <div class="wallsbox"><h3>Живые обои</h3><p class="wlead">Скачиваются в приложении по нажатию, ненужные удаляются. Можно добавить снег, дождь или сакуру поверх, менять скорость и ставить «Обои дня».</p><div class="walls" aria-label="Живые обои"><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/arcade.jpg" alt="Ретро-аркада" loading="lazy" width="120" height="213"><figcaption>Ретро-аркада</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/samurai.jpg" alt="Самурай на закате" loading="lazy" width="120" height="213"><figcaption>Самурай на закате</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/neoncity.jpg" alt="Неон-город" loading="lazy" width="120" height="213"><figcaption>Неон-город</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelsunset.jpg" alt="Пиксель-закат" loading="lazy" width="120" height="213"><figcaption>Пиксель-закат</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/sakura.jpg" alt="Сакура ночью" loading="lazy" width="120" height="213"><figcaption>Сакура ночью</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelspace.jpg" alt="Пиксель-космос" loading="lazy" width="120" height="213"><figcaption>Пиксель-космос</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/aurora2.jpg" alt="Полярное сияние" loading="lazy" width="120" height="213"><figcaption>Полярное сияние</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/nebula.jpg" alt="Туманность" loading="lazy" width="120" height="213"><figcaption>Туманность</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/hyper.jpg" alt="Гиперпрыжок" loading="lazy" width="120" height="213"><figcaption>Гиперпрыжок</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/waves.jpg" alt="Неоновые волны" loading="lazy" width="120" height="213"><figcaption>Неоновые волны</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/bokeh.jpg" alt="Боке" loading="lazy" width="120" height="213"><figcaption>Боке</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/fireflies.jpg" alt="Светлячки" loading="lazy" width="120" height="213"><figcaption>Светлячки</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/lava.jpg" alt="Лава-лампа" loading="lazy" width="120" height="213"><figcaption>Лава-лампа</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/mesh.jpg" alt="Переливы" loading="lazy" width="120" height="213"><figcaption>Переливы</figcaption></figure></div></div>
+    <div class="wallsbox"><h3>Живые обои</h3><p class="wlead"><a href="/wallpapers/">Все обои по разделам</a>. Скачиваются в приложении по нажатию, ненужные удаляются. Можно добавить снег, дождь или сакуру поверх, менять скорость и ставить «Обои дня».</p><div class="walls" aria-label="Живые обои"><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/arcade.jpg" alt="Ретро-аркада" loading="lazy" width="120" height="213"><figcaption>Ретро-аркада</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/samurai.jpg" alt="Самурай на закате" loading="lazy" width="120" height="213"><figcaption>Самурай на закате</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/neoncity.jpg" alt="Неон-город" loading="lazy" width="120" height="213"><figcaption>Неон-город</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelsunset.jpg" alt="Пиксель-закат" loading="lazy" width="120" height="213"><figcaption>Пиксель-закат</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/sakura.jpg" alt="Сакура ночью" loading="lazy" width="120" height="213"><figcaption>Сакура ночью</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/pixelspace.jpg" alt="Пиксель-космос" loading="lazy" width="120" height="213"><figcaption>Пиксель-космос</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/aurora2.jpg" alt="Полярное сияние" loading="lazy" width="120" height="213"><figcaption>Полярное сияние</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/nebula.jpg" alt="Туманность" loading="lazy" width="120" height="213"><figcaption>Туманность</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/hyper.jpg" alt="Гиперпрыжок" loading="lazy" width="120" height="213"><figcaption>Гиперпрыжок</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/waves.jpg" alt="Неоновые волны" loading="lazy" width="120" height="213"><figcaption>Неоновые волны</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/bokeh.jpg" alt="Боке" loading="lazy" width="120" height="213"><figcaption>Боке</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/fireflies.jpg" alt="Светлячки" loading="lazy" width="120" height="213"><figcaption>Светлячки</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/lava.jpg" alt="Лава-лампа" loading="lazy" width="120" height="213"><figcaption>Лава-лампа</figcaption></figure><figure><img src="https://dubstep2004.github.io/apex-client/wallpapers/live/mesh.jpg" alt="Переливы" loading="lazy" width="120" height="213"><figcaption>Переливы</figcaption></figure></div></div>
     <div class="wl" id="whitelists">
       <div>
         <h3>Белые списки? Автопилот разберётся</h3>
@@ -374,7 +379,7 @@
 
 <footer><div class="wrap">
   <span>© 2026 Dubstep2004 · APEX CLIENT</span>
-  <nav><a href="/help/">Помощь</a><a href="/versions/">Все версии</a><a href="/original/">Проверка оригинала</a><a href="/en/" hreflang="en">English</a><a href="https://github.com/Dubstep2004/apex-client">GitHub</a><a href="https://t.me/Apexx_support">Поддержка</a><a href="/apex-client/invite/">Пригласить друга</a></nav>
+  <nav><a href="/help/">Помощь</a><a href="/wallpapers/">Живые обои</a><a href="/versions/">Все версии</a><a href="/original/">Проверка оригинала</a><a href="/en/" hreflang="en">English</a><a href="https://github.com/Dubstep2004/apex-client">GitHub</a><a href="https://t.me/Apexx_support">Поддержка</a><a href="/apex-client/invite/">Пригласить друга</a></nav>
 </div></footer>
 
 <script>
@@ -492,6 +497,21 @@ $('copyBtn').onclick = async () => {
 
 
 // Настройки визитки из пульта (docs/config/site.json): порядок и показ блоков, заголовок, кнопка, вопросы
+// Новогоднее оформление (пульт → Визитка → «Новогоднее оформление»): снег и гирлянда
+function holiday() {
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  const g = document.createElement('div'); g.className = 'garland'; g.setAttribute('aria-hidden', 'true')
+  g.innerHTML = Array.from({ length: 24 }, (_, i) => `<i style="--d:${(i % 4) * .4}s;--c:${['#ff4f6a', '#ffd23f', '#3ee6a8', '#4fb3ff'][i % 4]}"></i>`).join('')
+  document.body.prepend(g)
+  const cv = document.createElement('canvas'); cv.className = 'snow'; cv.setAttribute('aria-hidden', 'true'); document.body.append(cv)
+  const x = cv.getContext('2d'); let W, H, flakes
+  const size = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; flakes = Array.from({ length: Math.min(90, W / 12) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: 1 + Math.random() * 2.4, s: .3 + Math.random() * .9, p: Math.random() * 6 })) }
+  size(); addEventListener('resize', size)
+  const tick = t => { x.clearRect(0, 0, W, H); x.fillStyle = matchMedia('(prefers-color-scheme: light)').matches ? '#8fb8f0cc' : '#ffffffcc'
+    for (const f of flakes) { f.y += f.s; f.x += Math.sin(t / 1400 + f.p) * .4; if (f.y > H) { f.y = -4; f.x = Math.random() * W } x.beginPath(); x.arc(f.x, f.y, f.r, 0, 7); x.fill() }
+    requestAnimationFrame(tick) }
+  requestAnimationFrame(tick)
+}
 fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/site.json?t=' + t)
   .then(r => r.ok ? r.json() : Promise.reject())
   .catch(() => fetch('https://cdn.jsdelivr.net/gh/' + CFG + '@main/docs/config/site.json').then(r => r.ok ? r.json() : Promise.reject()))
@@ -504,6 +524,7 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/site.json?
     })
     if (c.show && c.show.downloads === false) { window.__noDl = true; window.__ver && window.__ver() }
     if (c.show && c.show.status === false) { window.__noStatus = true; $('status').hidden = true }
+    if (c.show && c.show.holiday === true) holiday()
     if (c.hero && c.hero.title) document.querySelector('.hero h1').textContent = c.hero.title
     if (c.hero && c.hero.sub) document.querySelector('.hero p.sub').textContent = c.hero.sub
     if (c.cta && /^https:\/\//.test(c.cta.url || '')) {
