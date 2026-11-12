@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#0a0d1c" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)">
 <meta name="color-scheme" content="dark light">
-<link rel="icon" href="/apex-vpn/invite/icon.png">
+<link rel="icon" href="/apex-client/invite/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=Unbounded:wght@500;700&display=swap" rel="stylesheet">
 <style>
@@ -55,14 +55,14 @@
 </style>
 </head>
 <body>
-<header><div class="wrap"><a class="logo" href="/"><img src="/apex-vpn/invite/icon.png" alt="">APEX CLIENT</a><nav><a href="/">На главную</a></nav></div></header>
+<header><div class="wrap"><a class="logo" href="/"><img src="/apex-client/invite/icon.png" alt="">APEX CLIENT</a><nav><a href="/">На главную</a></nav></div></header>
 <main class="wrap">
 
   <h1>Все версии</h1>
   <p class="lead">Что менялось в APEX CLIENT. Ищите по словам: «DNS», «белые списки», «часы».</p>
   <input class="search" id="q" type="search" placeholder="Поиск по изменениям" aria-label="Поиск по изменениям">
   <div id="list"><p class="note">Загружаем версии с GitHub…</p></div>
-  <p><a href="https://github.com/Dubstep2004/apex-vpn/releases">Все релизы на GitHub</a></p>
+  <p><a href="https://github.com/Dubstep2004/apex-client/releases">Все релизы на GitHub</a></p>
 </main>
 <footer><div class="wrap">© 2026 Dubstep2004 · <a href="/">APEX CLIENT</a></div></footer>
 <script>
@@ -87,9 +87,9 @@ function render() {
       ${md(r.body, q)}${apk ? `<p><a class="dl" href="${apk.browser_download_url}">Скачать ${esc(apk.name)}</a></p>` : ''}</div>`
   }).join('') : '<p class="note">Ничего не нашлось. Попробуйте другое слово.</p>'
 }
-fetch('https://api.github.com/repos/Dubstep2004/apex-vpn/releases?per_page=100').then(r => r.ok ? r.json() : Promise.reject())
+fetch('https://api.github.com/repos/Dubstep2004/apex-client/releases?per_page=100').then(r => r.ok ? r.json() : Promise.reject())
   .then(l => { rels = l.filter(r => !r.draft); render() })
-  .catch(() => { document.getElementById('list').innerHTML = '<p class="note">Не удалось загрузить с GitHub. <a href="https://github.com/Dubstep2004/apex-vpn/releases">Открыть релизы на GitHub</a></p>' })
+  .catch(() => { document.getElementById('list').innerHTML = '<p class="note">Не удалось загрузить с GitHub. <a href="https://github.com/Dubstep2004/apex-client/releases">Открыть релизы на GitHub</a></p>' })
 document.getElementById('q').oninput = render
 </script>
 </body>
