@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Как обновить — APEX CLIENT</title>
+<meta name="description" content="Как обновить APEX CLIENT на телефоне, Android TV и часах Wear OS. Настройки и подписка сохраняются.">
+<meta property="og:title" content="Как обновить — APEX CLIENT">
+<meta property="og:image" content="https://dubstep2004.github.io/og.png">
+<meta name="theme-color" content="#0a0d1c" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="/apex-client/invite/icon.png">
+<link rel="preload" href="/fonts/manrope-cyrillic.woff2" as="font" type="font/woff2" crossorigin>
+<script>(function(){try{var m=localStorage.getItem('apex_theme');if(m==='light'||m==='dark'){document.documentElement.dataset.theme=m;document.documentElement.style.colorScheme=m}}catch(e){}})()</script>
+<style>
+  @font-face { font-family: "Manrope"; font-style: normal; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-cyrillic.woff2) format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+  @font-face { font-family: "Manrope"; font-style: normal; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-latin.woff2) format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+  @font-face { font-family: "Unbounded"; font-style: normal; font-display: swap; font-weight: 200 900; src: url(/fonts/unbounded-cyrillic.woff2) format("woff2"); unicode-range: U+0301,U+0400-045F,U+0490-0491,U+04B0-04B1,U+2116; }
+  @font-face { font-family: "Unbounded"; font-style: normal; font-display: swap; font-weight: 200 900; src: url(/fonts/unbounded-latin.woff2) format("woff2"); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+  :root { --ink: #0a0d1c; --ink2: #11152a; --line: #222842; --text: #eef1fa; --dim: #8c93b0; --faint: #5b6283; --cyan: #22d3ee; --violet: #6d5cff;
+    --display: "Unbounded", "Manrope", system-ui, sans-serif; }
+  @media (prefers-color-scheme: light) { :root:not([data-theme=dark]) { --ink: #f5f6fb; --ink2: #ffffff; --line: #e1e4ee; --text: #12152a; --dim: #525a78; --faint: #767d99; --cyan: #0b8fb0; } }
+  :root[data-theme=light] { --ink: #f5f6fb; --ink2: #ffffff; --line: #e1e4ee; --text: #12152a; --dim: #525a78; --faint: #767d99; --cyan: #0b8fb0; }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; overflow-x: clip; }
+  body { margin: 0; background: var(--ink); color: var(--text); font: 17px/1.6 "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  a { color: var(--cyan); } :focus-visible { outline: 2px solid var(--cyan); outline-offset: 3px; border-radius: 6px; }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 0 20px; }
+  header { border-bottom: 1px solid var(--line); } header .wrap { display: flex; align-items: center; gap: 12px; height: 64px; }
+  .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; color: var(--text); font-family: var(--display); font-weight: 700; font-size: 18px; }
+  .logo img { width: 34px; height: 34px; border-radius: 10px; }
+  header nav { margin-left: auto; font-weight: 700; font-size: 15px; } header nav a { color: var(--dim); text-decoration: none; }
+  h1 { font-family: var(--display); font-size: clamp(30px, 5vw, 44px); letter-spacing: -.03em; line-height: 1.1; margin: 48px 0 12px; }
+  .lead { color: var(--dim); font-size: 18px; margin: 0 0 30px; }
+  .toc { display: flex; flex-wrap: wrap; gap: 8px; margin: 0 0 34px; }
+  .toc a { text-decoration: none; color: var(--text); border: 1px solid var(--line); background: var(--ink2); border-radius: 99px; padding: 7px 14px; font-size: 14px; font-weight: 700; }
+  section { border-top: 1px solid var(--line); padding: 26px 0 8px; scroll-margin-top: 16px; }
+  h2 { font-size: 21px; margin: 0 0 10px; }
+  p, li { color: var(--dim); } b { color: var(--text); }
+  ol, ul { padding-left: 22px; } li { margin: 6px 0; }
+  .note { background: var(--ink2); border: 1px solid var(--line); border-radius: 16px; padding: 12px 16px; font-size: 15px; color: var(--dim); }
+  .help-cta { margin: 40px 0 60px; padding: 26px; border-radius: 24px; background: var(--ink2); border: 1px solid var(--line); text-align: center; }
+  .btn { display: inline-block; margin-top: 12px; text-decoration: none; font-weight: 800; color: #fff; background: linear-gradient(135deg, var(--violet), #22d3ee); border-radius: 14px; padding: 13px 20px; }
+  footer { color: var(--faint); font-size: 14px; padding: 0 0 50px; } footer a { color: var(--faint); }
+
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin: 0 0 22px; }
+  .tabs button { font: inherit; font-weight: 700; font-size: 15px; color: var(--dim); background: var(--ink2); border: 1px solid var(--line); border-radius: 99px; padding: 9px 16px; cursor: pointer; }
+  .tabs button[aria-selected=true] { color: var(--text); border-color: var(--violet); background: #6d5cff22; }
+  .steps { list-style: none; padding: 0; margin: 0 0 26px; counter-reset: s; }
+  .steps li { counter-increment: s; display: grid; grid-template-columns: 40px 1fr; gap: 14px; margin: 0; padding: 16px 0; border-top: 1px solid var(--line); }
+  .steps li:first-child { border-top: 0; }
+  .steps li::before { content: counter(s); width: 40px; height: 40px; border-radius: 12px; display: grid; place-items: center; font-family: var(--display); font-weight: 700; color: #fff; background: linear-gradient(135deg, var(--violet), var(--cyan)); }
+  .steps b { display: block; font-size: 17px; margin: 6px 0 2px; } .steps p { margin: 0; }
+  .path { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-top: 8px; }
+  .path span { background: var(--ink2); border: 1px solid var(--line); border-radius: 10px; padding: 3px 10px; font-size: 14px; font-weight: 700; color: var(--text); }
+  .path i { color: var(--faint); font-style: normal; }
+  .panel[hidden] { display: none; }
+  .now { display: flex; gap: 14px; align-items: center; justify-content: space-between; flex-wrap: wrap; padding: 18px 20px; border-radius: 20px; border: 1px solid var(--line); background: var(--ink2); margin: 0 0 26px; }
+  .now b { font-size: 18px; } .now span { color: var(--dim); font-size: 15px; display: block; }
+  .now .btn { margin: 0; }
+</style>
+</head>
+<body>
+<header><div class="wrap"><a class="logo" href="/"><img src="/apex-client/invite/icon.png" alt="">APEX CLIENT</a><nav><a href="/">На главную</a></nav></div></header>
+<main class="wrap">
+  <h1>Как обновить</h1>
+  <p class="lead">Обычно ничего делать не нужно: приложение само узнаёт о новой версии. Настройки и подписка при обновлении сохраняются.</p>
+  <div class="now"><div><b id="latest">Последняя версия — загружаем…</b><span id="latestSub">Сравните с версией в «Настройки → О приложении»</span></div><a class="btn" id="dl" href="/#download">Скачать</a></div>
+
+  <div class="tabs" role="tablist">
+    <button role="tab" aria-selected="true" data-p="phone">📱 Телефон</button>
+    <button role="tab" aria-selected="false" data-p="tv">📺 Android TV</button>
+    <button role="tab" aria-selected="false" data-p="watch">⌚ Часы</button>
+    <button role="tab" aria-selected="false" data-p="auto">⚡ Без участия</button>
+  </div>
+
+  <section class="panel" id="phone" role="tabpanel">
+    <ol class="steps">
+      <li><div><b>Откройте настройки обновлений</b><p>Приложение проверяет новые версии при запуске и раз в час. Проверить вручную:</p><div class="path"><span>Настройки</span><i>›</i><span>Обновления</span></div></div></li>
+      <li><div><b>Нажмите «Обновить»</b><p>Приложение скачает новую версию с GitHub и проверит, что файл оригинальный.</p></div></li>
+      <li><div><b>Подтвердите установку</b><p>Android покажет окно «Обновить это приложение?» — нажмите «Обновить». Если спросит разрешение на установку из APEX CLIENT — разрешите один раз.</p></div></li>
+      <li><div><b>Готово</b><p>Откройте приложение и нажмите на щит. Что нового — в окне после обновления и на странице <a href="/versions/">всех версий</a>.</p></div></li>
+    </ol>
+    <p class="note">Не нравится новая версия? <b>Настройки → Обновления → «Вернуть прошлую версию»</b> — по шагам, настройки сохранятся.</p>
+  </section>
+
+  <section class="panel" id="tv" role="tabpanel" hidden>
+    <ol class="steps">
+      <li><div><b>Откройте APEX CLIENT на телевизоре</b><p>Приложение на ТВ тоже само проверяет обновления. Стрелками пульта перейдите в настройки:</p><div class="path"><span>Настройки</span><i>›</i><span>Обновления</span></div></div></li>
+      <li><div><b>Выберите «Обновить» и нажмите OK</b><p>Телевизор скачает новую версию и спросит разрешение на установку — подтвердите.</p></div></li>
+      <li><div><b>Если кнопки нет</b><p>Откройте на телевизоре браузер, зайдите на <b>dubstep2004.github.io</b>, скачайте файл для телефона (он же для ТВ) и установите поверх — подписка останется.</p></div></li>
+    </ol>
+    <p class="note">Подробнее про телевизор — в <a href="/help/#tv">Помощи</a>.</p>
+  </section>
+
+  <section class="panel" id="watch" role="tabpanel" hidden>
+    <ol class="steps">
+      <li><div><b>Сначала обновите телефон</b><p>Часы обновляются с телефона — отдельно скачивать ничего не нужно.</p></div></li>
+      <li><div><b>Передайте обновление на часы</b><p>Если часы отстали, на телефоне появится кнопка:</p><div class="path"><span>Настройки</span><i>›</i><span>Обновления</span><i>›</i><span>Обновить часы APEX Watch</span></div></div></li>
+      <li><div><b>Нажмите «Установить» на часах</b><p>Телефон сам скачает версию для часов, проверит её и отправит. На часах останется одна кнопка.</p></div></li>
+    </ol>
+    <p class="note">Файл <b>apex-watch-….apk</b> — только для часов. На телефон его не ставьте.</p>
+  </section>
+
+  <section class="panel" id="auto" role="tabpanel" hidden>
+    <ol class="steps">
+      <li><div><b>Включите «Ставить само»</b><div class="path"><span>Настройки</span><i>›</i><span>Обновления</span><i>›</i><span>Ставить само</span></div></div></li>
+      <li><div><b>Всё остальное — без вас</b><p>Новая версия скачается заранее и поставится, когда VPN выключен или экран погас.</p></div></li>
+      <li><div><b>Бережёте мобильный трафик?</b><p>Включите там же «Скачивать только по Wi-Fi».</p></div></li>
+    </ol>
+    <p class="note">Хотите новые версии раньше всех — «Бета-версии» в том же разделе. Они могут быть сырыми.</p>
+  </section>
+
+  <div class="help-cta"><b>Не обновляется?</b><p>«Приложение не установлено» — удалите копию, скачанную не с нашего сайта или GitHub, и поставьте заново.</p><a class="btn" href="/help/#install">Помощь с установкой</a></div>
+</main>
+<footer><div class="wrap">© 2026 Dubstep2004 · <a href="/">APEX CLIENT</a> · <a href="/status/">Статус серверов</a></div></footer>
+<script>
+const $ = id => document.getElementById(id)
+const tabs = [...document.querySelectorAll('[role=tab]')]
+function pick(id) { tabs.forEach(b => b.setAttribute('aria-selected', String(b.dataset.p === id))); document.querySelectorAll('.panel').forEach(p => (p.hidden = p.id !== id)) }
+tabs.forEach(b => (b.onclick = () => { pick(b.dataset.p); history.replaceState(null, '', '#' + b.dataset.p) }))
+const h = location.hash.slice(1); if (tabs.some(b => b.dataset.p === h)) pick(h)
+else if (/Android TV|AFT|BRAVIA|SmartTV/i.test(navigator.userAgent)) pick('tv')
+fetch('https://api.github.com/repos/Dubstep2004/apex-client/releases/latest').then(r => r.ok ? r.json() : Promise.reject()).then(r => {
+  $('latest').textContent = 'Последняя версия — ' + r.tag_name.replace(/^v/, '')
+  $('latestSub').textContent = 'Вышла ' + new Date(r.published_at).toLocaleDateString('ru', { day: 'numeric', month: 'long' }) + '. Сравните с «Настройки → О приложении»'
+  const apk = (r.assets || []).find(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name)); if (apk) $('dl').href = apk.browser_download_url
+}).catch(() => {})
+</script>
+<script src="/theme.js" defer></script>
+</body>
+</html>

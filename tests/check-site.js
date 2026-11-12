@@ -10,7 +10,7 @@ const srv = http.createServer((q, r) => {
   const p = file(q.url); if (!p) { r.writeHead(404, { 'content-type': 'text/html; charset=utf-8' }); return r.end(fs.readFileSync(path.join(ROOT, '404.html'))) }
   r.setHeader('content-type', { '.html': 'text/html; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' }[path.extname(p)] || 'application/octet-stream'); r.end(fs.readFileSync(p))
 })
-const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/wallpapers/', '/404.html']
+const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/wallpapers/', '/status/', '/status/?lang=en', '/update/', '/404.html']
 const rel = [{ tag_name: 'v9.9.9', draft: false, prerelease: false, published_at: new Date().toISOString(), body: '- проверка\n', assets: [{ name: 'apex-client-9.9.9.apk', size: 6e7, download_count: 5, browser_download_url: 'https://github.com/x.apk' }, { name: 'apex-watch-9.9.9.apk', size: 1e7, download_count: 1, browser_download_url: 'https://github.com/w.apk' }] }]
 const cfg = { banners: [{ id: 'b', text: 'Проверка баннера', level: 'warn', devices: ['site'] }], servers: { status: { 'Германия': { state: 'maintenance', until: Date.now() + 36e5 } } } }
 const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log('::error title=' + w + '::' + m) }
@@ -40,6 +40,11 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
         const dl = await p.getAttribute('#download a[data-dl]', 'href')
         if (!/\.apk$/.test(dl || '')) bad(W, 'кнопка «Скачать» не ведёт на APK: ' + dl)
       }
+      if (u !== '/404.html') { // тема: Авто → Светлая → Тёмная
+        const btn = await p.$('.theme-btn'); if (!btn) bad(W, 'нет кнопки темы')
+        else { await btn.click(); const th = await p.evaluate(() => document.documentElement.dataset.theme + '|' + getComputedStyle(document.body).backgroundColor); if (!th.startsWith('light|rgb(245')) bad(W, 'светлая тема не включилась: ' + th); await btn.click(); await btn.click() }
+      }
+      if (u.startsWith('/status/') && !(await p.textContent('#now')).includes('Германия')) bad(W, 'статус не показывает техработы')
       await p.close()
     }
   await b.close(); srv.close()
