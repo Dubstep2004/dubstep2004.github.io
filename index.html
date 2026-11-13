@@ -428,7 +428,7 @@
 
 <footer><div class="wrap">
   <span>© 2026 Dubstep2004 · APEX CLIENT</span>
-  <nav><a href="/help/">Помощь</a><a href="/wallpapers/">Живые обои</a><a href="/versions/">Все версии</a><a href="/status/">Статус серверов</a><a href="/update/">Как обновить</a><a href="/original/">Проверка оригинала</a><a href="/en/" hreflang="en">English</a><a href="https://github.com/Dubstep2004/apex-client">GitHub</a><a href="https://t.me/Apexx_support">Поддержка</a><a href="/apex-client/invite/">Пригласить друга</a></nav>
+  <nav><a href="/help/">Помощь</a><a href="/wallpapers/">Живые обои</a><a href="/versions/">Все версии</a><a href="/status/">Статус серверов</a><a href="/update/">Как обновить</a><a href="/original/">Проверка оригинала</a><a href="/en/" hreflang="en">English</a><a href="https://github.com/Dubstep2004/apex-client">GitHub</a><a href="https://t.me/Apexx_support">Поддержка</a><a id="tgCh" hidden target="_blank" rel="noopener">📣 Канал</a><a href="/apex-client/invite/">Пригласить друга</a></nav>
 </div></footer>
 
 <script>
@@ -635,5 +635,15 @@ if (matchMedia('(min-width: 861px)').matches) {
 </script>
 <script src="/holiday.js"></script>
 <script src="/theme.js" defer></script>
+<script>
+// Канал Telegram и число подписчиков (робот считает раз в день): ссылка — из пульта, число — из журнала робота
+(async () => { try {
+  const [cfg, st] = await Promise.all(['/apex-client/config/app.json', '/apex-client/stats/tg-state.json'].map(u => fetch(u, { cache: 'no-cache' }).then(r => r.ok ? r.json() : null).catch(() => null)))
+  const url = cfg?.links?.channel; if (!url || !/^https:\/\/t\.me\//.test(url)) return
+  const a = document.getElementById('tgCh'); a.href = url; a.hidden = false
+  const rows = st?.members?.['1'], n = rows?.length ? rows[rows.length - 1][1] : 0
+  if (n) a.textContent += ' · ' + n.toLocaleString('ru') + ' ' + (true ? (n % 10 === 1 && n % 100 !== 11 ? 'подписчик' : [2, 3, 4].includes(n % 10) && ![12, 13, 14].includes(n % 100) ? 'подписчика' : 'подписчиков') : (n === 1 ? 'subscriber' : 'subscribers'))
+} catch {} })()
+</script>
 </body>
 </html>
