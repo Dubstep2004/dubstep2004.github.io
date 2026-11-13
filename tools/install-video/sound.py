@@ -1,4 +1,4 @@
-"""Звук для видео-инструкции: своя спокойная музыка + щелчки на нажатия + сигналы «установлено» и «защищено».
+"""Звук для видео-инструкции: своя бодрая электроника + щелчки на нажатия + сигналы «установлено» и «защищено».
 Всё синтезируется здесь (никаких чужих треков). Тайминги берутся из PATH в scene.html.
 Запуск: python3 sound.py ../../media/install.wav  (длительность — как у видео, 35 с)"""
 import re, sys, wave
@@ -20,19 +20,67 @@ def add(start, sig):
     i = int(start * SR); j = min(len(out), i + len(sig)); out[i:j] += sig[:j - i]
 
 
-# 1. Мягкие аккорды (Am — F — C — G), каждый 4 с: тёплые синусы с медленным «дыханием»
-chords = [[69, 72, 76], [65, 69, 72], [60, 67, 72], [67, 71, 74]]  # на октаву выше — слышно и на динамике телефона
-for k in range(int(DUR // 4) + 1):
-    n = int(4.4 * SR); tt = np.arange(n) / SR
-    s = sum(np.sin(2 * np.pi * note(m) * tt) + .25 * np.sin(2 * np.pi * note(m) * 2 * tt) for m in chords[k % 4])
-    s += .35 * np.sin(2 * np.pi * note(chords[k % 4][0] - 12) * tt)
-    add(k * 4, s * env(n, 1.0, 1.4) * (1 + .15 * np.sin(2 * np.pi * .25 * tt)) * .03)
+# 1–2. Бодрая электроника, 124 BPM: бочка на каждую долю, хлопок на 2 и 4, хай-хэт на восьмые,
+# пульсирующий бас и «суперсо»-аккорды на офбитах. Ам — F — C — G, по такту (4 доли) на аккорд.
+BPM = 124; BEAT = 60 / BPM; BAR = 4 * BEAT
+chords = [[69, 72, 76], [65, 69, 72], [60, 64, 67], [67, 71, 74]]
+roots = [45, 41, 48, 43]
+rng = np.random.default_rng(7)
 
-# 2. Лёгкие «капли» арпеджио на восьмых — с 4-й секунды, пока на экране телефон
-for k in range(int(4 / .5), int(31.5 / .5)):
-    c = chords[int(k * .5 // 4) % 4]; m = c[k % 3] + 12 + (5 if k % 4 == 3 else 0)
-    n = int(.6 * SR); tt = np.arange(n) / SR
-    add(k * .5, (np.sin(2 * np.pi * note(m) * tt) + .2 * np.sin(2 * np.pi * note(m) * 2 * tt)) * np.exp(-tt * 6) * .07)
+
+def saw(f, tt, h=12):  # пила из гармоник — яркая, слышно на телефоне
+    return sum(np.sin(2 * np.pi * f * k * tt) / k for k in range(1, h + 1)) * .6
+
+
+def kick(n):
+    tt = np.arange(n) / SR; f = 50 + 120 * np.exp(-tt * 30)
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 9) + rng.standard_normal(n) * np.exp(-tt * 300) * .3
+
+
+def clap(n):
+    tt = np.arange(n) / SR; nz = rng.standard_normal(n)
+    nz = nz - np.convolve(nz, np.ones(8) / 8, mode='same')  # убрать низ — звонкий хлопок
+    return nz * (np.exp(-tt * 25) + .6 * np.exp(-np.maximum(0, tt - .012) * 40) * (tt > .012))
+
+
+def hat(n, open_=False):
+    tt = np.arange(n) / SR; nz = rng.standard_normal(n); nz = nz - np.convolve(nz, np.ones(3) / 3, mode='same')
+    return nz * np.exp(-tt * (18 if open_ else 70))
+
+
+start_beat = 4.0  # до 4 с — заставка: только аккорды и нарастание
+nb = int(DUR / BEAT) + 1
+for k in range(nb):
+    tb = k * BEAT
+    if tb > 32.4: break
+    bar = int(tb // BAR) % 4
+    full = tb >= start_beat - 1e-6
+    if full:
+        add(tb, kick(int(.35 * SR)) * .55)
+        if k % 2 == 1: add(tb, clap(int(.25 * SR)) * .22)
+    for h in (0, .5):  # хай-хэт на восьмые, открытый на офбит
+        if full or tb > 2: add(tb + h * BEAT, hat(int(.12 * SR), open_=h == .5) * (.07 if h == .5 else .045))
+    # бас: восьмые с «насосом» (тише сразу после бочки)
+    if full:
+        for h in (0, .5):
+            n = int(BEAT / 2 * SR); tt = np.arange(n) / SR
+            f = note(roots[bar] + (12 if h == .5 and k % 4 == 3 else 0))
+            pump = np.minimum(1, tt / .06) if h == 0 else np.ones(n)
+            add(tb + h * BEAT, saw(f, tt, 8) * np.exp(-tt * 5) * pump * .16)
+    # аккорды-стабы на офбит (детюн — «суперсо»)
+    n = int(BEAT * .45 * SR); tt = np.arange(n) / SR
+    stab = sum(saw(note(m) * d, tt, 6) for m in chords[bar] for d in (0.996, 1.004)) / 6
+    add(tb + BEAT / 2, stab * np.exp(-tt * 9) * (.20 if full else .12 * min(1, tb / 3)))
+    # мелодия-«свист» раз в такт поверх, только в основной части
+    if full and k % 8 in (0, 3, 6):
+        n = int(.28 * SR); tt = np.arange(n) / SR; m = chords[bar][[2, 1, 0][(k % 8) // 3]] + 12
+        add(tb, np.sin(2 * np.pi * note(m) * tt) * np.exp(-tt * 6) * .07)
+# нарастание шума перед «дропом» на 4-й секунде
+n = int(2.0 * SR); tt = np.arange(n) / SR
+add(2.0, rng.standard_normal(n) * (tt / tt[-1]) ** 2 * .06)
+# в конце (заставка «Готово!») — один длинный аккорд
+n = int(2.6 * SR); tt = np.arange(n) / SR
+add(32.4, sum(saw(note(m), tt, 6) for m in chords[0] + [57]) / 4 * np.exp(-tt * 1.4) * .14)
 
 # 3. Щелчки на нажатия пальца
 src = open(__file__.replace('sound.py', 'scene.html'), encoding='utf-8').read()
