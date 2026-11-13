@@ -23,7 +23,7 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
       const p = await b.newPage({ viewport: { width, height: 900 } }), W = u + ' (' + width + ')'
       p.on('pageerror', e => bad(W, 'ошибка JavaScript: ' + e.message))
       await p.route('https://api.github.com/**', rt => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rt.request().url().includes('/latest') ? rel[0] : rel) }))
-      await p.route(/raw\.githubusercontent|cdn\.jsdelivr/, rt => rt.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(rt.request().url().includes('site.json') ? { sections: [] } : cfg) }))
+      await p.route(/raw\.githubusercontent|cdn\.jsdelivr/, rt => rt.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(rt.request().url().includes('site.json') ? { sections: [], show: { holiday: 'party' } } : cfg) }))
       await p.route(/fonts\.|cdnjs|t\.me|wa\.me|vk\.com/, rt => rt.abort())
       await p.goto('http://localhost:8198' + u); await p.waitForTimeout(700)
       const r = await p.evaluate(() => ({

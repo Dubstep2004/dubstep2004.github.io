@@ -201,9 +201,6 @@
   }
   @media (prefers-reduced-motion: reduce) { .shield, .dshield { animation: none !important; } html { scroll-behavior: auto; } }
   /* Новогоднее оформление */
-  .snow { position: fixed; inset: 0; pointer-events: none; z-index: 60; }
-  .garland { position: fixed; top: 0; left: 0; right: 0; height: 18px; display: flex; justify-content: space-around; pointer-events: none; z-index: 61; background: linear-gradient(#0003, transparent); }
-  .garland i { width: 9px; height: 13px; border-radius: 50% 50% 45% 45%; background: var(--c); margin-top: 4px; box-shadow: 0 0 10px var(--c); animation: blink 1.6s var(--d) infinite alternate; }
   @keyframes blink { to { opacity: .35; box-shadow: none; } }
 </style>
 </head>
@@ -489,21 +486,6 @@ $('copyBtn').onclick = async () => {
 }
 
 // Настройки визитки из пульта (docs/config/site.json): порядок и показ блоков
-// Новогоднее оформление (пульт → Визитка → «Новогоднее оформление»): снег и гирлянда
-function holiday() {
-  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return
-  const g = document.createElement('div'); g.className = 'garland'; g.setAttribute('aria-hidden', 'true')
-  g.innerHTML = Array.from({ length: 24 }, (_, i) => `<i style="--d:${(i % 4) * .4}s;--c:${['#ff4f6a', '#ffd23f', '#3ee6a8', '#4fb3ff'][i % 4]}"></i>`).join('')
-  document.body.prepend(g)
-  const cv = document.createElement('canvas'); cv.className = 'snow'; cv.setAttribute('aria-hidden', 'true'); document.body.append(cv)
-  const x = cv.getContext('2d'); let W, H, flakes
-  const size = () => { W = cv.width = innerWidth; H = cv.height = innerHeight; flakes = Array.from({ length: Math.min(90, W / 12) }, () => ({ x: Math.random() * W, y: Math.random() * H, r: 1 + Math.random() * 2.4, s: .3 + Math.random() * .9, p: Math.random() * 6 })) }
-  size(); addEventListener('resize', size)
-  const tick = t => { x.clearRect(0, 0, W, H); x.fillStyle = (document.documentElement.dataset.theme ? document.documentElement.dataset.theme === 'light' : matchMedia('(prefers-color-scheme: light)').matches) ? '#8fb8f0cc' : '#ffffffcc'
-    for (const f of flakes) { f.y += f.s; f.x += Math.sin(t / 1400 + f.p) * .4; if (f.y > H) { f.y = -4; f.x = Math.random() * W } x.beginPath(); x.arc(f.x, f.y, f.r, 0, 7); x.fill() }
-    requestAnimationFrame(tick) }
-  requestAnimationFrame(tick)
-}
 fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/site.json?t=' + t)
   .then(r => r.ok ? r.json() : Promise.reject())
   .catch(() => fetch('https://cdn.jsdelivr.net/gh/' + CFG + '@main/docs/config/site.json').then(r => r.ok ? r.json() : Promise.reject()))
@@ -516,7 +498,7 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/site.json?
     })
     if (c.show && c.show.downloads === false) { window.__noDl = true; window.__ver && window.__ver() }
     if (c.show && c.show.status === false) { window.__noStatus = true; $('status').hidden = true }
-    if (c.show && c.show.holiday === true) holiday()
+    if (c.show && c.show.holiday) window.apexHoliday && apexHoliday(c.show.holiday)
   }).catch(() => {})
 
 // QR-код на страницу скачивания — только на компьютере
@@ -527,6 +509,7 @@ if (matchMedia('(min-width: 861px)').matches) {
   document.head.appendChild(sc)
 }
 </script>
+<script src="/holiday.js"></script>
 <script src="/theme.js" defer></script>
 </body>
 </html>
