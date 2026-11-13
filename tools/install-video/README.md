@@ -15,3 +15,10 @@ cd ../../media && for l in ru en; do ffmpeg -loglevel error -y -ss 29 -i install
 ```
 
 Проверить кадры перед полной сборкой: `node frames.js ru x.mp4 2,22.9,27.3,30.6` — сохранит `chk-ru-*.jpg` рядом (их не коммитить).
+
+Звук (своя синтезированная музыка, щелчки на нажатия, сигналы «установлено» и «Защищено») — `sound.py`, тайминги нажатий берёт из `PATH` в `scene.html`. После пересборки видео:
+
+```bash
+cd tools/install-video && python3 sound.py /tmp/install.wav && ffmpeg -y -i /tmp/install.wav -af loudnorm=I=-20:TP=-1.5:LRA=11 -ar 44100 /tmp/install-n.wav
+cd ../../media && for l in ru en; do ffmpeg -y -i install-$l.mp4 -i /tmp/install-n.wav -map 0:v -map 1:a -c:v copy -c:a aac -b:a 96k -shortest -movflags +faststart install-$l.tmp.mp4 && mv install-$l.tmp.mp4 install-$l.mp4; done
+```
