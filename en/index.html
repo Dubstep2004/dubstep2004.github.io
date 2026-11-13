@@ -121,6 +121,9 @@
   }
   /* Видео установки */
   .vid { margin: 34px 0 0; max-width: 360px; } .vid video { width: 100%; aspect-ratio: 9 / 16; border-radius: 26px; border: 1px solid var(--line); background: #0a0d1c; display: block; }
+  .news-row { display: grid; grid-template-columns: 1fr 240px; gap: 40px; align-items: start; } .vid.wn { margin: 0; max-width: 240px; }
+  @media (max-width: 860px) { .news-row { grid-template-columns: 1fr; } .vid.wn { margin: 24px auto 0; } }
+  .vbox { position: relative; } .vsnd { position: absolute; left: 50%; bottom: 64px; transform: translateX(-50%); font: inherit; font-size: 15px; font-weight: 700; color: #fff; background: #0a0d1ccc; border: 1px solid #ffffff33; border-radius: 99px; padding: 10px 16px; cursor: pointer; backdrop-filter: blur(6px); white-space: nowrap; }
   .vid figcaption { color: var(--dim); font-size: 14px; margin-top: 10px; }
   .install-row { display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: start; } .install-row .vid { margin: 0; }
   @media (max-width: 860px) { .install-row { grid-template-columns: 1fr; } .install-row .vid { margin: 30px auto 0; max-width: 300px; } }
@@ -335,7 +338,8 @@
   <section id="news" hidden><div class="wrap">
     <h2>What’s new</h2>
     <p class="lead" id="newsLead">Latest changes. Updates arrive automatically.</p>
-    <ul class="news" id="newsList"></ul>
+    <div class="news-row"><ul class="news" id="newsList"></ul>
+    <figure class="vid wn"><video controls preload="none" playsinline poster="/media/whatsnew-en.webp" aria-label="The highlights of 3.20 — 12 seconds"><source src="/media/whatsnew-en.mp4" type="video/mp4"></video><figcaption>The highlights of 3.20 — 12 seconds</figcaption></figure></div>
     <a class="more-link" href="https://github.com/Dubstep2004/apex-client/releases">All releases on GitHub</a>
   </div></section>
 
@@ -388,7 +392,7 @@
       <li><b>Allow installation</b><p>Open the file. Android asks to allow installs from your browser — allow it once.</p></li>
       <li><b>Add your subscription</b><p>Open APEX CLIENT, paste your subscription link and tap the shield. Updates install by themselves after that.</p></li>
     </ol></div>
-    <figure class="vid"><video controls preload="none" playsinline poster="/media/install-en.webp" aria-label="Video: how to install APEX CLIENT"><source src="/media/install-en.mp4" type="video/mp4"></video><figcaption>Step-by-step install — with music, clear without sound too</figcaption></figure></div>
+    <figure class="vid"><div class="vbox"><video id="instVid" controls preload="none" playsinline poster="/media/install-en.webp" aria-label="Video: how to install APEX CLIENT"><source src="/media/install-en.mp4" type="video/mp4"></video><button type="button" class="vsnd" id="vSnd" hidden>🔊 Sound on</button></div><figcaption>Step-by-step install — with music, clear without sound too</figcaption></figure></div>
   </div></section>
 
   <section id="faq" class="faq"><div class="wrap">
@@ -540,6 +544,22 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/app.json?t
   t.addEventListener('input', links); $('invX').onclick = () => d.close()
   d.addEventListener('click', e => { if (e.target === d) d.close() })
   $('invCopy').onclick = async () => { try { await navigator.clipboard.writeText(t.value); $('invCopy').textContent = '✓ Copied' } catch { t.select() } setTimeout(() => { $('invCopy').textContent = '📋 Copy text' }, 2000) }
+})()
+
+// Видео установки: само играет без звука, когда видно на экране; звук — по кнопке.
+// Не включается само при экономии трафика и при «меньше анимации».
+;(() => {
+  const v = $('instVid'), b = $('vSnd'); if (!v || !('IntersectionObserver' in window)) return
+  const save = navigator.connection && (navigator.connection.saveData || /2g/.test(navigator.connection.effectiveType || ''))
+  if (save || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  let user = false
+  v.addEventListener('play', () => { if (!v.muted) user = true }); v.addEventListener('volumechange', () => { b.hidden = !v.muted || v.paused; if (!v.muted) user = true })
+  b.onclick = () => { v.muted = false; v.currentTime = 0; v.play().catch(() => {}); b.hidden = true }
+  new IntersectionObserver(es => es.forEach(e => {
+    if (user) return
+    if (e.isIntersecting) { v.muted = true; v.loop = true; v.play().then(() => { b.hidden = false }).catch(() => {}) }
+    else if (!v.paused) v.pause()
+  }), { threshold: .55 }).observe(v)
 })()
 
 // Как работает: «пакеты» бегут, только когда схема на экране

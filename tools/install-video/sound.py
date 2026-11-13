@@ -1,10 +1,14 @@
 """Звук для видео-инструкции: своя бодрая электроника + щелчки на нажатия + сигналы «установлено» и «защищено».
 Всё синтезируется здесь (никаких чужих треков). Тайминги берутся из PATH в scene.html.
-Запуск: python3 sound.py ../../media/install.wav  (длительность — как у видео, 35 с)"""
+Запуск: python3 sound.py ../../media/install.wav  (длительность — как у видео, 35 с)
+Только музыка другой длины (для видео «Что нового»): python3 sound.py out.wav 12 music"""
 import re, sys, wave
 import numpy as np
 
-SR, DUR = 44100, 35.0
+SR = 44100
+DUR = float(sys.argv[2]) if len(sys.argv) > 2 else 35.0
+MUSIC_ONLY = len(sys.argv) > 3 and sys.argv[3] == 'music'
+END = DUR - 2.6  # финальный аккорд
 t = np.arange(int(SR * DUR)) / SR
 out = np.zeros_like(t)
 note = lambda n: 440.0 * 2 ** ((n - 69) / 12)  # MIDI → Гц
@@ -54,11 +58,11 @@ def hat(n, open_=False):  # без шума: несколько высоких �
     return tone * np.exp(-tt * (45 if open_ else 110))
 
 
-start_beat = 4.0  # до 4 с — заставка: только аккорды и нарастание
+start_beat = 1.0 if MUSIC_ONLY else 4.0  # до 4 с — заставка: только аккорды и нарастание
 nb = int(DUR / BEAT) + 1
 for k in range(nb):
     tb = k * BEAT
-    if tb > 32.4: break
+    if tb > END: break
     bar = int(tb // BAR) % 4
     full = tb >= start_beat - 1e-6
     if full:
@@ -83,27 +87,27 @@ for k in range(nb):
         add(tb, np.sin(2 * np.pi * note(m) * tt) * np.exp(-tt * 6) * .07)
 # нарастание шума перед «дропом» на 4-й секунде
 n = int(2.0 * SR); tt = np.arange(n) / SR
-add(2.0, np.sin(2 * np.pi * np.cumsum(300 + 600 * tt / tt[-1]) / SR) * (tt / tt[-1]) ** 2 * .05)
+if not MUSIC_ONLY: add(2.0, np.sin(2 * np.pi * np.cumsum(300 + 600 * tt / tt[-1]) / SR) * (tt / tt[-1]) ** 2 * .05)
 # в конце (заставка «Готово!») — один длинный аккорд
 n = int(2.6 * SR); tt = np.arange(n) / SR
-add(32.4, sum(saw(note(m), tt, 6) for m in chords[0] + [57]) / 4 * np.exp(-tt * 1.4) * .14)
+add(END, sum(saw(note(m), tt, 6) for m in chords[0] + [57]) / 4 * np.exp(-tt * 1.4) * .14)
 
-# 3. Щелчки на нажатия пальца
+# 3. Щелчки на нажатия пальца (только для видео-инструкции)
 src = open(__file__.replace('sound.py', 'scene.html'), encoding='utf-8').read()
-taps = [float(a) for a, b in re.findall(r'\[([\d.]+), \d+, \d+, (1)\]', src)]
+taps = [] if MUSIC_ONLY else [float(a) for a, b in re.findall(r'\[([\d.]+), \d+, \d+, (1)\]', src)]
 for tp in taps:
     n = int(.06 * SR); tt = np.arange(n) / SR
     click = np.sin(2 * np.pi * 2200 * tt) * np.exp(-tt * 80)  # щелчок без шума
     add(tp, click * .35)
 
 # 4. Сигналы: «приложение установлено» (20 с) и «Защищено» (27.8 с) — восходящие ноты
-for start, notes in [(20.0, [72, 76, 79]), (27.8, [72, 76, 79, 84])]:
+for start, notes in ([] if MUSIC_ONLY else [(20.0, [72, 76, 79]), (27.8, [72, 76, 79, 84])]):
     for i, m in enumerate(notes):
         n = int(.9 * SR); tt = np.arange(n) / SR
         add(start + i * .09, (np.sin(2 * np.pi * note(m) * tt) + .3 * np.sin(2 * np.pi * note(m) * 3 * tt)) * np.exp(-tt * 4) * .14)
 
 # 5. Смена шага — короткий мягкий «динь» (раньше был шумовой «вжух» — шипел)
-for ts in [9.5, 15, 20.6, 24.4, 29.4]:
+for ts in ([1.2, 2.7, 4.2, 5.7] if MUSIC_ONLY else [9.5, 15, 20.6, 24.4, 29.4]):
     n = int(.25 * SR); tt = np.arange(n) / SR
     add(ts - .05, np.sin(2 * np.pi * note(84) * tt) * np.exp(-tt * 14) * .05)
 

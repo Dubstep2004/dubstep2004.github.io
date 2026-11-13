@@ -1,0 +1,42 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:Manrope;font-weight:200 800;src:url(../../fonts/manrope-cyrillic.woff2)format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:Manrope;font-weight:200 800;src:url(../../fonts/manrope-latin.woff2)format("woff2")}
+@font-face{font-family:Unbounded;font-weight:200 900;src:url(../../fonts/unbounded-cyrillic.woff2)format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:Unbounded;font-weight:200 900;src:url(../../fonts/unbounded-latin.woff2)format("woff2")}
+*{box-sizing:border-box;margin:0}
+body{width:720px;height:1280px;overflow:hidden;font-family:Manrope,sans-serif;color:#f3f4ff;background:#0a0d1c;position:relative}
+.bg{position:absolute;inset:-20%;background:radial-gradient(40% 30% at 30% 25%,#6d5cff55,transparent 70%),radial-gradient(40% 30% at 75% 70%,#2de2e644,transparent 70%),radial-gradient(35% 25% at 40% 90%,#ff4fa833,transparent 70%)}
+.top{position:absolute;left:56px;right:56px;top:110px}
+.top .sub{display:flex;gap:12px;align-items:center;font-weight:800;font-size:24px;letter-spacing:.06em;color:#a8adc9}
+.top .sub i{width:44px;height:44px;border-radius:13px;background:linear-gradient(135deg,#6d5cff,#2de2e6)}
+.top h1{font-family:Unbounded;font-weight:700;font-size:64px;line-height:1.02;letter-spacing:-.03em;margin-top:22px}
+.top h1 b{background:linear-gradient(90deg,#8b7dff,#2de2e6);-webkit-background-clip:text;color:transparent}
+.cards{position:absolute;left:56px;right:56px;top:420px;display:grid;gap:22px}
+.card{display:flex;gap:22px;align-items:center;padding:26px 26px;border-radius:30px;background:#ffffff0d;border:1px solid #ffffff1c;opacity:0}
+.card .e{width:86px;height:86px;flex:none;border-radius:24px;display:grid;place-items:center;font-size:46px;background:#ffffff10}
+.card b{display:block;font-size:30px;line-height:1.15}.card span{display:block;color:#a8adc9;font-size:21px;margin-top:6px}
+.end{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;text-align:center;padding:60px;background:#0a0d1cee}
+.end .sh{width:220px;height:256px;border-radius:50% 50% 46% 46%/30% 30% 70% 70%;background:linear-gradient(160deg,#3fb8ff,#6d5cff);box-shadow:0 0 140px #4c7dffaa;display:grid;place-items:center;margin-bottom:50px}
+.end h2{font-family:Unbounded;font-weight:700;font-size:48px;line-height:1.1}.end p{color:#a8adc9;font-size:26px;margin-top:18px}
+</style>
+<div class="bg" id="bg"></div>
+<div class="top" id="top"><div class="sub"><i></i><span id="sub"></span></div><h1 id="h1"></h1></div>
+<div class="cards" id="cards"></div>
+<div class="end" id="end"><div class="sh"><svg width="100" height="100" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h2 id="endH"></h2><p>dubstep2004.github.io</p></div>
+<script>
+const $ = id => document.getElementById(id), q = new URLSearchParams(location.search)
+const cl = (x, a, b) => Math.min(1, Math.max(0, (x - a) / (b - a))), ease = x => 1 - Math.pow(1 - x, 3)
+window.setup = (D, lang) => {
+  const L = D[lang]; $('sub').textContent = L.sub; $('endH').textContent = L.end
+  $('h1').innerHTML = L.title.replace(D.version, '<b>' + D.version + '</b>')
+  $('cards').innerHTML = L.items.map(([e, t, s]) => `<div class="card"><div class="e">${e}</div><div><b>${t}</b><span>${s}</span></div></div>`).join('')
+}
+// 12 секунд: заголовок 0–1 с, карточки по одной с 1,2 с (каждые 1,5 с), финал с 9,6 с
+window.render = t => {
+  $('bg').style.transform = `translate(${Math.sin(t / 3) * 3}%, ${Math.cos(t / 4) * 3}%)`
+  const h = ease(cl(t, .1, .9)); $('top').style.opacity = h; $('top').style.transform = `translateY(${(1 - h) * 40}px)`
+  ;[...document.querySelectorAll('.card')].forEach((c, i) => { const k = ease(cl(t, 1.2 + i * 1.5, 1.9 + i * 1.5)); c.style.opacity = k; c.style.transform = `translateX(${(1 - k) * 80}px) scale(${.96 + k * .04})` })
+  const e = ease(cl(t, 9.6, 10.3)); $('end').style.opacity = e; $('end').style.transform = `scale(${.96 + e * .04})`
+}
+</script>
