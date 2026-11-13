@@ -1,0 +1,143 @@
+<!doctype html><meta charset="utf-8">
+<style>
+@font-face{font-family:Manrope;font-weight:200 800;src:url(../../fonts/manrope-cyrillic.woff2)format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:Manrope;font-weight:200 800;src:url(../../fonts/manrope-latin.woff2)format("woff2")}
+@font-face{font-family:Unbounded;font-weight:200 900;src:url(../../fonts/unbounded-cyrillic.woff2)format("woff2");unicode-range:U+0400-045F}
+@font-face{font-family:Unbounded;font-weight:200 900;src:url(../../fonts/unbounded-latin.woff2)format("woff2")}
+*{box-sizing:border-box;margin:0}
+body{width:720px;height:1280px;overflow:hidden;font-family:Manrope,sans-serif;color:#f3f4ff;background-color:#0a0d1c;
+ background-image:radial-gradient(600px 500px at 80% 10%,#4c5dff40,transparent 65%),radial-gradient(500px 500px at 0% 100%,#1fd3a922,transparent 60%);position:relative}
+.cap{position:absolute;left:56px;right:56px;top:70px;height:190px}
+.cap .n{font-family:Unbounded;font-weight:700;font-size:26px;color:#8b7dff;letter-spacing:.02em}
+.cap h2{font-family:Unbounded;font-weight:700;font-size:46px;line-height:1.08;letter-spacing:-.02em;margin-top:10px}
+.cap p{color:#a8adc9;font-size:24px;margin-top:12px;line-height:1.35}
+.phone{position:absolute;left:150px;top:300px;width:420px;height:860px;border-radius:58px;background:#05060d;border:10px solid #2a2f45;box-shadow:0 40px 120px #000a;overflow:hidden}
+.phone::before{content:"";position:absolute;top:14px;left:50%;width:110px;height:28px;margin-left:-55px;border-radius:20px;background:#05060d;z-index:9}
+.scr{position:absolute;inset:0;padding:64px 22px 22px;opacity:0}
+.light{background:#f4f5f9;color:#1b1d2a}
+.site h3{font-family:Unbounded;font-size:30px;line-height:1.1;margin:30px 0 14px}
+.site p{color:#5b5f78;font-size:17px;line-height:1.4}
+.btn{display:inline-block;margin-top:26px;background:linear-gradient(135deg,#6d5cff,#3fb8ff);color:#fff;font-weight:800;font-size:20px;border-radius:99px;padding:16px 26px}
+.top{display:flex;gap:10px;align-items:center;font-weight:800;font-size:17px}.top i{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,#6d5cff,#2de2e6)}
+.nt{position:absolute;left:14px;right:14px;top:56px;background:#fff;border-radius:22px;padding:16px;box-shadow:0 10px 40px #0004;display:flex;gap:12px;align-items:center;color:#1b1d2a;font-weight:700;font-size:17px}
+.nt i{width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#6d5cff,#2de2e6);flex:none}.nt small{display:block;color:#6b6f86;font-weight:600;font-size:15px}
+.dim{position:absolute;inset:0;background:#0007}
+.dlg{position:absolute;left:18px;right:18px;bottom:30px;background:#fff;color:#1b1d2a;border-radius:28px;padding:24px}
+.dlg b{display:block;font-size:21px;margin-bottom:10px}.dlg p{color:#5b5f78;font-size:16px;line-height:1.4}
+.dlg .row{display:flex;justify-content:flex-end;gap:26px;margin-top:22px;font-weight:800;font-size:18px;color:#3a6df0}
+.set h4{font-size:30px;margin:44px 0 26px;line-height:1.15}
+.sw{display:flex;justify-content:space-between;align-items:center;background:#fff;border-radius:20px;padding:20px;font-weight:700;font-size:18px}
+.tg{width:58px;height:32px;border-radius:20px;background:#c5c8d6;position:relative;flex:none}.tg::after{content:"";position:absolute;top:4px;left:4px;width:24px;height:24px;border-radius:50%;background:#fff;transition:none;transform:translateX(var(--x,0px))}
+.app{display:flex;flex-direction:column;align-items:center;gap:14px;margin-top:150px}.app i{width:96px;height:96px;border-radius:26px;background:linear-gradient(135deg,#6d5cff,#2de2e6)}
+.app b{font-size:24px}.app span{color:#5b5f78;font-size:18px}
+.bar{height:8px;border-radius:8px;background:#dde0ea;margin:34px 10px 0;overflow:hidden}.bar i{display:block;height:100%;background:#3a6df0;width:0}
+.home{background:linear-gradient(170deg,#1d5a3a 0%,#0f2a2a 38%,#0c1a26 62%,#3a2240 100%);color:#f3f4ff}
+.setup{background:#0b0e1c;color:#f3f4ff;text-align:center}
+.setup .lg{width:84px;height:84px;margin:40px auto 18px;border-radius:24px;background:#141936;display:grid;place-items:center;font:900 40px Unbounded;color:#7b8cff}
+.setup h5{font:900 26px Manrope;letter-spacing:3px;margin:0}.setup .lead{color:#9aa0c0;font-size:16px;margin:14px 10px 26px;line-height:1.4}
+.of{position:relative;text-align:left;border:2px solid #3a4170;border-radius:14px;padding:18px 48px 16px 16px;font-size:16px;color:#7d82a3}
+.of.on{border-color:#2fd38b;color:#f3f4ff}.of label{position:absolute;top:-10px;left:12px;background:#0b0e1c;padding:0 6px;font-size:13px;color:#9aa0c0}.of.on label{color:#2fd38b}
+.of u{position:absolute;right:14px;top:14px;text-decoration:none;font-size:22px}
+.pb{margin-top:22px;border-radius:99px;padding:16px;background:#2fd38b;color:#06150e;font-weight:800;font-size:18px}
+.ob{margin-top:12px;border-radius:99px;padding:15px;border:1.5px solid #3a4170;font-weight:700;font-size:17px}
+.hd{display:flex;align-items:center;justify-content:space-between}.hd .nm{display:flex;gap:8px;align-items:center;font:900 18px Manrope;letter-spacing:1.5px}.hd .nm i{width:30px;height:30px;border-radius:9px;background:#141936}
+.hd .nm b{color:#3ee6c1;font-weight:500}.chipv{font-size:13px;font-weight:700;background:#ffffff14;border-radius:99px;padding:7px 11px}
+.psh{display:block;margin:64px auto 0;width:190px;height:228px}
+.ttl{text-align:center;font:900 30px Manrope;margin-top:26px}.ttl2{text-align:center;color:#c5c9de;font-size:15px;margin-top:8px}
+.rowb{display:flex;justify-content:center;gap:10px;margin-top:20px}.rowb span{background:#ffffff14;border-radius:99px;padding:10px 16px;font-weight:700;font-size:15px}
+.cardx{margin-top:22px;border-radius:24px;background:#ffffff12;border:1px solid #ffffff1c;padding:16px;display:flex;gap:14px;align-items:center}
+.cardx i{width:46px;height:46px;border-radius:14px;background:#1d5a3a;display:grid;place-items:center;font-style:normal;color:#7ef0a8;font-size:22px}.cardx b{display:block;font-size:18px}.cardx small{color:#c5c9de;font-size:14px}
+.pill{position:absolute;left:14px;right:14px;top:104px;border-radius:99px;background:#ffffff1c;border:1px solid #ffffff22;padding:8px 18px 8px 8px;display:flex;align-items:center;gap:12px;font-weight:700;font-size:16px;opacity:0}
+.pill .c{width:40px;height:40px;border-radius:50%;background:#fff;display:grid;place-items:center;color:#0b0e1c;font-size:20px}.pill .u{margin-left:auto;color:#c5c9de}
+.field{margin-top:16px;border:1px solid #2a2f4a;border-radius:18px;padding:16px;color:#7d82a3;font-size:16px;display:flex;justify-content:space-between;align-items:center}
+.field.on{color:#f3f4ff}.field u{text-decoration:none;font-size:20px}
+.sh{width:220px;height:256px;margin:70px auto 0;border-radius:50% 50% 46% 46%/30% 30% 70% 70%;display:grid;place-items:center;background:#262b45;box-shadow:none}
+.sh svg{width:100px;height:100px}
+.state{text-align:center;margin-top:26px;font-weight:800;font-size:24px;color:#8b8fb0}
+.finger{position:absolute;width:64px;height:64px;border-radius:50%;background:#6d5cff40;border:4px solid #6d5cff;box-shadow:0 0 0 0 #fff8;z-index:20;opacity:0;margin:-32px 0 0 -32px}
+.title{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px;opacity:0}
+.title .big{width:250px;height:290px;border-radius:50% 50% 46% 46%/30% 30% 70% 70%;background:linear-gradient(160deg,#3fb8ff,#6d5cff);box-shadow:0 0 140px #4c7dffaa;display:grid;place-items:center;margin-bottom:60px}
+.title h1{font-family:Unbounded;font-weight:700;font-size:58px;line-height:1.05;letter-spacing:-.03em}
+.title p{color:#a8adc9;font-size:28px;margin-top:22px;line-height:1.35}
+</style>
+<div class="title" id="t1"><div class="big"><svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1 data-t="t1h"></h1><p data-t="t1p"></p></div>
+<div class="cap" id="cap"><div class="n" id="capN"></div><h2 id="capH"></h2><p id="capP"></p></div>
+<div class="phone" id="phone">
+  <div class="scr light site" id="s1"><div class="top"><i></i>APEX CLIENT</div><h3 data-t="siteH"></h3><p data-t="siteP"></p><div class="btn" id="dlBtn" data-t="siteBtn"></div></div>
+  <div class="nt" id="nt" style="opacity:0"><i></i><div>apex-client.apk<small data-t="ntS"></small></div></div>
+  <div class="scr" id="s2"><div class="dim"></div><div class="dlg"><b data-t="d1b"></b><p data-t="d1p"></p><div class="row"><span style="color:#6b6f86" data-t="cancel"></span><span id="setBtn" data-t="settings"></span></div></div></div>
+  <div class="scr light set" id="s3"><h4 data-t="setH"></h4><div class="sw"><span data-t="setSw"></span><span class="tg" id="tg"></span></div></div>
+  <div class="scr light" id="s4"><div class="app"><i></i><b>APEX CLIENT</b><span id="instQ" data-t="instQ"></span></div><div class="bar" id="bar"><i id="barI"></i></div><div class="dlg" style="bottom:30px;box-shadow:none;background:transparent;padding:0 24px 0"><div class="row" id="instRow"><span style="color:#6b6f86" data-t="cancel"></span><span id="instBtn" data-t="install"></span></div></div></div>
+  <div class="scr setup" id="s5"><div class="lg">A</div><h5>APEX CLIENT</h5><p class="lead" data-t="setLead"></p>
+    <div class="of" id="of"><label data-t="field"></label><span id="ofT" data-t="sub0"></span><u>📋</u></div><div class="pb" id="pb" data-t="connSub"></div><div class="ob" data-t="qr"></div></div>
+  <div class="scr home" id="s6"><div class="hd"><span class="nm"><i></i>APEX <b>CLIENT</b></span><span class="chipv" id="chipv" data-t="vpnOff"></span></div>
+    <svg class="psh" viewBox="0 0 100 120"><path id="shF" d="M50 4 L94 20 V58 C94 86 74 104 50 116 C26 104 6 86 6 58 V20 Z" fill="#355a55" stroke="#1e2a33" stroke-width="2"/><g id="shI" fill="none" stroke="#d6d9e4" stroke-width="5" stroke-linecap="round"><path d="M50 36 V58"/><path d="M36 46 A20 20 0 1 0 64 46"/></g></svg><div class="ttl" id="ttl" data-t="notConn"></div><div class="ttl2" data-t="hint"></div><div class="rowb"><span data-t="timer"></span><span data-t="speed"></span></div>
+    <div class="cardx"><i>⚡</i><div><b data-t="auto"></b><small data-t="autoS"></small></div></div>
+    <div class="pill" id="pill"><span class="c">⬇</span><span data-t="newVer"></span><span class="u" data-t="upd"></span></div></div>
+  <div class="finger" id="fg"></div>
+</div>
+<div class="title" id="t2"><div class="big"><svg width="110" height="110" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></div><h1 data-t="t2h"></h1><p data-t="t2p"></p></div>
+<script>
+const L = {
+ ru: { t1h: 'Установка за минуту', t1p: 'APEX CLIENT · Android 7 и новее', siteH: 'VPN, который сам находит дорогу', siteP: 'Бесплатно. Телефон, ТВ и часы.', siteBtn: '⬇ Скачать для Android', ntS: 'Скачано · Открыть',
+  d1b: 'Установка заблокирована', d1p: 'Разрешите установку приложений из этого источника.', cancel: 'Отмена', settings: 'Настройки',
+  setH: 'Установка неизвестных приложений', setSw: 'Разрешить из этого источника', instQ: 'Установить это приложение?', install: 'Установить', installed: 'Приложение установлено',
+  field: 'Ссылка на подписку', sub: 'https://…/sub/…', sub0: 'https://…', off: 'Нажмите на щит', on: 'Защищено', setLead: 'Добавьте ссылку на вашу подписку, чтобы начать', connSub: 'Подключить подписку', qr: 'Сканировать QR-код', vpnOff: '● VPN выключен', vpnOn: '● VPN включён', notConn: 'Не подключено', conning: 'Подключение…', hint: 'Нажмите на щит · свайп — другой сервер', timer: '⏱ Таймер', speed: '◔ Тест скорости', auto: 'Автопилот', autoS: 'Самый быстрый сервер', newVer: 'Вышла новая версия', upd: 'Обновить',
+  c: [['1', 'Скачайте файл', 'На сайте — «Скачать для Android»'], ['2', 'Разрешите установку', 'Один раз — для браузера'], ['3', 'Установите', 'Как обычное приложение'], ['4', 'Добавьте подписку', '«Вставить» → «Подключить подписку»'], ['5', 'Нажмите на щит', 'Автопилот сам выберет сервер'], ['6', 'Обновления', 'Плашка «Обновить» — одно нажатие']],
+  t2h: 'Готово!', t2p: 'Обновления дальше приходят сами\ndubstep2004.github.io' },
+ en: { t1h: 'Install in a minute', t1p: 'APEX CLIENT · Android 7 and newer', siteH: 'A VPN that finds the way by itself', siteP: 'Free. Phone, TV and watches.', siteBtn: '⬇ Download for Android', ntS: 'Downloaded · Open',
+  d1b: 'Install blocked', d1p: 'Allow installing apps from this source.', cancel: 'Cancel', settings: 'Settings',
+  setH: 'Install unknown apps', setSw: 'Allow from this source', instQ: 'Do you want to install this app?', install: 'Install', installed: 'App installed',
+  field: 'Subscription link', sub: 'https://…/sub/…', sub0: 'https://…', off: 'Tap the shield', on: 'Protected', setLead: 'Add your subscription link to get started', connSub: 'Connect subscription', qr: 'Scan QR code', vpnOff: '● VPN off', vpnOn: '● VPN on', notConn: 'Not connected', conning: 'Connecting…', hint: 'Tap the shield · swipe — another server', timer: '⏱ Timer', speed: '◔ Speed test', auto: 'Autopilot', autoS: 'The fastest server', newVer: 'New version is out', upd: 'Update',
+  c: [['1', 'Download the file', 'On the site — “Download for Android”'], ['2', 'Allow installing', 'Once, for the browser'], ['3', 'Install', 'Like any other app'], ['4', 'Add your subscription', '“Paste” → “Connect subscription”'], ['5', 'Tap the shield', 'Autopilot picks the server'], ['6', 'Updates', 'The “Update” bar — one tap']],
+  t2h: 'Done!', t2p: 'Updates arrive by themselves\ndubstep2004.github.io' },
+}
+const T = L[new URLSearchParams(location.search).get('l') || 'ru']
+document.querySelectorAll('[data-t]').forEach(e => e.textContent = T[e.dataset.t])
+document.querySelectorAll('.title p').forEach(p => p.innerHTML = p.textContent.replace('\n', '<br>'))
+const $ = id => document.getElementById(id)
+const cl = (x, a, b) => Math.min(1, Math.max(0, (x - a) / (b - a)))
+const ease = x => x < .5 ? 2 * x * x : 1 - Math.pow(-2 * x + 2, 2) / 2
+const fade = (t, a, b, d = .4) => Math.min(cl(t, a, a + d), 1 - cl(t, b - d, b))
+// Палец: [время, x, y, нажатие]
+const PATH = [[4.6, 300, 700, 0], [6.0, 170, 288, 0], [6.4, 170, 288, 1], [7.6, 230, 95, 0], [8.0, 230, 95, 1], [10.6, 330, 790, 0], [11.0, 330, 790, 1], [13.4, 336, 290, 0], [13.8, 336, 290, 1], [17.4, 314, 800, 0], [17.8, 314, 800, 1], [22.2, 352, 322, 0], [22.6, 352, 322, 1], [23.6, 200, 392, 0], [24.0, 200, 392, 1], [26.4, 200, 210, 0], [26.8, 200, 210, 1], [30.4, 330, 132, 0], [30.8, 330, 132, 1]]
+function finger(t) {
+  const fg = $('fg'); let p = null
+  for (let i = 0; i < PATH.length; i++) { const [tt] = PATH[i]; if (t >= tt - .6 && t <= tt + .45) { p = PATH[i]; const prev = PATH[i - 1]; if (prev && t < tt && t > prev[0]) { const k = ease(cl(t, Math.max(prev[0] + .45, tt - .6), tt)); p = [tt, prev[1] + (p[1] - prev[1]) * k, prev[2] + (p[2] - prev[2]) * k, p[3]] } } }
+  if (!p || t > 31.3) { fg.style.opacity = 0; return }
+  fg.style.left = p[1] + 'px'; fg.style.top = p[2] + 'px'
+  const tap = p[3] && t >= p[0] && t < p[0] + .35
+  fg.style.opacity = .95; fg.style.transform = tap ? 'scale(.82)' : 'none'; fg.style.boxShadow = tap ? '0 0 0 18px #6d5cff33' : '0 4px 14px #0004'
+}
+function render(t) {
+  $('t1').style.opacity = 1 - cl(t, 3, 3.6); $('t1').style.transform = `scale(${1 + cl(t, 0, 3.6) * .04})`
+  const ph = cl(t, 3.2, 4) * (1 - cl(t, 32, 32.6)); $('phone').style.opacity = ph; $('phone').style.transform = `translateY(${(1 - ease(cl(t, 3.2, 4))) * 80}px)`
+  $('cap').style.opacity = ph
+  const step = t < 9.5 ? 0 : t < 15 ? 1 : t < 20.6 ? 2 : t < 24.4 ? 3 : t < 29.4 ? 4 : 5, C = T.c[step]
+  $('capN').textContent = (T === L.ru ? 'Шаг ' : 'Step ') + C[0] + ' / 6'; $('capH').textContent = C[1]; $('capP').textContent = C[2]
+  const sw = [4, 9.5, 15, 20.6, 24.4, 29.4].map(x => Math.abs(t - x)).some(d => d < .25); $('cap').style.transform = sw ? 'translateY(4px)' : 'none'
+  // экраны
+  $('s1').style.opacity = t < 11.4 ? 1 : 0
+  $('nt').style.opacity = cl(t, 6.8, 7.1) * (t < 8.4 ? 1 : 0); $('nt').style.transform = `translateY(${(1 - ease(cl(t, 6.8, 7.2))) * -90}px)`
+  $('dlBtn').style.filter = t > 6.4 && t < 6.8 ? 'brightness(.8)' : 'none'
+  $('s2').style.opacity = t >= 8.6 && t < 11.4 ? cl(t, 8.6, 8.9) : 0
+  $('s3').style.opacity = t >= 11.4 && t < 15 ? 1 : 0
+  $('tg').style.background = t > 13.9 ? '#3a6df0' : '#c5c8d6'; $('tg').style.setProperty('--x', (ease(cl(t, 13.8, 14.1)) * 26) + 'px')
+  $('s4').style.opacity = t >= 15 && t < 21.4 ? 1 : 0
+  const inst = cl(t, 17.9, 20); $('barI').style.width = inst * 100 + '%'; $('bar').style.opacity = t > 17.9 ? 1 : 0
+  $('instQ').textContent = t > 20 ? T.installed : T.instQ; $('instBtn').textContent = t > 20 ? (T === L.ru ? 'Открыть' : 'Open') : T.install; $('instRow').style.opacity = t > 17.9 && t <= 20 ? .3 : 1
+  $('s5').style.opacity = t >= 21.4 && t < 24.4 ? 1 : 0
+  $('of').classList.toggle('on', t > 22.7); $('ofT').textContent = t > 22.7 ? T.sub : T.sub0; $('pb').style.filter = t > 24 && t < 24.4 ? 'brightness(.8)' : 'none'
+  $('s6').style.opacity = t >= 24.4 ? 1 : 0
+  const conn = t >= 26.8, on = cl(t, 27.8, 28.4)
+  $('ttl').textContent = !conn ? T.notConn : on > 0 ? T.on : T.conning; $('ttl').style.color = on > 0 ? '#7ef0a8' : '#fff'
+  $('chipv').textContent = on > 0 ? T.vpnOn : T.vpnOff; $('chipv').style.color = on > 0 ? '#7ef0a8' : '#fff'
+  $('shF').setAttribute('fill', on > 0 ? '#2fae6e' : conn ? '#3b6b62' : '#355a55'); $('shI').setAttribute('stroke', on > 0 ? '#eafff2' : '#d6d9e4')
+  document.querySelector('.psh').style.filter = on > 0 ? `drop-shadow(0 0 ${30 * on}px #2fd38baa)` : conn ? `drop-shadow(0 0 ${8 + 8 * Math.sin(t * 9)}px #2fd38b66)` : 'none'
+  document.querySelector('.psh').style.transform = t > 26.8 && t < 27.1 ? 'scale(.95)' : 'none'
+  const pl = ease(cl(t, 29.6, 30.1)); $('pill').style.opacity = pl * (1 - cl(t, 31, 31.3)); $('pill').style.transform = `translateY(${(1 - pl) * -40}px)`
+  finger(t)
+  $('t2').style.opacity = cl(t, 32.2, 32.9); $('t2').style.transform = `scale(${.96 + ease(cl(t, 32.2, 33.2)) * .04})`
+}
+window.render = render
+</script>
