@@ -38,18 +38,20 @@ def saw(f, tt, h=12):  # пила из гармоник — яркая, слыш
 
 def kick(n):
     tt = np.arange(n) / SR; f = 85 + 140 * np.exp(-tt * 30)  # без сверхнизкого гула — динамик телефона не хрипит
-    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 12) + rng.standard_normal(n) * np.exp(-tt * 300) * .25
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 12)
 
 
 def clap(n):
     tt = np.arange(n) / SR; nz = rng.standard_normal(n)
     nz = nz - np.convolve(nz, np.ones(8) / 8, mode='same')  # убрать низ — звонкий хлопок
-    return nz * (np.exp(-tt * 25) + .6 * np.exp(-np.maximum(0, tt - .012) * 40) * (tt > .012))
+    nz = np.convolve(nz, np.ones(4) / 4, mode='same')  # мягче, без «ш-ш»
+    return (nz * .5 + np.sin(2 * np.pi * 1200 * tt) * .5) * np.exp(-tt * 45)
 
 
-def hat(n, open_=False):
-    tt = np.arange(n) / SR; nz = rng.standard_normal(n); nz = nz - np.convolve(nz, np.ones(3) / 3, mode='same')
-    return nz * np.exp(-tt * (18 if open_ else 70))
+def hat(n, open_=False):  # без шума: несколько высоких тонов, коротко — не шипит
+    tt = np.arange(n) / SR
+    tone = sum(np.sign(np.sin(2 * np.pi * f * tt)) for f in (3200, 4570, 5810, 7130)) / 4
+    return tone * np.exp(-tt * (45 if open_ else 110))
 
 
 start_beat = 4.0  # до 4 с — заставка: только аккорды и нарастание
@@ -61,9 +63,9 @@ for k in range(nb):
     full = tb >= start_beat - 1e-6
     if full:
         add(tb, kick(int(.3 * SR)) * .4)
-        if k % 2 == 1: add(tb, clap(int(.25 * SR)) * .22)
+        if k % 2 == 1: add(tb, clap(int(.12 * SR)) * .16)
     for h in (0, .5):  # хай-хэт на восьмые, открытый на офбит
-        if full or tb > 2: add(tb + h * BEAT, hat(int(.12 * SR), open_=h == .5) * (.07 if h == .5 else .045))
+        if full or tb > 2: add(tb + h * BEAT, hat(int(.08 * SR), open_=h == .5) * (.035 if h == .5 else .022))
     # бас: восьмые с «насосом» (тише сразу после бочки)
     if full:
         for h in (0, .5):
@@ -81,7 +83,7 @@ for k in range(nb):
         add(tb, np.sin(2 * np.pi * note(m) * tt) * np.exp(-tt * 6) * .07)
 # нарастание шума перед «дропом» на 4-й секунде
 n = int(2.0 * SR); tt = np.arange(n) / SR
-add(2.0, rng.standard_normal(n) * (tt / tt[-1]) ** 2 * .06)
+add(2.0, np.sin(2 * np.pi * np.cumsum(300 + 600 * tt / tt[-1]) / SR) * (tt / tt[-1]) ** 2 * .05)
 # в конце (заставка «Готово!») — один длинный аккорд
 n = int(2.6 * SR); tt = np.arange(n) / SR
 add(32.4, sum(saw(note(m), tt, 6) for m in chords[0] + [57]) / 4 * np.exp(-tt * 1.4) * .14)
@@ -91,7 +93,7 @@ src = open(__file__.replace('sound.py', 'scene.html'), encoding='utf-8').read()
 taps = [float(a) for a, b in re.findall(r'\[([\d.]+), \d+, \d+, (1)\]', src)]
 for tp in taps:
     n = int(.06 * SR); tt = np.arange(n) / SR
-    click = (np.random.default_rng(1).standard_normal(n) * .4 + np.sin(2 * np.pi * 2200 * tt)) * np.exp(-tt * 80)
+    click = np.sin(2 * np.pi * 2200 * tt) * np.exp(-tt * 80)  # щелчок без шума
     add(tp, click * .35)
 
 # 4. Сигналы: «приложение установлено» (20 с) и «Защищено» (27.8 с) — восходящие ноты
@@ -100,12 +102,10 @@ for start, notes in [(20.0, [72, 76, 79]), (27.8, [72, 76, 79, 84])]:
         n = int(.9 * SR); tt = np.arange(n) / SR
         add(start + i * .09, (np.sin(2 * np.pi * note(m) * tt) + .3 * np.sin(2 * np.pi * note(m) * 3 * tt)) * np.exp(-tt * 4) * .14)
 
-# 5. Мягкий «вжух» на смене шагов
-for ts in [4, 9.5, 15, 20.6, 24.4, 29.4]:
-    n = int(.5 * SR); tt = np.arange(n) / SR
-    noise = np.random.default_rng(int(ts * 10)).standard_normal(n)
-    noise = np.convolve(noise, np.ones(40) / 40, mode='same')  # приглушить верх
-    add(ts - .25, noise * np.sin(np.pi * tt / tt[-1]) * .05)
+# 5. Смена шага — короткий мягкий «динь» (раньше был шумовой «вжух» — шипел)
+for ts in [9.5, 15, 20.6, 24.4, 29.4]:
+    n = int(.25 * SR); tt = np.arange(n) / SR
+    add(ts - .05, np.sin(2 * np.pi * note(84) * tt) * np.exp(-tt * 14) * .05)
 
 # Общая громкость: плавное начало и конец, без перегруза
 out *= np.minimum(1, np.minimum(t / 1.2, (DUR - t) / 2.0))
