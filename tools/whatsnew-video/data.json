@@ -1,15 +1,57 @@
 {
-  "version": "3.20",
-  "ru": { "title": "Что нового в 3.20", "sub": "APEX CLIENT", "end": "Обновление придёт само", "items": [
-    ["🌌", "Живые обои по темам", "Аниме, игры, космос — в HD"],
-    ["❄️", "Эффекты поверх обоев", "Снег, дождь, сакура, светлячки"],
-    ["⬇️", "Обновление одной кнопкой", "Плашка «Вышла версия» на главном"],
-    ["▶️", "Видео-инструкция", "В «Справке» — за 35 секунд"]
-  ]},
-  "en": { "title": "What's new in 3.20", "sub": "APEX CLIENT", "end": "The update arrives by itself", "items": [
-    ["🌌", "Live wallpapers by topic", "Anime, games, space — in HD"],
-    ["❄️", "Effects over wallpapers", "Snow, rain, sakura, fireflies"],
-    ["⬇️", "One-tap update", "The “New version” bar on the home screen"],
-    ["▶️", "Video guide", "In “Help” — 35 seconds"]
-  ]}
+  "version": "3.21",
+  "ru": {
+    "title": "Что нового в 3.21",
+    "sub": "APEX CLIENT",
+    "end": "Обновление придёт само",
+    "items": [
+      [
+        "📡",
+        "Проверка сети",
+        "Белые списки, глушилка, серверы"
+      ],
+      [
+        "🛠️",
+        "Сама исправляет",
+        "Обход LTE и рабочие протоколы"
+      ],
+      [
+        "⚠️",
+        "Плашка на главном",
+        "Когда оператор что-то глушит"
+      ],
+      [
+        "🕘",
+        "История и «Поделиться»",
+        "Прошлые проверки — на телефоне"
+      ]
+    ]
+  },
+  "en": {
+    "title": "What's new in 3.21",
+    "sub": "APEX CLIENT",
+    "end": "The update arrives by itself",
+    "items": [
+      [
+        "📡",
+        "Network check",
+        "Whitelists, jamming, servers"
+      ],
+      [
+        "🛠️",
+        "Fixes it by itself",
+        "LTE bypass and working protocols"
+      ],
+      [
+        "⚠️",
+        "Home screen notice",
+        "When your carrier blocks something"
+      ],
+      [
+        "🕘",
+        "History and Share",
+        "Past checks stay on your phone"
+      ]
+    ]
+  }
 }
