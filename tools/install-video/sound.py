@@ -21,32 +21,32 @@ def add(start, sig):
 
 
 # 1. Мягкие аккорды (Am — F — C — G), каждый 4 с: тёплые синусы с медленным «дыханием»
-chords = [[57, 60, 64], [53, 57, 60], [48, 55, 60], [55, 59, 62]]
+chords = [[69, 72, 76], [65, 69, 72], [60, 67, 72], [67, 71, 74]]  # на октаву выше — слышно и на динамике телефона
 for k in range(int(DUR // 4) + 1):
     n = int(4.4 * SR); tt = np.arange(n) / SR
     s = sum(np.sin(2 * np.pi * note(m) * tt) + .25 * np.sin(2 * np.pi * note(m) * 2 * tt) for m in chords[k % 4])
-    s += .5 * np.sin(2 * np.pi * note(chords[k % 4][0] - 12) * tt)
-    add(k * 4, s * env(n, 1.0, 1.4) * (1 + .15 * np.sin(2 * np.pi * .25 * tt)) * .022)
+    s += .35 * np.sin(2 * np.pi * note(chords[k % 4][0] - 12) * tt)
+    add(k * 4, s * env(n, 1.0, 1.4) * (1 + .15 * np.sin(2 * np.pi * .25 * tt)) * .03)
 
 # 2. Лёгкие «капли» арпеджио на восьмых — с 4-й секунды, пока на экране телефон
 for k in range(int(4 / .5), int(31.5 / .5)):
-    c = chords[int(k * .5 // 4) % 4]; m = c[k % 3] + 12 + (12 if k % 4 == 3 else 0)
+    c = chords[int(k * .5 // 4) % 4]; m = c[k % 3] + 12 + (5 if k % 4 == 3 else 0)
     n = int(.6 * SR); tt = np.arange(n) / SR
-    add(k * .5, np.sin(2 * np.pi * note(m) * tt) * np.exp(-tt * 7) * .03)
+    add(k * .5, (np.sin(2 * np.pi * note(m) * tt) + .2 * np.sin(2 * np.pi * note(m) * 2 * tt)) * np.exp(-tt * 6) * .07)
 
 # 3. Щелчки на нажатия пальца
 src = open(__file__.replace('sound.py', 'scene.html'), encoding='utf-8').read()
 taps = [float(a) for a, b in re.findall(r'\[([\d.]+), \d+, \d+, (1)\]', src)]
 for tp in taps:
     n = int(.06 * SR); tt = np.arange(n) / SR
-    click = (np.random.default_rng(1).standard_normal(n) * .5 + np.sin(2 * np.pi * 1800 * tt)) * np.exp(-tt * 90)
-    add(tp, click * .22)
+    click = (np.random.default_rng(1).standard_normal(n) * .4 + np.sin(2 * np.pi * 2200 * tt)) * np.exp(-tt * 80)
+    add(tp, click * .35)
 
 # 4. Сигналы: «приложение установлено» (20 с) и «Защищено» (27.8 с) — восходящие ноты
 for start, notes in [(20.0, [72, 76, 79]), (27.8, [72, 76, 79, 84])]:
     for i, m in enumerate(notes):
         n = int(.9 * SR); tt = np.arange(n) / SR
-        add(start + i * .09, (np.sin(2 * np.pi * note(m) * tt) + .3 * np.sin(2 * np.pi * note(m) * 3 * tt)) * np.exp(-tt * 4) * .09)
+        add(start + i * .09, (np.sin(2 * np.pi * note(m) * tt) + .3 * np.sin(2 * np.pi * note(m) * 3 * tt)) * np.exp(-tt * 4) * .14)
 
 # 5. Мягкий «вжух» на смене шагов
 for ts in [4, 9.5, 15, 20.6, 24.4, 29.4]:
