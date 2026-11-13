@@ -17,7 +17,11 @@ def env(n, a=0.01, r=0.3):
 
 
 def add(start, sig):
-    i = int(start * SR); j = min(len(out), i + len(sig)); out[i:j] += sig[:j - i]
+    # Плавные 4 мс в начале и 12 мс в конце каждого звука — без щелчков и треска на обрезанных нотах
+    sig = np.array(sig, dtype=float); n = len(sig); a = min(n // 4, int(.004 * SR)); r = min(n // 3, int(.012 * SR))
+    if a: sig[:a] *= np.linspace(0, 1, a)
+    if r: sig[-r:] *= np.linspace(1, 0, r)
+    i = int(start * SR); j = min(len(out), i + n); out[i:j] += sig[:j - i]
 
 
 # 1–2. Бодрая электроника, 124 BPM: бочка на каждую долю, хлопок на 2 и 4, хай-хэт на восьмые,
@@ -33,8 +37,8 @@ def saw(f, tt, h=12):  # пила из гармоник — яркая, слыш
 
 
 def kick(n):
-    tt = np.arange(n) / SR; f = 50 + 120 * np.exp(-tt * 30)
-    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 9) + rng.standard_normal(n) * np.exp(-tt * 300) * .3
+    tt = np.arange(n) / SR; f = 85 + 140 * np.exp(-tt * 30)  # без сверхнизкого гула — динамик телефона не хрипит
+    return np.sin(2 * np.pi * np.cumsum(f) / SR) * np.exp(-tt * 12) + rng.standard_normal(n) * np.exp(-tt * 300) * .25
 
 
 def clap(n):
@@ -56,7 +60,7 @@ for k in range(nb):
     bar = int(tb // BAR) % 4
     full = tb >= start_beat - 1e-6
     if full:
-        add(tb, kick(int(.35 * SR)) * .55)
+        add(tb, kick(int(.3 * SR)) * .4)
         if k % 2 == 1: add(tb, clap(int(.25 * SR)) * .22)
     for h in (0, .5):  # хай-хэт на восьмые, открытый на офбит
         if full or tb > 2: add(tb + h * BEAT, hat(int(.12 * SR), open_=h == .5) * (.07 if h == .5 else .045))
@@ -64,9 +68,9 @@ for k in range(nb):
     if full:
         for h in (0, .5):
             n = int(BEAT / 2 * SR); tt = np.arange(n) / SR
-            f = note(roots[bar] + (12 if h == .5 and k % 4 == 3 else 0))
+            f = note(roots[bar] + 12 + (12 if h == .5 and k % 4 == 3 else 0))  # бас на октаву выше — чище на телефоне
             pump = np.minimum(1, tt / .06) if h == 0 else np.ones(n)
-            add(tb + h * BEAT, saw(f, tt, 8) * np.exp(-tt * 5) * pump * .16)
+            add(tb + h * BEAT, saw(f, tt, 8) * np.exp(-tt * 6) * pump * .12)
     # аккорды-стабы на офбит (детюн — «суперсо»)
     n = int(BEAT * .45 * SR); tt = np.arange(n) / SR
     stab = sum(saw(note(m) * d, tt, 6) for m in chords[bar] for d in (0.996, 1.004)) / 6
