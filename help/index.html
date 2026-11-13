@@ -6,7 +6,7 @@
 <title>Помощь — APEX CLIENT</title>
 <meta name="description" content="Что делать, если APEX CLIENT не работает: нет интернета, белые списки, VPN отключается, банки, обновления, Android TV и часы.">
 <meta property="og:title" content="Помощь — APEX CLIENT">
-<meta property="og:image" content="https://dubstep2004.github.io/og.png">
+<meta property="og:image" content="https://dubstep2004.github.io/og/help.jpg">
 <meta name="theme-color" content="#0a0d1c" media="(prefers-color-scheme: dark)">
 <meta name="theme-color" content="#f5f6fb" media="(prefers-color-scheme: light)">
 <meta name="color-scheme" content="dark light">
@@ -55,6 +55,33 @@
   .tabs button { font: inherit; font-weight: 700; font-size: 14px; color: var(--dim); background: var(--ink2); border: 1px solid var(--line); border-radius: 99px; padding: 8px 14px; cursor: pointer; }
   .tabs button[aria-selected=true] { color: var(--text); border-color: #6d5cff; background: #6d5cff22; }
   .shot { display: flex; gap: 12px; align-items: center; margin: 10px 0; padding: 10px 14px; border: 1px solid var(--line); border-radius: 14px; background: var(--ink2); font-size: 15px; color: var(--dim); }
+  /* Поиск по проблемам */
+  .find { position: sticky; top: 0; z-index: 5; background: var(--ink); padding: 10px 0; }
+  .find input { width: 100%; font: inherit; font-size: 17px; color: var(--text); background: var(--ink2); border: 1px solid var(--line); border-radius: 16px; padding: 14px 16px 14px 46px; outline: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='20' height='20' fill='none' stroke='%238b8fb0' stroke-width='2.2' stroke-linecap='round'%3E%3Ccircle cx='9' cy='9' r='6'/%3E%3Cpath d='m14 14 4 4'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: 16px 50%; }
+  .find input:focus { border-color: #6d5cff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 2px 0 8px; } .chips button { font: inherit; font-size: 13.5px; font-weight: 600; color: var(--dim); background: none; border: 1px dashed var(--line); border-radius: 99px; padding: 5px 11px; cursor: pointer; }
+  .chips button:hover { color: var(--text); border-style: solid; }
+  .nohit { text-align: center; padding: 30px 0; color: var(--dim); } .nohit[hidden] { display: none; }
+  mark.h { background: #ffd23f55; color: inherit; border-radius: 4px; padding: 0 2px; }
+  /* Как выглядит установка — схематичные экраны телефона */
+  .scr { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin: 14px 0 6px; }
+  .ph { aspect-ratio: 9 / 17; border-radius: 22px; border: 3px solid #2a2f45; background: #f4f5f9; color: #1b1d2a; padding: 22px 9px 10px; position: relative; font: 600 11px/1.35 system-ui, sans-serif; overflow: hidden; display: flex; flex-direction: column; }
+  .ph::before { content: ""; position: absolute; top: 7px; left: 50%; width: 34%; height: 5px; margin-left: -17%; border-radius: 9px; background: #2a2f45; }
+  .ph .cap { margin-top: auto; color: #6b6f86; font-weight: 500; font-size: 10.5px; }
+  .ph .nt { background: #fff; border-radius: 12px; padding: 8px; box-shadow: 0 2px 8px #0002; display: flex; gap: 6px; align-items: center; }
+  .ph .nt i { width: 22px; height: 22px; border-radius: 6px; background: linear-gradient(135deg, #6d5cff, #2de2e6); flex: none; }
+  .ph .dl { background: #fff; border-radius: 16px; padding: 10px; box-shadow: 0 4px 18px #0003; margin-top: 30%; }
+  .ph .dl p { margin: 0 0 8px; font-weight: 500; color: #3a3d50; }
+  .ph .row { display: flex; justify-content: flex-end; gap: 10px; color: var(--acc, #3a6df0); font-weight: 800; }
+  .ph .sw { display: flex; justify-content: space-between; align-items: center; background: #fff; border-radius: 12px; padding: 9px; margin-top: 8px; }
+  .ph .sw b { font-weight: 600; } .ph .sw i { width: 30px; height: 17px; border-radius: 9px; background: var(--acc, #3a6df0); position: relative; flex: none; } .ph .sw i::after { content: ""; position: absolute; right: 2px; top: 2px; width: 13px; height: 13px; border-radius: 50%; background: #fff; }
+  .ph h4 { margin: 4px 0 6px; font-size: 14px; color: #1b1d2a; } .ph b { color: #1b1d2a; } .ph .tap { outline: 2px solid #ff4f6a; outline-offset: 2px; border-radius: 10px; }
+  .ph .row .tap { border-radius: 6px; padding: 0 3px; }
+  .ph.samsung { --acc: #3e7bfa; } .ph.samsung h4 { font-size: 17px; margin-top: 18px; }
+  .ph.xiaomi { --acc: #2f80ff; border-radius: 26px; } .ph.huawei { --acc: #1f6fe5; } .ph.other { --acc: #4b5bd6; background: #f3f0fa; }
+  .ph .app { display: flex; flex-direction: column; align-items: center; gap: 6px; margin: 26% 0 10px; } .ph .app i { width: 40px; height: 40px; border-radius: 12px; background: linear-gradient(135deg, #6d5cff, #2de2e6); }
+  @media (max-width: 560px) { .scr { grid-template-columns: repeat(3, 158px); overflow-x: auto; scroll-snap-type: x mandatory; padding-bottom: 6px; } .ph { scroll-snap-align: start; } }
   .shot .ic { flex: 0 0 34px; height: 34px; border-radius: 10px; display: grid; place-items: center; background: #6d5cff22; }
 </style>
 </head>
@@ -63,6 +90,9 @@
 <main class="wrap">
   <h1>Помощь</h1>
   <p class="lead">Частые проблемы и что с ними делать. Не помогло — напишите в поддержку, ответим.</p>
+  <div class="find"><input id="hq" type="search" placeholder="Что случилось? Например: не грузит, банк, не устанавливается" aria-label="Поиск по проблемам" autocomplete="off"></div>
+    <div class="chips" id="chips"><button>Нет интернета</button><button>Банк</button><button>Отключается</button><button>Не устанавливается</button><button>Медленно</button><button>Телевизор</button><button>Обновить</button></div>
+  <p class="nohit" id="nohit" hidden>Ничего не нашлось. Напишите в поддержку — <a href="https://t.me/Apexx_support">@Apexx_support</a>, поможем.</p>
   <nav class="toc" aria-label="Разделы">
     <a href="#nointernet">Нет интернета</a><a href="#whitelist">Белые списки</a><a href="#drops">VPN отключается</a>
     <a href="#banks">Банки и Госуслуги</a><a href="#update">Обновление</a><a href="#tv">Android TV</a><a href="#watch">Часы</a><a href="#install">Установка</a><a href="#phones">Xiaomi, Samsung, Huawei</a>
@@ -129,6 +159,8 @@
       <li>Android спросит разрешение на установку из браузера — разрешите один раз.</li>
       <li>«Приложение не установлено» — удалите старую версию, если она скачана не с нашего сайта или GitHub, и поставьте заново.</li>
       <li>Нужен Android 7 или новее.</li>
+      <li>«Play Защита» может предупредить о незнакомом приложении — нажмите «Подробнее» → «Всё равно установить». Это обычное предупреждение для приложений не из Google Play.</li>
+      <li>Как выглядит установка на вашем телефоне — <a href="#phones">картинки для Xiaomi, Samsung, Huawei и других</a>.</li>
     </ul>
     <p class="note">Каждая версия собирается на GitHub из открытого кода и подписана одним ключом. Приложение само проверяет, что это оригинал, и предупредит, если копию подменили.</p>
   </section>
@@ -143,22 +175,42 @@
       <button role="tab" aria-selected="false" data-p="other">Другие</button>
     </div>
     <div data-panel="xiaomi">
+      <div class="scr" aria-label="Как выглядит установка">
+        <div class="ph xiaomi"><div class="nt tap"><i></i><span>apex-client.apk<br><span style="font-weight:500;color:#6b6f86">Скачано · Открыть</span></span></div><span class="cap">1. Откройте скачанный файл</span></div>
+        <div class="ph xiaomi"><h4>Установка неизвестных приложений</h4><div class="sw tap"><b>Разрешить из этого источника</b><i></i></div><span class="cap">2. Включите и нажмите «Назад»</span></div>
+        <div class="ph xiaomi"><div class="app"><i></i><b>APEX CLIENT</b><span style="font-weight:500;color:#6b6f86">Установить это приложение?</span></div><div class="row"><span style="color:#6b6f86">Отмена</span><span class="tap">Установить</span></div><span class="cap">3. «Установить»</span></div>
+      </div>
       <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> откройте скачанный файл → «Настройки» → включите «Разрешить установку из этого источника» → назад → «Установить».</span></div>
       <div class="shot"><span class="ic">🔋</span><span><b>Батарея:</b> Настройки → Приложения → Все приложения → APEX CLIENT → Контроль активности → <b>Нет ограничений</b>.</span></div>
       <div class="shot"><span class="ic">🚀</span><span><b>Автозапуск:</b> там же, в карточке APEX CLIENT → включите <b>Автозапуск</b>.</span></div>
       <div class="shot"><span class="ic">🔒</span><span><b>Закрепить:</b> откройте недавние приложения, зажмите APEX CLIENT → значок замка. Тогда «Очистить всё» его не закроет.</span></div>
     </div>
     <div data-panel="samsung" hidden>
+      <div class="scr" aria-label="Как выглядит установка">
+        <div class="ph samsung"><div class="nt tap"><i></i><span>apex-client.apk<br><span style="font-weight:500;color:#6b6f86">Скачано · Открыть</span></span></div><span class="cap">1. Откройте скачанный файл</span></div>
+        <div class="ph samsung"><h4>Установка неизвестных приложений</h4><div class="sw tap"><b>Разрешить из этого источника</b><i></i></div><span class="cap">2. Включите и нажмите «Назад»</span></div>
+        <div class="ph samsung"><div class="app"><i></i><b>APEX CLIENT</b><span style="font-weight:500;color:#6b6f86">Установить это приложение?</span></div><div class="row"><span style="color:#6b6f86">Отмена</span><span class="tap">Установить</span></div><span class="cap">3. «Установить»</span></div>
+      </div>
       <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> откройте файл → «Настройки» → разрешите «Установка неизвестных приложений» для браузера или «Мои файлы».</span></div>
       <div class="shot"><span class="ic">🔋</span><span><b>Батарея:</b> Настройки → Приложения → APEX CLIENT → Батарея → <b>Без ограничений</b>.</span></div>
       <div class="shot"><span class="ic">💤</span><span><b>Спящие приложения:</b> Настройки → Обслуживание устройства (Батарея) → Ограничения в фоновом режиме → уберите APEX CLIENT из «Спящих» и «Глубоко спящих».</span></div>
     </div>
     <div data-panel="huawei" hidden>
+      <div class="scr" aria-label="Как выглядит установка">
+        <div class="ph huawei"><div class="nt tap"><i></i><span>apex-client.apk<br><span style="font-weight:500;color:#6b6f86">Скачано · Открыть</span></span></div><span class="cap">1. Откройте скачанный файл</span></div>
+        <div class="ph huawei"><h4>Установка внешних приложений</h4><div class="sw tap"><b>Разрешить установку приложений</b><i></i></div><span class="cap">2. Включите и нажмите «Назад»</span></div>
+        <div class="ph huawei"><div class="app"><i></i><b>APEX CLIENT</b><span style="font-weight:500;color:#6b6f86">Установить это приложение?</span></div><div class="row"><span style="color:#6b6f86">Отмена</span><span class="tap">Установить</span></div><span class="cap">3. «Установить»</span></div>
+      </div>
       <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> откройте файл → разрешите установку из этого источника. Если телефон предлагает «проверку безопасности» — пропустите её для APEX.</span></div>
       <div class="shot"><span class="ic">🔋</span><span><b>Запуск приложений:</b> Настройки → Батарея → Запуск приложений → APEX CLIENT → выключите «Автоматическое управление» и включите все три переключателя.</span></div>
       <div class="shot"><span class="ic">🔒</span><span><b>Закрепить:</b> в недавних приложениях потяните карточку APEX CLIENT вниз — появится замок.</span></div>
     </div>
     <div data-panel="other" hidden>
+      <div class="scr" aria-label="Как выглядит установка">
+        <div class="ph other"><div class="nt tap"><i></i><span>apex-client.apk<br><span style="font-weight:500;color:#6b6f86">Скачано · Открыть</span></span></div><span class="cap">1. Откройте скачанный файл</span></div>
+        <div class="ph other"><h4>Установка неизвестных приложений</h4><div class="sw tap"><b>Разрешить из этого источника</b><i></i></div><span class="cap">2. Включите и нажмите «Назад»</span></div>
+        <div class="ph other"><div class="app"><i></i><b>APEX CLIENT</b><span style="font-weight:500;color:#6b6f86">Установить это приложение?</span></div><div class="row"><span style="color:#6b6f86">Отмена</span><span class="tap">Установить</span></div><span class="cap">3. «Установить»</span></div>
+      </div>
       <div class="shot"><span class="ic">⬇️</span><span><b>Установка:</b> при открытии файла разрешите установку из браузера или файлового менеджера.</span></div>
       <div class="shot"><span class="ic">🔋</span><span><b>Батарея:</b> Настройки → Приложения → APEX CLIENT → Батарея → <b>Без ограничений</b> (или «Не оптимизировать»).</span></div>
       <div class="shot"><span class="ic">🛡</span><span><b>Постоянный VPN:</b> Настройки → Сеть → VPN → ⚙️ у APEX CLIENT → «Постоянная VPN» — Android будет держать VPN включённым сам.</span></div>
@@ -173,13 +225,30 @@
 </main>
 <footer><div class="wrap">© 2026 Dubstep2004 · <a href="/">APEX CLIENT</a> · <a href="/versions/">Все версии</a> · <a href="/original/">Проверка оригинала</a></div></footer>
 <script>
-document.querySelector('.tabs').onclick = e => {
-  const b = e.target.closest('button'); if (!b) return
+document.addEventListener('click', e => {
+  const b = e.target.closest('.tabs button'); if (!b) return
   document.querySelectorAll('.tabs button').forEach(x => x.setAttribute('aria-selected', String(x === b)))
   document.querySelectorAll('[data-panel]').forEach(p => p.hidden = p.dataset.panel !== b.dataset.p)
-}
+})
 if (/xiaomi|redmi|poco/i.test(navigator.userAgent)) {} else if (/SM-|samsung/i.test(navigator.userAgent)) document.querySelector('[data-p=samsung]').click()
 else if (/huawei|honor|HMA-|ELE-|VOG-/i.test(navigator.userAgent)) document.querySelector('[data-p=huawei]').click()
+// Поиск по проблемам: ищет по разделам, понимает разговорные слова
+const SYN = { 'не грузит': 'интернета не открывается', 'не работает': 'интернета нет', 'нет сети': 'интернета', 'отваливается': 'отключается', 'вылетает': 'отключается', 'сбер': 'банк', 'тинькофф': 'банк', 'т-банк': 'банк', 'госуслуг': 'госуслуги', 'вайлдберриз': 'маркетплейс', 'озон': 'маркетплейс', 'тормозит': 'медленно мобильном', 'медленно': 'мобильном белые', 'тв': 'android tv', 'телевизор': 'android tv', 'часы': 'wear os', 'обнов': 'обновить', 'ставится': 'установ', 'устан': 'установ', 'apk': 'установ', 'ксиаоми': 'xiaomi', 'самсунг': 'samsung', 'хонор': 'honor', 'хуавей': 'huawei' }
+const secs = [...document.querySelectorAll('main section')], orig = new Map(secs.map(x => [x, x.innerHTML]))
+function find() {
+  const raw = document.getElementById('hq').value.trim().toLowerCase()
+  secs.forEach(x => { if (x.querySelector('mark.h')) x.innerHTML = orig.get(x) })
+  if (!raw) { secs.forEach(x => (x.hidden = false)); document.getElementById('nohit').hidden = true; return }
+  let words = raw.split(/\s+/)
+  Object.entries(SYN).forEach(([k, v]) => { if (raw.includes(k)) words = words.concat(v.split(' ')) })
+  words = words.filter(w => w.length > 2)
+  let any = false
+  secs.forEach(x => { const t = x.textContent.toLowerCase(); const hit = words.some(w => t.includes(w.slice(0, Math.max(4, w.length - 2)))); x.hidden = !hit; any ||= hit
+    if (hit) { const re = new RegExp('(' + words.map(w => w.slice(0, Math.max(4, w.length - 2)).replace(/[.*+?^${}()|[\]\\]/g, '\\$&')).join('|') + ')', 'gi'); const walk = n => { if (n.nodeType === 3) { if (re.test(n.data)) { const sp = document.createElement('span'); sp.innerHTML = n.data.replace(/[&<>]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' }[c])).replace(re, '<mark class="h">$1</mark>'); n.replaceWith(sp) } re.lastIndex = 0 } else if (n.nodeType === 1 && !/^(SCRIPT|STYLE|BUTTON)$/.test(n.tagName) && !n.classList.contains('scr')) [...n.childNodes].forEach(walk) }; walk(x) } })
+  document.getElementById('nohit').hidden = any
+}
+document.getElementById('hq').addEventListener('input', find)
+document.getElementById('chips').onclick = e => { const b = e.target.closest('button'); if (!b) return; document.getElementById('hq').value = b.textContent; find() }
 </script>
 <script src="/theme.js" defer></script>
 </body>

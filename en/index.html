@@ -7,7 +7,7 @@
 <meta name="description" content="APEX CLIENT for Android: autopilot picks the best server, gets around carrier whitelists with an LTE bypass, blocks ads and scam sites. Phone, Android TV and watch. Free and open source.">
 <meta property="og:title" content="APEX CLIENT">
 <meta property="og:description" content="The Android VPN that finds its own way: autopilot, whitelist bypass, no ads.">
-<meta property="og:image" content="https://dubstep2004.github.io/og.png">
+<meta property="og:image" content="https://dubstep2004.github.io/og/en.jpg">
 <meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
 <meta property="og:url" content="https://dubstep2004.github.io/en/"><meta property="og:type" content="website">
 <meta name="twitter:card" content="summary_large_image">
@@ -100,6 +100,46 @@
   .dev .big { font-size: 40px; }
   .dev img { width: 110px; height: 110px; border-radius: 50%; display: block; }
 
+  /* Как работает VPN — схема с бегущими «пакетами» */
+  .how { display: grid; grid-template-columns: 1fr 120px 1fr 120px 1fr; align-items: center; gap: 0; margin: 10px 0 0; }
+  .how .node { text-align: center; padding: 22px 14px; border: 1px solid var(--line); border-radius: 24px; background: var(--ink2); }
+  .how .node .ic { width: 72px; height: 72px; margin: 0 auto 12px; border-radius: 22px; display: grid; place-items: center; font-size: 34px; background: #ffffff0a; }
+  .how .node.mid .ic { background: linear-gradient(160deg, #3fb8ff, var(--violet)); box-shadow: 0 0 40px #4c7dff66; border-radius: 50% 50% 46% 46% / 30% 30% 70% 70%; }
+  .how .node b { display: block; font-size: 18px; margin-bottom: 6px; } .how .node p { margin: 0; color: var(--dim); font-size: 15px; }
+  .how .wire { position: relative; height: 6px; margin: 0 -2px; border-radius: 6px; background: repeating-linear-gradient(90deg, #6d5cff55 0 10px, transparent 10px 18px); overflow: hidden; }
+  .how .wire.enc { background: linear-gradient(90deg, #6d5cff, #3fb8ff); box-shadow: 0 0 18px #4c7dff88; }
+  .how .wire i { position: absolute; top: -3px; width: 12px; height: 12px; border-radius: 50%; background: #fff; box-shadow: 0 0 12px #9fd8ff; left: -14px; }
+  .how .wire.enc i { border-radius: 3px; background: #b6f3ff; }
+  .how.go .wire i { animation: pkt 2.4s linear infinite; } .how.go .wire i:nth-child(2) { animation-delay: .8s; } .how.go .wire i:nth-child(3) { animation-delay: 1.6s; }
+  @keyframes pkt { to { left: 100%; } }
+  .how-note { color: var(--dim); font-size: 15px; margin: 22px 0 0; max-width: 62ch; }
+  @media (max-width: 860px) {
+    .how { grid-template-columns: 1fr; justify-items: center; } .how .node { width: 100%; max-width: 380px; }
+    .how .wire { width: 6px; height: 54px; margin: -2px 0; background: repeating-linear-gradient(180deg, #6d5cff55 0 10px, transparent 10px 18px); }
+    .how .wire.enc { background: linear-gradient(180deg, #6d5cff, #3fb8ff); }
+    .how .wire i { left: -3px; top: -14px; } @keyframes pktv { to { top: 100%; } } .how.go .wire i { animation-name: pktv; }
+  }
+  /* Видео установки */
+  .vid { margin: 34px 0 0; max-width: 360px; } .vid video { width: 100%; aspect-ratio: 9 / 16; border-radius: 26px; border: 1px solid var(--line); background: #0a0d1c; display: block; }
+  .vid figcaption { color: var(--dim); font-size: 14px; margin-top: 10px; }
+  .install-row { display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: start; } .install-row .vid { margin: 0; }
+  @media (max-width: 860px) { .install-row { grid-template-columns: 1fr; } .install-row .vid { margin: 30px auto 0; max-width: 300px; } }
+  /* Пригласить друга */
+  dialog.inv { width: min(440px, calc(100vw - 32px)); border: 1px solid var(--line); border-radius: 26px; background: var(--ink2, var(--ink)); color: var(--text); padding: 22px; }
+  dialog.inv::backdrop { background: #05061099; backdrop-filter: blur(4px); }
+  dialog.inv h3 { margin: 0 0 6px; font-family: var(--display); font-size: 24px; } dialog.inv p { color: var(--dim); margin: 0 0 12px; font-size: 15px; }
+  dialog.inv textarea { width: 100%; font: inherit; font-size: 15px; color: var(--text); background: var(--ink); border: 1px solid var(--line); border-radius: 14px; padding: 12px; resize: vertical; }
+  dialog.inv .acts { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  dialog.inv .acts a, dialog.inv .acts button { font: inherit; font-size: 14px; font-weight: 700; color: var(--text); background: #ffffff0d; border: 1px solid var(--line); border-radius: 99px; padding: 9px 14px; text-decoration: none; cursor: pointer; }
+  dialog.inv .qrbox { display: flex; gap: 14px; align-items: center; margin-top: 16px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--dim); font-size: 14px; }
+  dialog.inv .qrbox .img { background: #fff; padding: 8px; border-radius: 14px; line-height: 0; flex: none; } dialog.inv .qrbox .img img, dialog.inv .qrbox .img canvas { width: 132px; height: 132px; }
+  dialog.inv .x { position: absolute; top: 14px; right: 14px; background: none; border: 0; color: var(--dim); font-size: 22px; cursor: pointer; }
+  .uptime { display: block; color: var(--dim); font-size: 13px; font-weight: 600; margin-top: 8px; }
+  /* Появление блоков при прокрутке */
+  @media (prefers-reduced-motion: no-preference) {
+    .reveal-on main section > .wrap > * { opacity: 0; transform: translateY(22px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); transition-delay: calc(var(--i, 0) * 70ms); }
+    .reveal-on main section > .wrap > .shown { opacity: 1; transform: none; }
+  }
   .steps { counter-reset: s; display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; list-style: none; padding: 0; margin: 0; }
   .steps li { counter-increment: s; border-top: 2px solid var(--violet); padding: 20px 4px 0; }
   .steps li::before { content: counter(s); font-family: var(--display); font-weight: 700; font-size: 44px; color: var(--violet); display: block; line-height: 1; margin: 0 0 14px; }
@@ -258,6 +298,13 @@
     </div>
   </div></section>
 
+  <section id="how"><div class="wrap">
+    <h2>How it works</h2>
+    <p class="lead">Three steps between your phone and the website — no setup on your side.</p>
+    <div class="how" id="howFlow"><div class="node "><div class="ic" aria-hidden="true">📱</div><b>Your phone</b><p>You tap the shield. Apps work as usual.</p></div><div class="wire" aria-hidden="true"><i></i><i></i><i></i></div><div class="node mid"><div class="ic" aria-hidden="true">🛡</div><b>Encryption and autopilot</b><p>APEX encrypts your traffic and picks the fastest working server by itself.</p></div><div class="wire enc" aria-hidden="true"><i></i><i></i><i></i></div><div class="node "><div class="ic" aria-hidden="true">🌍</div><b>Open internet</b><p>Websites see the server address, not yours. Blocks and whitelists are bypassed.</p></div></div>
+    <p class="how-note">Server down or blocked? Autopilot switches to another one in seconds — you will not even notice.</p>
+  </div></section>
+
   <section id="features"><div class="wrap">
     <h2>Everything you need is built in</h2>
     <p class="lead">No setup needed: the app picks the server, DNS and route by itself. But you can change anything if you want.</p>
@@ -336,11 +383,12 @@
   <section id="install"><div class="wrap">
     <h2>Install in a minute</h2>
     <p class="lead">The app isn’t on Google Play — you download it as a file from GitHub, where its open source code lives.</p>
-    <ol class="steps">
+    <div class="install-row"><div><ol class="steps">
       <li><b>Download the file</b><p>Tap “Download for Android” — the file <span id="apkName">apex-client.apk</span> downloads.</p></li>
       <li><b>Allow installation</b><p>Open the file. Android asks to allow installs from your browser — allow it once.</p></li>
       <li><b>Add your subscription</b><p>Open APEX CLIENT, paste your subscription link and tap the shield. Updates install by themselves after that.</p></li>
-    </ol>
+    </ol></div>
+    <figure class="vid"><video controls preload="none" playsinline muted poster="/media/install-en.webp" aria-label="Video: how to install APEX CLIENT"><source src="/media/install-en.mp4" type="video/mp4"></video><figcaption>Install in 30 seconds — no sound needed</figcaption></figure></div>
   </div></section>
 
   <section id="faq" class="faq"><div class="wrap">
@@ -362,10 +410,17 @@
       <a href="https://t.me/share/url?url=https%3A%2F%2Fdubstep2004.github.io%2Fen%2F&text=APEX%20CLIENT%20%E2%80%94%20the%20VPN%20that%20finds%20its%20own%20way" target="_blank" rel="noopener">Telegram</a>
       <a href="https://wa.me/?text=APEX%20CLIENT%20%E2%80%94%20https%3A%2F%2Fdubstep2004.github.io%2Fen%2F" target="_blank" rel="noopener">WhatsApp</a>
       <a href="https://vk.com/share.php?url=https%3A%2F%2Fdubstep2004.github.io%2Fen%2F" target="_blank" rel="noopener">VK</a>
+      <button type="button" id="invBtn">💌 Invite a friend</button>
       <button type="button" id="copyBtn">🔗 Copy link</button>
     </div>
   </div></div>
 </main>
+<dialog class="inv" id="invDlg" aria-labelledby="invH"><button class="x" id="invX" aria-label="Close">×</button>
+  <h3 id="invH">Invite a friend</h3><p>Send a ready message — you can edit it.</p>
+  <textarea id="invText" rows="4">I use APEX CLIENT — a VPN that finds a working server by itself, even with whitelists. Free, for Android, TV and watches: https://dubstep2004.github.io/en/</textarea>
+  <div class="acts"><a id="invTg" target="_blank" rel="noopener">Telegram</a><a id="invWa" target="_blank" rel="noopener">WhatsApp</a><a id="invVk" target="_blank" rel="noopener">VK</a><button type="button" id="invCopy">📋 Copy text</button></div>
+  <div class="qrbox"><div class="img" id="invQr"></div><span>Friend nearby? Let them point the phone camera here — the site opens.</span></div>
+</dialog>
 
 <footer><div class="wrap">
   <span>© 2026 Dubstep2004 · APEX CLIENT</span>
@@ -475,6 +530,40 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/app.json?t
   render()
 })()
 
+// Пригласить друга: готовый текст, Telegram / WhatsApp / ВК и QR-код
+;(() => {
+  const d = $('invDlg'), t = $('invText'), SITE = 'https://dubstep2004.github.io/en/'
+  const links = () => { const v = t.value.trim(), e = encodeURIComponent; $('invTg').href = 'https://t.me/share/url?url=' + e(SITE) + '&text=' + e(v.replace(SITE, '').trim()); $('invWa').href = 'https://wa.me/?text=' + e(v); $('invVk').href = 'https://vk.com/share.php?url=' + e(SITE) + '&title=' + e(v.replace(SITE, '').trim()) }
+  const qr = () => { if ($('invQr').childElementCount) return; const go = () => { try { new QRCode($('invQr'), { text: SITE, width: 264, height: 264, colorDark: '#0a0d1c', colorLight: '#ffffff', correctLevel: QRCode.CorrectLevel.M }) } catch {} }
+    if (window.QRCode) return go(); const sc = document.createElement('script'); sc.src = 'https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js'; sc.onload = go; document.head.appendChild(sc) }
+  $('invBtn').onclick = () => { links(); d.showModal(); qr() }
+  t.addEventListener('input', links); $('invX').onclick = () => d.close()
+  d.addEventListener('click', e => { if (e.target === d) d.close() })
+  $('invCopy').onclick = async () => { try { await navigator.clipboard.writeText(t.value); $('invCopy').textContent = '✓ Copied' } catch { t.select() } setTimeout(() => { $('invCopy').textContent = '📋 Copy text' }, 2000) }
+})()
+
+// Как работает: «пакеты» бегут, только когда схема на экране
+;(() => { const h = $('howFlow'); if (!h || !('IntersectionObserver' in window)) return; new IntersectionObserver(es => es.forEach(e => h.classList.toggle('go', e.isIntersecting)), { threshold: .3 }).observe(h) })()
+
+// Появление блоков при прокрутке (кто выключил анимации в телефоне — без эффекта)
+;(() => {
+  if (!('IntersectionObserver' in window) || matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  document.documentElement.classList.add('reveal-on')
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.classList.add('shown'); io.unobserve(e.target) } }), { rootMargin: '0px 0px -8% 0px' })
+  document.querySelectorAll('main section > .wrap > *').forEach(el => { el.style.setProperty('--i', [...el.parentElement.children].indexOf(el) % 4); io.observe(el) })
+  setTimeout(() => document.querySelectorAll('main section > .wrap > *').forEach(el => el.classList.add('shown')), 6000) // запасной путь
+})()
+
+// Без сбоев N дней — считает робот GitHub (docs/stats/uptime.json)
+fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/stats/uptime.json?t=' + Math.floor(Date.now() / 36e5)).then(r => r.ok ? r.json() : Promise.reject()).then(u => {
+  const n = Math.floor((Date.now() - u.since) / 864e5); if (!(n >= 1) || window.__noStatus) return
+  const el = $('status'); let k = 0
+  const put = () => { if (el.hidden && k++ < 20) return setTimeout(put, 400); if (el.hidden || el.dataset.s || document.querySelector('.uptime')) return
+  const w = ['day', 'days', 'days'], word = n === 1 ? w[0] : w[1]
+  const sp = document.createElement('span'); sp.className = 'uptime'; sp.textContent = 'No outages or maintenance: {n}'.replace('{n}', n + ' ' + word); el.after(sp) }
+  put()
+}).catch(() => {})
+
 // Поделиться
 $('shareBtn').onclick = async () => {
   const data = { title: 'APEX CLIENT', text: 'APEX CLIENT — the VPN that finds its own way', url: 'https://dubstep2004.github.io/en/' }
@@ -491,11 +580,15 @@ fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/site.json?
   .catch(() => fetch('https://cdn.jsdelivr.net/gh/' + CFG + '@main/docs/config/site.json').then(r => r.ok ? r.json() : Promise.reject()))
   .then(c => {
     const main = document.querySelector('main'), end = $('finalWrap')
+    // Новые блоки, которых ещё нет в настройках пульта, остаются рядом с соседом из разметки
+    const listed = new Set((c.sections || []).map(x => x.id)), prev = {}
+    if (listed.size) [...main.querySelectorAll(':scope > section')].forEach((el, i, a) => { if (!listed.has(el.id)) prev[el.id] = a.slice(0, i).reverse().find(x => listed.has(x.id))?.id })
     ;(c.sections || []).forEach(x => {
       const el = $(x.id); if (!el || el.tagName !== 'SECTION') return
       main.insertBefore(el, end)
       if (x.on === false) { el.dataset.off = '1'; el.hidden = true; document.querySelectorAll('header nav a[href="#' + x.id + '"]').forEach(a => a.hidden = true) }
     })
+    Object.entries(prev).forEach(([id, after]) => { const el = $(id); if (!el) return; after ? $(after).after(el) : main.insertBefore(el, main.querySelector(':scope > section')) })
     if (c.show && c.show.downloads === false) { window.__noDl = true; window.__ver && window.__ver() }
     if (c.show && c.show.status === false) { window.__noStatus = true; $('status').hidden = true }
     if (c.show && c.show.holiday) window.apexHoliday && apexHoliday(c.show.holiday)
