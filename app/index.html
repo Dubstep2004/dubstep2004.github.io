@@ -234,7 +234,8 @@ const qs = new URLSearchParams(location.search), U = (W && W.initDataUnsafe && W
 let BOT = /^[A-Za-z0-9_]{4,32}$/.test(qs.get('bot') || '') ? qs.get('bot') : ''
 try { if (BOT) localStorage.setItem('apex_bot', BOT); else BOT = (localStorage.getItem('apex_bot') || '').replace(/[^A-Za-z0-9_]/g, '') } catch (e) {}
 // Открыто кнопкой «📱 APEX» внизу чата — можно отправить боту действие (sendData); из меню или ссылки — ведём в чат по ссылке
-const CAN_SEND = !!(W && W.sendData && !(W.initDataUnsafe && W.initDataUnsafe.query_id))
+// …и только если бот новый (bv в адресе) — старый бот такие сообщения не понимает
+const CAN_SEND = !!(W && W.sendData && !(W.initDataUnsafe && W.initDataUnsafe.query_id) && qs.get('bv'))
 const SITE = 'https://dubstep2004.github.io', CFG = 'Dubstep2004/apex-client'
 let SUPPORT = 'https://t.me/Apexx_support'
 const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
@@ -298,22 +299,28 @@ if (ADM) {
   go('adm'); admLoad()
 }
 document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W) return; e.preventDefault()
-  if (a.id === 'dl') { $('dlHelp').hidden = false; try { W.openLink(a.href, { try_instant_view: false }) } catch (x) { W.openLink(a.href) } return } // файл: сразу и подсказка, если Telegram не скачает
+  if (a.id === 'dl') { $('dlHelp').hidden = false; openFile(a.href); return } // файл: на Android — сразу в Chrome (встроенный браузер Telegram файлы не сохраняет)
   tgOpen(a.href) })
+function openFile(u) { // внешний браузер (Chrome, если есть) — встроенный просмотр Telegram файлы не сохраняет
+  if (!W) { location.href = u; return }
+  try { W.openLink(u, { try_instant_view: false, try_browser: 'chrome' }) } catch (x) { try { W.openLink(u) } catch (y) { location.href = u } }
+}
 $('dlCopy').onclick = () => (navigator.clipboard ? navigator.clipboard.writeText($('dl').href) : Promise.reject()).then(() => toast('Ссылка скопирована — вставьте её в Chrome')).catch(() => toast($('dl').href))
 // Android: просим систему открыть ссылку в Chrome (если он есть), а не во встроенном браузере Telegram
-$('dlExt').onclick = () => { const u = $('dl').href; if (W && W.platform === 'android') { try { W.openLink('intent://' + u.replace(/^https:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end') } catch (x) { W.openLink(u) } } else if (W) W.openLink(u); else location.href = u }
+$('dlExt').onclick = () => { const u = $('dl').href; if (W && W.platform === 'android') location.href = 'intent://' + u.replace(/^https:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;S.browser_fallback_url=' + encodeURIComponent(u) + ';end'; else openFile(u) } // Android: просим систему открыть в Chrome
 
 // Действия для бота. Через кнопку внизу — сразу боту (окно закроется, ответ придёт в чат); иначе — открываем чат с командой
 const START = { sub: 'sub', invite: 'invite', status: 'status', report: 'report', video: 'video', remind: '', stop: '', news: '', ask: '', cmp: '' }
 function act(a, extra) {
   const d = Object.assign({ a }, extra || {})
   if (CAN_SEND) { try { W.HapticFeedback && W.HapticFeedback.notificationOccurred('success') } catch (e) {} W.sendData(JSON.stringify(d)); return }
+  // Без прямой отправки: открываем чат с ботом (или поддержкой) с уже набранным текстом — останется нажать «Отправить»
+  const chat = BOT ? 'https://t.me/' + BOT : SUPPORT
+  const draft = a === 'ask' ? d.text : a === 'report' ? `Проблема с приложением\nУстройство: ${d.device || '—'}\nВерсия: ${d.ver || '—'}\n${d.text}` : a === 'cmp' ? 'не работает ' + d.name : ''
+  if (draft) { toast('Текст уже набран в чате — нажмите «Отправить»'); return tgOpen(chat + '?text=' + encodeURIComponent(draft.slice(0, 2000))) } // открывать — сразу по нажатию, иначе Telegram не пустит
   if (!BOT) return toast('Откройте это окно кнопкой «📱 APEX» в чате с ботом — тогда всё сработает')
   if (START[a]) return tgOpen(`https://t.me/${BOT}?start=${START[a]}`)
-  if (a === 'ask' && navigator.clipboard) navigator.clipboard.writeText(d.text || '').catch(() => {})
-  toast(a === 'ask' ? 'Текст скопирован — вставьте его в чат с ботом' : a === 'cmp' ? 'Напишите в чат: «не работает ' + (d.name || '…') + '»' : 'Напишите в чат команду /' + a)
-  setTimeout(() => tgOpen(`https://t.me/${BOT}`), 900)
+  toast('Нажмите «Отправить» в чате'); tgOpen(chat + '?text=' + encodeURIComponent('/' + a))
 }
 document.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
   const a = b.dataset.act
