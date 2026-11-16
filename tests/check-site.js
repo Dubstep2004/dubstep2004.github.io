@@ -12,6 +12,7 @@ const srv = http.createServer((q, r) => {
 })
 const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/wallpapers/', '/status/', '/status/?lang=en', '/update/', '/404.html']
 const rel = [{ tag_name: 'v9.9.9', draft: false, prerelease: false, published_at: new Date().toISOString(), body: '- проверка\n', assets: [{ name: 'apex-client-9.9.9.apk', size: 6e7, download_count: 5, browser_download_url: 'https://github.com/x.apk' }, { name: 'apex-watch-9.9.9.apk', size: 1e7, download_count: 1, browser_download_url: 'https://github.com/w.apk' }] }]
+const UP = { since: Date.now() - 5 * 864e5, days: { [new Date(Date.now() - 2 * 864e5 + 3 * 36e5).toISOString().slice(0, 10)]: 'm' }, events: [{ n: 'Нидерланды', k: 'm', a: Date.now() - 2 * 864e5, b: Date.now() - 2 * 864e5 + 72e5 }] }
 const cfg = { banners: [{ id: 'b', text: 'Проверка баннера', level: 'warn', devices: ['site'] }], servers: { status: { 'Германия': { state: 'maintenance', until: Date.now() + 36e5 } } } }
 const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log('::error title=' + w + '::' + m) }
 
@@ -23,7 +24,7 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
       const p = await b.newPage({ viewport: { width, height: 900 } }), W = u + ' (' + width + ')'
       p.on('pageerror', e => bad(W, 'ошибка JavaScript: ' + e.message))
       await p.route('https://api.github.com/**', rt => rt.fulfill({ status: 200, contentType: 'application/json', body: JSON.stringify(rt.request().url().includes('/latest') ? rel[0] : rel) }))
-      await p.route(/raw\.githubusercontent|cdn\.jsdelivr/, rt => rt.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(rt.request().url().includes('site.json') ? { sections: [], show: { holiday: 'party' } } : cfg) }))
+      await p.route(/raw\.githubusercontent|cdn\.jsdelivr/, rt => rt.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(rt.request().url().includes('site.json') ? { sections: [], show: { holiday: 'party' } } : rt.request().url().includes('uptime.json') ? UP : cfg) }))
       await p.route(/fonts\.|cdnjs|t\.me|wa\.me|vk\.com/, rt => rt.abort())
       await p.goto('http://localhost:8198' + u); await p.waitForTimeout(700)
       const r = await p.evaluate(() => ({
@@ -45,6 +46,9 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
         else { await btn.click(); const th = await p.evaluate(() => document.documentElement.dataset.theme + '|' + getComputedStyle(document.body).backgroundColor); if (!th.startsWith('light|rgb(245')) bad(W, 'светлая тема не включилась: ' + th); await btn.click(); await btn.click() }
       }
       if (u.startsWith('/status/') && !(await p.textContent('#now')).includes('Германия')) bad(W, 'статус не показывает техработы')
+      if (u.startsWith('/status/')) { await p.waitForFunction(() => document.querySelectorAll('#bars i').length === 90, null, { timeout: 5000 }).catch(() => {})
+        if ((await p.$$('#bars i')).length !== 90 || (await p.$$('#bars i[data-k=m]')).length !== 1) bad(W, 'статус: нет полоски истории за 90 дней')
+        if (!(await p.textContent('#events')).includes('Нидерланды')) bad(W, 'статус: нет списка событий') }
       await p.close()
     }
   await b.close(); srv.close()

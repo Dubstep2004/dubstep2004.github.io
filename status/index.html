@@ -51,6 +51,12 @@
   .list { list-style: none; padding: 0; margin: 0 0 8px; } .list li { display: flex; gap: 12px; align-items: baseline; padding: 12px 0; border-top: 1px solid var(--line); margin: 0; }
   .list li:first-child { border-top: 0; } .list .ic { flex: 0 0 auto; } .list .t { color: var(--text); font-weight: 700; } .list small { display: block; color: var(--dim); font-size: 14px; font-weight: 500; }
   .empty { color: var(--faint); }
+  .bars { display: grid; grid-template-columns: repeat(90, 1fr); gap: 2px; height: 34px; margin: 6px 0 8px; }
+  .bars i { border-radius: 2px; background: #2fd38b; opacity: .85; } .bars i[data-k=s] { background: #f5d06f; } .bars i[data-k=m] { background: #f5b759; } .bars i[data-k=a] { background: #f0616d; }
+  .bars i:hover { opacity: 1; outline: 1px solid var(--text); }
+  .axis { display: flex; justify-content: space-between; color: var(--faint); font-size: 13px; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; color: var(--dim); font-size: 14px; margin: 10px 0 6px; } .legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin-right: 6px; vertical-align: -1px; }
+  @media (max-width: 520px) { .bars { gap: 1px; } }
   .meta { color: var(--faint); font-size: 14px; margin: 26px 0 50px; }
   @media (prefers-reduced-motion: no-preference) { .state[data-s=ok] .dot { animation: pulse 2.4s ease-in-out infinite; } @keyframes pulse { 50% { box-shadow: 0 0 0 11px #2fd38b10; } } }
 </style>
@@ -63,6 +69,9 @@
   <div class="state" id="state" data-s="ok"><i class="dot"></i><div><b id="stTitle">Проверяем…</b><span id="stSub"></span></div></div>
   <section><h2 id="hNow">Сейчас</h2><ul class="list" id="now"></ul></section>
   <section><h2 id="hPlan">Запланировано</h2><ul class="list" id="plan"></ul></section>
+  <section id="hist"><h2 id="hHist">История за 90 дней</h2><p id="uptime" class="lead" style="font-size:16px;margin:0 0 6px"></p><div class="bars" id="bars" role="img" aria-label="История за 90 дней"></div><div class="axis"><span id="ax0">90 дней назад</span><span id="ax1">сегодня</span></div>
+    <div class="legend"><span><i style="background:#2fd38b"></i><span id="lgOk">без проблем</span></span><span><i style="background:#f5d06f"></i><span id="lgS">медленнее обычного</span></span><span><i style="background:#f5b759"></i><span id="lgM">обслуживание</span></span><span><i style="background:#f0616d"></i><span id="lgA">сбой</span></span></div>
+    <ul class="list" id="events"></ul></section>
   <section><h2 id="hVer">Приложение</h2><ul class="list" id="ver"><li class="empty">—</li></ul></section>
   <p class="note" id="tip">Если сервер на обслуживании, автопилот сам выберет другой. Ничего делать не нужно — просто нажмите на щит. Не работает совсем? <a href="/help/">Помощь</a></p>
   <p class="meta" id="upd"></p>
@@ -76,16 +85,18 @@ const L = EN ? {
   ok: 'All servers are working', okSub: 'No maintenance or outages right now', bad: 'Some servers have an outage', badSub: 'We are fixing it — autopilot switches you to a working server',
   maint: 'Some servers are under maintenance', slowT: 'Some servers are slower than usual', warnSub: 'Autopilot avoids them automatically',
   nothing: 'Nothing right now', noPlan: 'No planned maintenance', m: 'Maintenance', s: 'Slower than usual', until: 'until', from: 'from', noEnd: 'until further notice',
+  hHist: 'Last 90 days', ax0: '90 days ago', ax1: 'today', lgOk: 'no issues', lgS: 'slower than usual', lgM: 'maintenance', lgA: 'outage', up: 'Days without issues', noEv: 'No incidents in 90 days 🎉', all: 'All servers', ongoing: 'still going', dur: 'took', h: 'h', min: 'min', d: 'd',
   latest: 'Latest version', dl: 'Download', upd: 'Updated', off: 'Status is not published right now', err: 'Could not load the status. Check your internet and refresh the page.', loc: 'en',
 } : {
   ok: 'Все серверы работают', okSub: 'Сейчас нет ни техработ, ни сбоев', bad: 'Есть сбой у части серверов', badSub: 'Уже чиним — автопилот переключит вас на рабочий сервер',
   maint: 'Часть серверов на обслуживании', slowT: 'Часть серверов медленнее обычного', warnSub: 'Автопилот сам их обходит',
   nothing: 'Сейчас ничего', noPlan: 'Техработ не запланировано', m: 'Обслуживание', s: 'Медленнее обычного', until: 'до', from: 'с', noEnd: 'до окончания работ',
+  hHist: 'История за 90 дней', ax0: '90 дней назад', ax1: 'сегодня', lgOk: 'без проблем', lgS: 'медленнее обычного', lgM: 'обслуживание', lgA: 'сбой', up: 'Дней без проблем', noEv: 'За 90 дней ни одного сбоя 🎉', all: 'Все серверы', ongoing: 'идёт сейчас', dur: 'длилось', h: 'ч', min: 'мин', d: 'д',
   latest: 'Последняя версия', dl: 'Скачать', upd: 'Обновлено', off: 'Статус сейчас не публикуется', err: 'Не удалось загрузить статус. Проверьте интернет и обновите страницу.', loc: 'ru',
 }
 const $ = id => document.getElementById(id)
 const esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
-if (EN) { document.documentElement.lang = 'en'; document.title = 'Server status — APEX CLIENT'; ['h1', 'lead', 'home', 'hNow', 'hPlan', 'hVer'].forEach(k => ($(k).textContent = L[k])); $('tip').innerHTML = L.tip; $('home').href = '/en/' }
+if (EN) { document.documentElement.lang = 'en'; document.title = 'Server status — APEX CLIENT'; ['h1', 'lead', 'home', 'hNow', 'hPlan', 'hVer', 'hHist', 'ax0', 'ax1', 'lgOk', 'lgS', 'lgM', 'lgA'].forEach(k => ($(k).textContent = L[k])); $('tip').innerHTML = L.tip; $('home').href = '/en/' }
 const fmt = ms => new Date(ms).toLocaleString(L.loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })
 const CFG = 'Dubstep2004/apex-client'
 const li = (ic, t, sub) => `<li><span class="ic">${ic}</span><div><span class="t">${esc(t)}</span>${sub ? `<small>${esc(sub)}</small>` : ''}</div></li>`
@@ -117,6 +128,19 @@ fetch('https://api.github.com/repos/' + CFG + '/releases/latest').then(r => r.ok
   const apk = (r.assets || []).find(a => /^apex-(client|vpn)-.*\.apk$/.test(a.name))
   $('ver').innerHTML = `<li><span class="ic">📱</span><div><span class="t">${L.latest} ${esc(r.tag_name.replace(/^v/, ''))}</span><small>${new Date(r.published_at).toLocaleDateString(L.loc, { day: 'numeric', month: 'long' })}${apk ? ` · <a href="${esc(apk.browser_download_url)}">${L.dl}</a>` : ''}</small></div></li>`
 }).catch(() => {})
+// История: робот раз в день собирает её из пометок пульта (docs/stats/uptime.json) — только названия серверов и время
+function hist() {
+  fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/stats/uptime.json?t=' + Math.floor(Date.now() / 3600000)).then(r => r.ok ? r.json() : Promise.reject()).then(u => {
+    const days = u.days || {}, D = 86400000, key = t => new Date(t + 3 * 3600000).toISOString().slice(0, 10), K = { s: L.lgS, m: L.lgM, a: L.lgA }
+    let bad = 0, html = ''
+    for (let i = 89; i >= 0; i--) { const t = Date.now() - i * D, k = days[key(t)]; if (k) bad++; html += `<i${k ? ` data-k="${k}"` : ''} title="${new Date(t).toLocaleDateString(L.loc, { day: 'numeric', month: 'short' })} — ${k ? K[k] : L.lgOk}"></i>` }
+    $('bars').innerHTML = html; $('uptime').textContent = `${L.up}: ${90 - bad} / 90 · ${((90 - bad) / 90 * 100).toFixed(1)}%`
+    const dur = (a, b) => { const m = Math.round((b - a) / 60000); return m >= 1440 ? Math.round(m / 1440) + ' ' + L.d : m >= 60 ? Math.round(m / 60) + ' ' + L.h : m + ' ' + L.min }
+    const ev = (u.events || []).slice(0, 10)
+    $('events').innerHTML = ev.map(e => li({ a: '🛑', m: '🔧', s: '🐢' }[e.k] || '•', e.n === 'Все' ? L.all : e.n, K[e.k] + ' · ' + fmt(e.a) + ' · ' + (e.b ? L.dur + ' ' + dur(e.a, e.b) : L.ongoing))).join('') || `<li class="empty">${L.noEv}</li>`
+  }).catch(() => { $('hist').hidden = true })
+}
+hist()
 load(); setInterval(() => { if (!document.hidden) load() }, 60000)
 </script>
 <script src="/theme.js" defer></script>
