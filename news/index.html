@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Новости APEX CLIENT</title>
+<meta name="description" content="Последние новости APEX CLIENT из Telegram-канала: версии, серверы, техработы.">
+<link rel="icon" href="/apex-client/invite/icon.png">
+<style>
+  @font-face { font-family: "Manrope"; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-cyrillic.woff2) format("woff2"); unicode-range: U+0400-045F; }
+  @font-face { font-family: "Manrope"; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-latin.woff2) format("woff2"); unicode-range: U+0000-00FF; }
+  :root { --base: #08080e; --surface: #13131c; --high: #1e1e2a; --edge: rgba(255,255,255,.07); --text: #f4f4f7; --dim: #8e8e9a; --accent: #7b6cff; --accent2: #22d3ee; color-scheme: dark; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--base); color: var(--text); font: 16px/1.55 "Manrope", system-ui, sans-serif; }
+  body::before { content: ""; position: fixed; inset: -20% -30% auto; height: 60vh; pointer-events: none; z-index: -1; background: radial-gradient(50% 50% at 30% 40%, rgba(123,108,255,.22), transparent 70%), radial-gradient(40% 45% at 80% 30%, rgba(34,211,238,.12), transparent 70%); }
+  main { max-width: 640px; margin: 0 auto; padding: 22px 16px 48px; }
+  a { color: var(--accent2); } .top { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; } .top img { width: 34px; height: 34px; border-radius: 10px; } .top a { color: var(--text); text-decoration: none; font-weight: 800; }
+  h1 { font-size: 28px; line-height: 1.2; margin: 0 0 6px; } .dim { color: var(--dim); font-size: 14px; }
+  .post { background: var(--surface); border: 1px solid var(--edge); border-radius: 22px; padding: 16px 18px; margin: 12px 0; }
+  .post time { color: var(--dim); font-size: 13px; display: block; margin-bottom: 6px; } .post p { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+  .post .more { display: inline-block; margin-top: 10px; font-size: 14px; font-weight: 700; text-decoration: none; }
+  .btn { display: block; text-align: center; text-decoration: none; font-weight: 800; color: #fff; background: linear-gradient(135deg, #7b6cff, #4fa3f7); border-radius: 18px; padding: 14px; margin: 18px 0 0; }
+</style>
+</head>
+<body>
+<main>
+  <div class="top"><img src="/apex-client/invite/icon.png" alt=""><a href="/">APEX CLIENT</a></div>
+  <h1>Новости</h1>
+  <div class="dim" id="sub">Из нашего Telegram-канала: новые версии, серверы и техработы.</div>
+  <div id="list"><p class="dim">Загружаю…</p></div>
+  <a class="btn" id="chan" href="https://t.me/apex_client_news">📣 Открыть канал в Telegram</a>
+</main>
+<script>
+const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
+const linkify = s => esc(s).replace(/https:\/\/[^\s<]+/g, u => `<a href="${u}" rel="noopener">${u.replace(/^https:\/\//, '').slice(0, 60)}</a>`)
+const raw = p => fetch('https://raw.githubusercontent.com/Dubstep2004/apex-client/main/' + p + '?t=' + Math.floor(Date.now() / 300000)).then(r => r.ok ? r.json() : Promise.reject())
+raw('docs/config/app.json').then(c => { if (c.links && /^https:\/\/t\.me\//.test(c.links.channel || '')) $('chan').href = c.links.channel }).catch(() => {})
+raw('docs/stats/channel.json').then(d => {
+  const posts = (d.posts || []).filter(p => p.text)
+  $('list').innerHTML = posts.map(p => `<article class="post"><time>${new Date(p.at).toLocaleString('ru', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</time><p>${linkify(p.text)}</p>${p.url ? `<a class="more" href="${p.url}" rel="noopener">${p.photo ? '🖼 С картинкой — открыть в Telegram' : 'Открыть в Telegram'} →</a>` : ''}</article>`).join('') || '<p class="dim">Новостей пока нет — загляните в канал.</p>'
+}).catch(() => { $('list').innerHTML = '<p class="dim">Новости появятся здесь скоро — пока загляните в канал.</p>' })
+</script>
+</body>
+</html>
