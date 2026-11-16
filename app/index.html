@@ -4,73 +4,213 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>APEX CLIENT</title>
-<meta name="description" content="Мини-приложение APEX CLIENT в Telegram: статус серверов, последняя версия и помощь.">
+<meta name="description" content="Мини-приложение APEX CLIENT: статус серверов, подписка, помощь и подключение телевизора.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="/apex-client/invite/icon.png">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   @font-face { font-family: "Manrope"; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-cyrillic.woff2) format("woff2"); unicode-range: U+0400-045F; }
   @font-face { font-family: "Manrope"; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-latin.woff2) format("woff2"); unicode-range: U+0000-00FF; }
-  /* Цвета берём из темы Telegram; без Telegram — свои */
-  :root { --bg: var(--tg-theme-bg-color, #0a0d1c); --card: var(--tg-theme-secondary-bg-color, #11152a); --text: var(--tg-theme-text-color, #eef1fa);
-    --dim: var(--tg-theme-hint-color, #8c93b0); --link: var(--tg-theme-link-color, #22d3ee); --btn: var(--tg-theme-button-color, #6d5cff); --btnt: var(--tg-theme-button-text-color, #fff); }
-  @media (prefers-color-scheme: light) { :root { --bg: var(--tg-theme-bg-color, #f5f6fb); --card: var(--tg-theme-secondary-bg-color, #fff); --text: var(--tg-theme-text-color, #12152a); --dim: var(--tg-theme-hint-color, #525a78); --link: var(--tg-theme-link-color, #0b8fb0); } }
-  * { box-sizing: border-box; }
-  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 520px; margin: 0 auto; padding: 18px 16px 30px; }
-  .top { display: flex; align-items: center; gap: 12px; margin: 4px 0 18px; } .top img { width: 44px; height: 44px; border-radius: 12px; }
-  .top b { font-size: 20px; display: block; line-height: 1.2; } .top span { color: var(--dim); font-size: 14px; }
-  .state { display: flex; gap: 14px; align-items: center; padding: 16px; border-radius: 18px; background: var(--card); margin-bottom: 12px; }
-  .dot { flex: 0 0 14px; height: 14px; border-radius: 50%; background: #2fd38b; box-shadow: 0 0 0 5px #2fd38b26; }
-  .state[data-s=warn] .dot { background: #f5b759; box-shadow: 0 0 0 5px #f5b75926; } .state[data-s=bad] .dot { background: #f0616d; box-shadow: 0 0 0 5px #f0616d26; }
-  .state b { display: block; } .state small { color: var(--dim); }
-  .list { list-style: none; margin: 0 0 12px; padding: 4px 16px; background: var(--card); border-radius: 18px; }
-  .list li { padding: 10px 0; border-top: 1px solid color-mix(in srgb, var(--dim) 20%, transparent); } .list li:first-child { border-top: 0; }
-  .list small { display: block; color: var(--dim); font-size: 14px; }
-  .btn { display: block; text-align: center; text-decoration: none; font-weight: 800; color: var(--btnt); background: var(--btn); border-radius: 14px; padding: 14px; margin: 0 0 10px; }
-  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
-  .tile { display: block; text-decoration: none; color: var(--text); background: var(--card); border-radius: 16px; padding: 14px; font-weight: 700; }
-  .tile span { display: block; font-size: 22px; margin-bottom: 4px; }
-  a:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+  @font-face { font-family: "Unbounded"; font-display: swap; font-weight: 200 900; src: url(/fonts/unbounded-cyrillic.woff2) format("woff2"); unicode-range: U+0400-045F; }
+  @font-face { font-family: "Unbounded"; font-display: swap; font-weight: 200 900; src: url(/fonts/unbounded-latin.woff2) format("woff2"); unicode-range: U+0000-00FF; }
+  /* Цвета — из темы Telegram; в браузере — свои (тёмная и светлая) */
+  :root { --bg: var(--tg-theme-bg-color, #0a0d1c); --card: var(--tg-theme-secondary-bg-color, #131830); --text: var(--tg-theme-text-color, #eef1fa);
+    --dim: var(--tg-theme-hint-color, #8c93b0); --link: var(--tg-theme-link-color, #22d3ee); --btn: var(--tg-theme-button-color, #6d5cff); --btnt: var(--tg-theme-button-text-color, #fff);
+    --ok: #2fd38b; --warn: #f5b759; --bad: #f0616d; --s: var(--ok); --line: color-mix(in srgb, var(--dim) 22%, transparent); }
+  @media (prefers-color-scheme: light) { :root { --bg: var(--tg-theme-bg-color, #f3f4fa); --card: var(--tg-theme-secondary-bg-color, #fff); --text: var(--tg-theme-text-color, #12152a); --dim: var(--tg-theme-hint-color, #5b6283); --link: var(--tg-theme-link-color, #0b8fb0); } }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  html, body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  main { max-width: 520px; margin: 0 auto; padding: 14px 16px calc(96px + env(safe-area-inset-bottom)); }
+  [hidden] { display: none !important; }
+  a { color: var(--link); } a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
+  h2 { font-family: "Unbounded", "Manrope", sans-serif; font-size: 19px; letter-spacing: -.01em; margin: 22px 0 10px; }
+  .card { background: var(--card); border-radius: 20px; padding: 16px; margin: 0 0 12px; }
+  .dim { color: var(--dim); font-size: 14px; }
+
+  /* Главное: щит, который дышит цветом состояния серверов */
+  .hero { position: relative; text-align: center; padding: 26px 16px 20px; border-radius: 28px; overflow: hidden; background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--s) 22%, var(--card)) 0%, var(--card) 62%); }
+  .hero[data-s=warn] { --s: var(--warn); } .hero[data-s=bad] { --s: var(--bad); }
+  .shield { width: 112px; height: 128px; margin: 0 auto 12px; display: block; filter: drop-shadow(0 10px 30px color-mix(in srgb, var(--s) 45%, transparent)); }
+  .shield path { fill: var(--s); transition: fill .5s; } .shield .ring { fill: none; stroke: var(--s); stroke-width: 3; opacity: .35; transform-origin: 56px 64px; }
+  @media (prefers-reduced-motion: no-preference) { .shield .ring { animation: ring 2.8s ease-out infinite; } @keyframes ring { from { transform: scale(.9); opacity: .5 } to { transform: scale(1.35); opacity: 0 } } }
+  .hero b { display: block; font-family: "Unbounded", "Manrope", sans-serif; font-size: 20px; line-height: 1.25; letter-spacing: -.01em; }
+  .hero .dim { margin-top: 4px; }
+  .strip { display: grid; grid-template-columns: repeat(30, 1fr); gap: 2px; height: 22px; margin: 16px 0 4px; }
+  .strip i { border-radius: 2px; background: var(--ok); opacity: .8; } .strip i[data-k=s] { background: #f5d06f; } .strip i[data-k=m] { background: var(--warn); } .strip i[data-k=a] { background: var(--bad); }
+  .now { list-style: none; padding: 0; margin: 10px 0 0; text-align: left; } .now li { padding: 8px 0; border-top: 1px solid var(--line); } .now small { display: block; color: var(--dim); }
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; cursor: pointer; text-align: center; text-decoration: none; font: inherit; font-weight: 800; color: var(--btnt); background: var(--btn); border-radius: 16px; padding: 14px; margin: 0 0 10px; }
+  .btn.ghost { background: var(--card); color: var(--text); }
+  .news { margin: 0; padding-left: 18px; } .news li { margin: 6px 0; color: var(--dim); font-size: 15px; }
+
+  /* Помощь */
+  .search { width: 100%; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; border-radius: 14px; padding: 12px 14px; margin: 0 0 10px; }
+  details { background: var(--card); border-radius: 16px; margin: 0 0 8px; } summary { cursor: pointer; list-style: none; padding: 14px 16px; font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+  summary::-webkit-details-marker { display: none; } summary::after { content: "+"; color: var(--dim); font-weight: 400; } details[open] summary::after { content: "–"; }
+  details .a { padding: 0 16px 14px; color: var(--dim); white-space: pre-line; font-size: 15px; }
+  video { width: 100%; border-radius: 16px; background: #000; display: block; aspect-ratio: 9 / 16; max-height: 60vh; object-fit: contain; }
+
+  /* ТВ: короткий адрес крупно — его набирают пультом */
+  .addr { font-family: "Unbounded", "Manrope", sans-serif; font-size: clamp(15px, 4.9vw, 24px); letter-spacing: -.02em; text-align: center; padding: 18px 8px; border-radius: 18px; border: 2px dashed var(--line); margin: 8px 0 12px; white-space: nowrap; overflow-x: auto; user-select: all; }
+  ol.steps { padding-left: 20px; margin: 0; } ol.steps li { margin: 8px 0; color: var(--dim); } ol.steps b { color: var(--text); }
+
+  /* Вкладки внизу, как в приложениях */
+  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
+  nav.tabs button { border: 0; background: none; color: var(--dim); font: inherit; font-size: 12px; font-weight: 700; padding: 6px 0; border-radius: 12px; cursor: pointer; }
+  nav.tabs button i { font-style: normal; } nav.tabs button span { display: block; font-size: 22px; line-height: 1.2; } nav.tabs button[aria-selected=true] { color: var(--text); background: var(--card); }
 </style>
 </head>
 <body>
 <main>
-  <div class="top"><img src="/apex-client/invite/icon.png" alt=""><div><b>APEX CLIENT</b><span id="hi">VPN, который сам находит дорогу</span></div></div>
-  <div class="state" id="state" data-s="ok"><i class="dot"></i><div><b id="stT">Проверяем серверы…</b><small id="stS"></small></div></div>
-  <ul class="list" id="now" hidden></ul>
-  <a class="btn" id="dl" href="https://github.com/Dubstep2004/apex-client/releases/latest">Скачать приложение</a>
-  <div class="grid">
-    <a class="tile" href="/help/" id="tHelp"><span>📖</span>Помощь</a>
-    <a class="tile" href="/status/" id="tStatus"><span>🛰</span>Статус и история</a>
-    <a class="tile" href="/help/#tv" id="tTv"><span>📺</span>На телевизор</a>
-    <a class="tile" href="https://t.me/Apexx_support" id="tSup"><span>💬</span>Поддержка</a>
-  </div>
+  <!-- Главная -->
+  <section data-tab="home">
+    <div class="hero" id="hero" data-s="ok">
+      <svg class="shield" viewBox="0 0 112 128" aria-hidden="true"><circle class="ring" cx="56" cy="64" r="50"/><path d="M56 6 98 22v34c0 30-18 54-42 66C32 110 14 86 14 56V22Z"/><path d="m40 64 11 11 22-24" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="fill:none"/></svg>
+      <b id="stT">Проверяем серверы…</b><div class="dim" id="stS"></div>
+      <div class="strip" id="strip" title=""></div><div class="dim" id="upt"></div>
+      <ul class="now" id="now" hidden></ul>
+    </div>
+    <h2 id="hApp">Приложение</h2>
+    <a class="btn" id="dl" href="https://github.com/Dubstep2004/apex-client/releases/latest">⬇️ <span id="dlT">Скачать приложение</span></a>
+    <div class="card" id="newsCard" hidden><div class="dim" id="newsH" style="margin-bottom:4px">Что нового</div><ul class="news" id="news"></ul></div>
+    <a class="btn ghost" href="/status/" id="stLink">🛰 <span id="stLinkT">Статус и история за 90 дней</span></a>
+  </section>
+
+  <!-- Помощь -->
+  <section data-tab="help" hidden>
+    <h2 id="hHelp">Помощь</h2>
+    <input class="search" id="q" type="search" placeholder="Что случилось? Например: не подключается" aria-label="Поиск">
+    <div id="topics"><p class="dim">…</p></div>
+    <p class="dim" id="noHit" hidden>Не нашлось — напишите в поддержку, ответим.</p>
+    <h2 id="hVid">Видео: как установить</h2>
+    <video id="vid" controls playsinline preload="none" poster="/media/install-ru.webp"><source id="vidSrc" src="/media/install-ru.mp4" type="video/mp4"></video>
+    <div style="height:12px"></div>
+    <a class="btn" id="supBtn" href="https://t.me/Apexx_support">💬 <span id="supT">Написать в поддержку</span></a>
+    <a class="btn ghost" href="/help/" id="helpAll">📖 <span id="helpAllT">Вся справка</span></a>
+  </section>
+
+  <!-- Подписка -->
+  <section data-tab="sub" hidden>
+    <h2 id="hSub">Подписка</h2>
+    <div class="card"><b id="subT">Срок, остаток дней и трафик</b><div class="dim" id="subD">Бот пришлёт их в чат — по вашему Telegram. Ссылку подписки он никогда не показывает.</div></div>
+    <a class="btn" data-start="sub" href="#">📅 <span id="subB">Показать мою подписку</span></a>
+    <a class="btn ghost" id="renew" href="https://t.me/Apexx_support">💳 <span id="renewT">Продлить — через поддержку</span></a>
+    <h2 id="hFriends">Друзья</h2>
+    <div class="card"><div class="dim" id="frD">Пригласите друга по своей ссылке — за каждых трёх приглашённых бывает бонус к подписке.</div></div>
+    <a class="btn ghost" data-start="invite" href="#">🤝 <span id="frB">Моя ссылка для друзей</span></a>
+    <div class="card" style="margin-top:12px"><div class="dim" id="subWhere">Срок виден и в приложении: Настройки → Подписка.</div></div>
+  </section>
+
+  <!-- Телевизор -->
+  <section data-tab="tv" hidden>
+    <h2 id="hTv">На телевизор</h2>
+    <div class="card"><ol class="steps" id="tvSteps">
+      <li><b>Откройте браузер на телевизоре</b> и наберите пультом адрес ниже — скачается приложение для Android TV.</li>
+      <li><b>Разрешите установку</b>, когда телевизор спросит, и откройте APEX CLIENT.</li>
+      <li><b>Добавьте подписку</b>: удобнее всего — ссылкой-приглашением. Сделайте её на телефоне и откройте на телевизоре.</li>
+      <li><b>Управление с пульта</b>: OK на щите включает VPN, стрелками выбирается страна.</li></ol></div>
+    <div class="addr" id="tvAddr">dubstep2004.github.io/tv</div>
+    <button class="btn ghost" id="copy" type="button">📋 <span id="copyT">Скопировать адрес</span></button>
+    <a class="btn" href="/apex-client/invite/" id="invBtn">🔗 <span id="invT">Сделать ссылку-приглашение для ТВ</span></a>
+    <a class="btn ghost" href="/help/#tv" id="tvHelp">📖 <span id="tvHelpT">Подробно с картинками</span></a>
+  </section>
 </main>
+
+<nav class="tabs" role="tablist">
+  <button role="tab" data-go="home" aria-selected="true"><span>🛡</span><i id="tbHome">Главная</i></button>
+  <button role="tab" data-go="help" aria-selected="false"><span>💬</span><i id="tbHelp">Помощь</i></button>
+  <button role="tab" data-go="sub" aria-selected="false"><span>📅</span><i id="tbSub">Подписка</i></button>
+  <button role="tab" data-go="tv" aria-selected="false"><span>📺</span><i id="tbTv">ТВ</i></button>
+</nav>
+
 <script>
-const W = window.Telegram && Telegram.WebApp; try { W && W.ready(); W && W.expand() } catch (e) {}
-const lc = (W && W.initDataUnsafe && W.initDataUnsafe.user && W.initDataUnsafe.user.language_code) || new URLSearchParams(location.search).get('lang') || ''
-const EN = !!lc && !/^(ru|uk|be|kk)/.test(lc)
-const L = EN ? { hi: 'VPN that finds its own way', dl: 'Download the app', ver: 'Download version', ok: 'All servers are working', okS: 'No maintenance or outages', bad: 'Some servers have an outage', warn: 'Some servers are under maintenance', warnS: 'Autopilot avoids them', check: 'Checking servers…', err: 'Could not load the status', m: 'maintenance', s: 'slower than usual', tHelp: 'Help', tStatus: 'Status & history', tTv: 'On TV', tSup: 'Support', loc: 'en' }
-  : { ver: 'Скачать версию', ok: 'Все серверы работают', okS: 'Сейчас нет ни техработ, ни сбоев', bad: 'Есть сбой у части серверов', warn: 'Часть серверов на обслуживании', warnS: 'Автопилот сам их обходит', err: 'Не удалось загрузить статус', m: 'обслуживание', s: 'медленнее обычного', loc: 'ru' }
+const W = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null // в обычном браузере — без Telegram
+try { W && W.ready(); W && W.expand() } catch (e) {}
+const qs = new URLSearchParams(location.search)
+const lc = qs.get('lang') || (W && W.initDataUnsafe && W.initDataUnsafe.user && W.initDataUnsafe.user.language_code) || navigator.language || 'ru'
+const EN = !/^(ru|uk|be|kk)/.test(lc)
+const BOT = /^[A-Za-z0-9_]{4,32}$/.test(qs.get('bot') || '') ? qs.get('bot') : ''
+const SUPPORT = 'https://t.me/Apexx_support'
+const L = EN ? { stT: 'Checking servers…', ok: 'All servers are working', okS: 'No maintenance or outages right now', bad: 'Some servers have an outage', badS: 'We are fixing it — autopilot switches you over', warn: 'Some servers are under maintenance', slow: 'Some servers are slower than usual', warnS: 'Autopilot avoids them automatically', err: 'Could not load the status', off: 'Status is not published right now', m: 'maintenance', s: 'slower than usual', until: 'until', up: 'days of the last 30 without issues',
+    hApp: 'App', dlT: 'Download the app', ver: 'Download version', newsH: "What's new", stLinkT: 'Status and 90-day history', hHelp: 'Help', q: 'What happened? E.g. cannot connect', noHit: 'Nothing found — write to support, we will answer.', hVid: 'Video: how to install', supT: 'Write to support', helpAllT: 'Full help',
+    hSub: 'Subscription', subT: 'Expiry date, days left and traffic', subD: 'The bot sends them to the chat by your Telegram account. It never shows your subscription link.', subB: 'Show my subscription', renewT: 'Renew — via support', hFriends: 'Friends', frD: 'Invite a friend with your link — every three friends may bring a subscription bonus.', frB: 'My invite link', subWhere: 'You can also see it in the app: Settings → Subscription.',
+    hTv: 'On a TV', tvSteps: ['<b>Open the browser on the TV</b> and type the address below with the remote — the Android TV app will download.', '<b>Allow the install</b> when the TV asks and open APEX CLIENT.', '<b>Add your subscription</b> — easiest with an invite link: make it on your phone and open it on the TV.', '<b>Remote control</b>: OK on the shield turns VPN on, arrows pick the country.'], copyT: 'Copy the address', copied: 'Copied', invT: 'Make an invite link for the TV', tvHelpT: 'Step by step with pictures', tbHome: 'Home', tbHelp: 'Help', tbSub: 'Subscription', tbTv: 'TV', noBot: 'Open this page from the bot to see it in the chat' }
+  : { ok: 'Все серверы работают', okS: 'Сейчас нет ни техработ, ни сбоев', bad: 'Есть сбой у части серверов', badS: 'Уже чиним — автопилот переключит вас', warn: 'Часть серверов на обслуживании', slow: 'Часть серверов медленнее обычного', warnS: 'Автопилот сам их обходит', err: 'Не удалось загрузить статус', off: 'Статус сейчас не публикуется', m: 'обслуживание', s: 'медленнее обычного', until: 'до', up: 'дней из 30 без проблем', ver: 'Скачать версию', copied: 'Скопировано', noBot: 'Откройте эту страницу из бота, чтобы ответ пришёл в чат' }
 const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
-if (EN) { document.documentElement.lang = 'en'; ['hi', 'dl'].forEach(k => $(k).textContent = L[k]); ['tHelp', 'tStatus', 'tTv', 'tSup'].forEach(k => $(k).lastChild.textContent = L[k]); $('tHelp').href = '/help/?lang=en'; $('tStatus').href = '/status/?lang=en'; $('stT').textContent = L.check }
-// Ссылки внутри Telegram открываем по-телеграмовски
-document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W || !W.openLink) return; e.preventDefault(); /t\.me\//.test(a.href) ? W.openTelegramLink(a.href) : W.openLink(a.href) })
+const loc = EN ? 'en' : 'ru'
+if (EN) {
+  document.documentElement.lang = 'en'
+  Object.entries(L).forEach(([k, v]) => { const el = $(k); if (el && typeof v === 'string') el.textContent = v })
+  $('q').placeholder = L.q; $('tvSteps').innerHTML = L.tvSteps.map(x => '<li>' + x + '</li>').join('')
+  $('vid').poster = '/media/install-en.webp'; $('vidSrc').src = '/media/install-en.mp4'; $('helpAll').href = '/help/?lang=en'; $('stLink').href = '/status/?lang=en'; $('tvHelp').href = '/help/?lang=en#tv'
+}
+
+// Вкладки (номер запоминаем на время, чтобы «Назад» в Telegram работал)
+function go(t) {
+  document.querySelectorAll('[data-tab]').forEach(s => s.hidden = s.dataset.tab !== t)
+  document.querySelectorAll('[data-go]').forEach(b => b.setAttribute('aria-selected', b.dataset.go === t))
+  try { W && W.HapticFeedback && W.HapticFeedback.selectionChanged() } catch (e) {}
+  if (W && W.BackButton) t === 'home' ? W.BackButton.hide() : W.BackButton.show()
+  scrollTo(0, 0)
+}
+document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go))
+try { W && W.BackButton && W.BackButton.onClick(() => go('home')) } catch (e) {}
+if (/^(help|sub|tv)$/.test(qs.get('tab') || '')) go(qs.get('tab'))
+
+// Ссылки: в Telegram открываем по-телеграмовски; кнопки «в бота» — t.me/бот?start=…
+document.querySelectorAll('[data-start]').forEach(a => { a.href = BOT ? `https://t.me/${BOT}?start=${a.dataset.start}` : SUPPORT; if (!BOT) a.title = L.noBot })
+document.addEventListener('click', e => {
+  const a = e.target.closest('a'); if (!a || !W || !W.openLink || a.getAttribute('href').startsWith('#')) return
+  e.preventDefault(); if (/^https:\/\/t\.me\//.test(a.href)) { W.openTelegramLink(a.href); if (a.dataset.start) setTimeout(() => W.close(), 300) } else W.openLink(a.href)
+})
+$('copy').onclick = () => { const t = 'https://' + $('tvAddr').textContent; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => { $('copyT').textContent = L.copied || 'Скопировано' }).catch(() => {}) }
+
+// Статус серверов и полоска за 30 дней
 const CFG = 'Dubstep2004/apex-client', t = Math.floor(Date.now() / 60000)
-fetch('https://raw.githubusercontent.com/' + CFG + '/main/docs/config/app.json?t=' + t).then(r => r.ok ? r.json() : Promise.reject()).then(c => {
-  const now = Date.now(), live = b => !b.preview && (!b.from || now >= b.from) && (!b.to || now < b.to)
+const raw = (p, ttl) => fetch('https://raw.githubusercontent.com/' + CFG + '/main/' + p + '?t=' + ttl).then(r => r.ok ? r.json() : Promise.reject())
+raw('docs/config/app.json', t).then(c => {
+  const now = Date.now(), live = b => !b.preview && (!b.from || now >= b.from) && (!b.to || now < b.to), hero = $('hero')
+  if (c.links && /^https:\/\/t\.me\//.test(c.links.support || '')) { $('supBtn').href = $('renew').href = c.links.support }
+  if (c.show && c.show.status === false) { hero.dataset.s = 'warn'; $('stT').textContent = L.off; return }
   const alert = (c.banners || []).filter(live).some(b => b.level === 'alert')
   const cur = Object.entries((c.servers || {}).status || {}).filter(([, v]) => !v.preview && (!v.from || now >= v.from) && (!v.until || now < v.until))
-  if (c.show && c.show.status === false) { $('state').hidden = true; return }
-  $('state').dataset.s = alert ? 'bad' : cur.length ? 'warn' : 'ok'
-  $('stT').textContent = alert ? L.bad : cur.length ? L.warn : L.ok; $('stS').textContent = alert || cur.length ? L.warnS : L.okS
-  if (cur.length) { $('now').hidden = false; $('now').innerHTML = cur.map(([n, v]) => `<li>${v.state === 'maintenance' ? '🔧' : '🐢'} <b>${esc(n)}</b><small>${v.state === 'maintenance' ? L.m : L.s}${v.until ? ' · ' + new Date(v.until).toLocaleString(L.loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}</small></li>`).join('') }
-}).catch(() => { $('state').dataset.s = 'warn'; $('stT').textContent = L.err })
+  const maint = cur.some(([, v]) => v.state === 'maintenance')
+  hero.dataset.s = alert ? 'bad' : cur.length ? 'warn' : 'ok'
+  $('stT').textContent = alert ? L.bad : maint ? L.warn : cur.length ? L.slow : L.ok
+  $('stS').textContent = alert ? L.badS : cur.length ? L.warnS : L.okS
+  if (cur.length) { $('now').hidden = false; $('now').innerHTML = cur.map(([n, v]) => `<li>${v.state === 'maintenance' ? '🔧' : '🐢'} <b>${esc(n)}</b><small>${v.state === 'maintenance' ? L.m : L.s}${v.until ? ' · ' + L.until + ' ' + new Date(v.until).toLocaleString(loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}${v.note ? ' · ' + esc(v.note) : ''}</small></li>`).join('') }
+}).catch(() => { $('hero').dataset.s = 'warn'; $('stT').textContent = L.err })
+raw('docs/stats/uptime.json', Math.floor(Date.now() / 3600000)).then(u => {
+  const days = u.days || {}, D = 864e5, key = x => new Date(x + 3 * 36e5).toISOString().slice(0, 10); let bad = 0, h = ''
+  for (let i = 29; i >= 0; i--) { const k = days[key(Date.now() - i * D)]; if (k) bad++; h += `<i${k ? ` data-k="${k}"` : ''}></i>` }
+  $('strip').innerHTML = h; $('upt').textContent = `${30 - bad} ${L.up}`
+}).catch(() => { $('strip').hidden = true })
+
+// Последняя версия и «Что нового» из описания релиза
 fetch('https://api.github.com/repos/' + CFG + '/releases/latest').then(r => r.ok ? r.json() : Promise.reject()).then(r => {
   const apk = (r.assets || []).find(a => /^apex-client-.*\.apk$/.test(a.name)); if (apk) $('dl').href = apk.browser_download_url
-  $('dl').textContent = L.ver + ' ' + r.tag_name.replace(/^v/, '')
+  $('dlT').textContent = L.ver + ' ' + r.tag_name.replace(/^v/, '')
+  const items = String(r.body || '').split('---')[0].split('\n').filter(l => /^- /.test(l)).map(l => l.slice(2).replace(/\*\*|`/g, '')).slice(0, 4)
+  if (items.length && !EN) { $('newsCard').hidden = false; $('news').innerHTML = items.map(x => '<li>' + esc(x) + '</li>').join('') }
 }).catch(() => {})
+
+// Помощь: темы бота (те же, что отвечает бот) + поиск
+const SITE = 'https://dubstep2004.github.io'
+const fill = s => String(s || '').replaceAll('{сайт}', SITE).replaceAll('{поддержка}', $('supBtn').href)
+const linkify = s => esc(s).replace(/https:\/\/[^\s<]+/g, u => `<a href="${u}">${u.replace(/^https:\/\//, '')}</a>`)
+const EN_TOPICS = [
+  { title: '📥 How to install', text: 'Open ' + SITE + '/en/ on your phone and tap «Download». Open the file, tap «Install», paste your subscription link and tap the shield.' },
+  { title: '🔌 Cannot connect', text: 'Turn on autopilot — it picks a working server. Update the subscription: Settings → Subscription → «Update». Still not working? Open «Network check» on the home screen and send the result to support.' },
+  { title: '🔄 Update the app', text: 'The app shows a banner when a new version is out. Or download it here: ' + SITE + '/update/' }]
+let TOP = []
+function renderTopics() {
+  const q = $('q').value.trim().toLowerCase(), list = TOP.filter(x => !q || (x.title + ' ' + x.text + ' ' + (x.words || []).join(' ')).toLowerCase().includes(q))
+  $('topics').innerHTML = list.map(x => `<details${q && list.length <= 2 ? ' open' : ''}><summary>${esc(x.title)}</summary><div class="a">${linkify(fill(x.text))}</div></details>`).join('')
+  $('noHit').hidden = list.length > 0
+}
+$('q').addEventListener('input', renderTopics)
+;(EN ? Promise.resolve({ topics: EN_TOPICS }) : fetch('/apex-client/tg/bot.json?t=' + Math.floor(Date.now() / 600000)).then(r => r.ok ? r.json() : Promise.reject()))
+  .then(c => { TOP = (c.topics || []).filter(x => x && x.title && x.text).slice(0, 30); renderTopics() })
+  .catch(() => { TOP = EN ? EN_TOPICS : []; renderTopics() })
 </script>
 </body>
 </html>

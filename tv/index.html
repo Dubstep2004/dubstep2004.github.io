@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>APEX CLIENT для ТВ</title>
+<meta name="description" content="Короткий адрес для телевизора: скачивает последнюю версию APEX CLIENT.">
+<link rel="icon" href="/apex-client/invite/icon.png">
+<style>
+  :root { --ink: #0a0d1c; --text: #eef1fa; --dim: #8c93b0; --cyan: #22d3ee; }
+  body { margin: 0; background: var(--ink); color: var(--text); font: 22px/1.5 system-ui, sans-serif; display: flex; min-height: 100vh; align-items: center; justify-content: center; text-align: center; }
+  main { padding: 30px; max-width: 900px; } h1 { font-size: 40px; margin: 0 0 12px; } p { color: var(--dim); }
+  a.btn { display: inline-block; margin-top: 20px; padding: 20px 34px; border-radius: 18px; background: #6d5cff; color: #fff; font-weight: 800; text-decoration: none; font-size: 26px; }
+  a.btn:focus { outline: 4px solid var(--cyan); outline-offset: 4px; }
+</style>
+</head>
+<body>
+<main>
+  <h1>APEX CLIENT для телевизора</h1>
+  <p id="msg">Ищу последнюю версию…</p>
+  <a class="btn" id="dl" href="https://github.com/Dubstep2004/apex-client/releases/latest" autofocus>Скачать приложение</a>
+  <p>После скачивания откройте файл и нажмите «Установить». Подписку удобнее добавить ссылкой-приглашением с телефона.</p>
+</main>
+<script>
+// Простая страница для браузеров телевизоров: без новых возможностей JS. Ведёт сразу на файл последней версии.
+var x = new XMLHttpRequest()
+x.open('GET', 'https://api.github.com/repos/Dubstep2004/apex-client/releases/latest')
+x.onload = function () {
+  try {
+    var r = JSON.parse(x.responseText), a = null
+    for (var i = 0; i < r.assets.length; i++) if (/^apex-client-.*\.apk$/.test(r.assets[i].name)) a = r.assets[i]
+    if (a) { document.getElementById('dl').href = a.browser_download_url; document.getElementById('msg').innerHTML = 'Версия ' + r.tag_name.replace(/^v/, '') + ' — загрузка начнётся сама. Если нет — нажмите OK на кнопке.'; setTimeout(function () { location.href = a.browser_download_url }, 1500) }
+  } catch (e) {}
+}
+x.onerror = function () { document.getElementById('msg').innerHTML = 'Нажмите OK на кнопке — откроется страница загрузки.' }
+x.send()
+</script>
+</body>
+</html>

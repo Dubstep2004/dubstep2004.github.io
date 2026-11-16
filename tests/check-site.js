@@ -46,6 +46,9 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
         else { await btn.click(); const th = await p.evaluate(() => document.documentElement.dataset.theme + '|' + getComputedStyle(document.body).backgroundColor); if (!th.startsWith('light|rgb(245')) bad(W, 'светлая тема не включилась: ' + th); await btn.click(); await btn.click() }
       }
       if (u.startsWith('/status/') && !(await p.textContent('#now')).includes('Германия')) bad(W, 'статус не показывает техработы')
+      if (u.startsWith('/app/')) { // мини-приложение: 4 вкладки, переключаются
+        for (const t of ['help', 'sub', 'tv', 'home']) { await p.click(`[data-go=${t}]`); if (await p.$eval(`[data-tab=${t}]`, e => e.hidden)) bad(W, 'мини-приложение: не открылась вкладка ' + t) }
+        if (!(await p.textContent('#tvAddr')).includes('dubstep2004.github.io/tv')) bad(W, 'мини-приложение: нет адреса для ТВ') }
       if (u.startsWith('/status/')) { await p.waitForFunction(() => document.querySelectorAll('#bars i').length === 90, null, { timeout: 5000 }).catch(() => {})
         if ((await p.$$('#bars i')).length !== 90 || (await p.$$('#bars i[data-k=m]')).length !== 1) bad(W, 'статус: нет полоски истории за 90 дней')
         if (!(await p.textContent('#events')).includes('Нидерланды')) bad(W, 'статус: нет списка событий') }
