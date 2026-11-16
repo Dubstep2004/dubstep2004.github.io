@@ -10,7 +10,7 @@ const srv = http.createServer((q, r) => {
   const p = file(q.url); if (!p) { r.writeHead(404, { 'content-type': 'text/html; charset=utf-8' }); return r.end(fs.readFileSync(path.join(ROOT, '404.html'))) }
   r.setHeader('content-type', { '.html': 'text/html; charset=utf-8', '.png': 'image/png', '.svg': 'image/svg+xml' }[path.extname(p)] || 'application/octet-stream'); r.end(fs.readFileSync(p))
 })
-const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/wallpapers/', '/status/', '/status/?lang=en', '/app/', '/app/?lang=en', '/update/', '/404.html']
+const PAGES = ['/', '/en/', '/help/', '/versions/', '/original/', '/wallpapers/', '/status/', '/status/?lang=en', '/app/', '/update/', '/404.html']
 const rel = [{ tag_name: 'v9.9.9', draft: false, prerelease: false, published_at: new Date().toISOString(), body: '- проверка\n', assets: [{ name: 'apex-client-9.9.9.apk', size: 6e7, download_count: 5, browser_download_url: 'https://github.com/x.apk' }, { name: 'apex-watch-9.9.9.apk', size: 1e7, download_count: 1, browser_download_url: 'https://github.com/w.apk' }] }]
 const UP = { since: Date.now() - 5 * 864e5, days: { [new Date(Date.now() - 2 * 864e5 + 3 * 36e5).toISOString().slice(0, 10)]: 'm' }, events: [{ n: 'Нидерланды', k: 'm', a: Date.now() - 2 * 864e5, b: Date.now() - 2 * 864e5 + 72e5 }] }
 const cfg = { banners: [{ id: 'b', text: 'Проверка баннера', level: 'warn', devices: ['site'] }], servers: { status: { 'Германия': { state: 'maintenance', until: Date.now() + 36e5 } } } }
@@ -47,7 +47,7 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
       }
       if (u.startsWith('/status/') && !(await p.textContent('#now')).includes('Германия')) bad(W, 'статус не показывает техработы')
       if (u.startsWith('/app/')) { // мини-приложение: 4 вкладки, переключаются
-        for (const t of ['help', 'sub', 'tv', 'home']) { await p.click(`[data-go=${t}]`); if (await p.$eval(`[data-tab=${t}]`, e => e.hidden)) bad(W, 'мини-приложение: не открылась вкладка ' + t) }
+        for (const t of ['help', 'sub', 'tv', 'more', 'home']) { await p.click(`[data-go=${t}]`); if (await p.$eval(`[data-tab=${t}]`, e => e.hidden)) bad(W, 'мини-приложение: не открылась вкладка ' + t) }
         if (!(await p.textContent('#tvAddr')).includes('dubstep2004.github.io/tv')) bad(W, 'мини-приложение: нет адреса для ТВ') }
       if (u.startsWith('/status/')) { await p.waitForFunction(() => document.querySelectorAll('#bars i').length === 90, null, { timeout: 5000 }).catch(() => {})
         if ((await p.$$('#bars i')).length !== 90 || (await p.$$('#bars i[data-k=m]')).length !== 1) bad(W, 'статус: нет полоски истории за 90 дней')

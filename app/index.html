@@ -54,7 +54,14 @@
   ol.steps { padding-left: 20px; margin: 0; } ol.steps li { margin: 8px 0; color: var(--dim); } ol.steps b { color: var(--text); }
 
   /* Вкладки внизу, как в приложениях */
-  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(4, 1fr); background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
+  textarea, .inp { width: 100%; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; border-radius: 12px; padding: 10px 12px; margin: 6px 0 10px; resize: vertical; }
+  label.chk { display: flex; gap: 8px; align-items: center; color: var(--dim); font-size: 14px; margin: -2px 0 10px; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .row .btn { margin: 0 0 10px; }
+  .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; max-width: 90vw; z-index: 9; }
+  .quiz button.opt { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; padding: 12px 14px; border-radius: 12px; margin: 0 0 8px; cursor: pointer; }
+  .quiz button.opt[data-r=y] { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, var(--bg)); } .quiz button.opt[data-r=n] { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, var(--bg)); }
+  .link { word-break: break-all; font-size: 14px; color: var(--text); background: var(--bg); border-radius: 10px; padding: 10px; margin: 8px 0 10px; user-select: all; }
+  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
   nav.tabs button { border: 0; background: none; color: var(--dim); font: inherit; font-size: 12px; font-weight: 700; padding: 6px 0; border-radius: 12px; cursor: pointer; }
   nav.tabs button i { font-style: normal; } nav.tabs button span { display: block; font-size: 22px; line-height: 1.2; } nav.tabs button[aria-selected=true] { color: var(--text); background: var(--card); }
 </style>
@@ -66,151 +73,205 @@
     <div class="hero" id="hero" data-s="ok">
       <svg class="shield" viewBox="0 0 112 128" aria-hidden="true"><circle class="ring" cx="56" cy="64" r="50"/><path d="M56 6 98 22v34c0 30-18 54-42 66C32 110 14 86 14 56V22Z"/><path d="m40 64 11 11 22-24" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="fill:none"/></svg>
       <b id="stT">Проверяем серверы…</b><div class="dim" id="stS"></div>
-      <div class="strip" id="strip" title=""></div><div class="dim" id="upt"></div>
+      <div class="strip" id="strip"></div><div class="dim" id="upt"></div>
       <ul class="now" id="now" hidden></ul>
     </div>
-    <h2 id="hApp">Приложение</h2>
+    <h2>Приложение</h2>
     <a class="btn" id="dl" href="https://github.com/Dubstep2004/apex-client/releases/latest">⬇️ <span id="dlT">Скачать приложение</span></a>
-    <div class="card" id="newsCard" hidden><div class="dim" id="newsH" style="margin-bottom:4px">Что нового</div><ul class="news" id="news"></ul></div>
-    <a class="btn ghost" href="/status/" id="stLink">🛰 <span id="stLinkT">Статус и история за 90 дней</span></a>
+    <div class="card" id="newsCard" hidden><div class="dim" style="margin-bottom:4px">Что нового в приложении</div><ul class="news" id="news"></ul></div>
+    <div class="row"><button class="btn ghost" data-act="status">🛰 Серверы сейчас</button><button class="btn ghost" data-act="news">📰 Новости канала</button></div>
+    <div class="card"><b>Сервер не работает?</b><div class="dim">Напишите страну — если таких жалоб несколько, поддержка сразу узнает.</div>
+      <input class="inp" id="cmpName" maxlength="20" placeholder="Например: Германия" autocomplete="off"><button class="btn" data-act="cmp">📣 Сообщить</button></div>
+    <a class="btn ghost" href="/status/" id="stLink">📈 История статуса за 90 дней</a>
   </section>
 
   <!-- Помощь -->
   <section data-tab="help" hidden>
-    <h2 id="hHelp">Помощь</h2>
-    <input class="search" id="q" type="search" placeholder="Что случилось? Например: не подключается" aria-label="Поиск">
+    <h2>Помощь</h2>
+    <input class="search" id="q" type="search" placeholder="Что случилось? Например: не подключается" aria-label="Поиск по темам">
     <div id="topics"><p class="dim">…</p></div>
-    <p class="dim" id="noHit" hidden>Не нашлось — напишите в поддержку, ответим.</p>
-    <h2 id="hVid">Видео: как установить</h2>
+    <p class="dim" id="noHit" hidden>Готового ответа нет — задайте вопрос ниже, ответим.</p>
+    <h2>Задать вопрос</h2>
+    <div class="card"><textarea id="askT" rows="3" maxlength="1500" placeholder="Опишите, что случилось"></textarea>
+      <label class="chk"><input type="checkbox" id="human"> Сразу человеку, без готовых ответов</label>
+      <button class="btn" data-act="ask">✉️ Отправить в поддержку</button><div class="dim">Ответ придёт в чат с ботом.</div></div>
+    <h2>Сообщить о проблеме</h2>
+    <div class="card"><input class="inp" id="fDev" maxlength="80" placeholder="Устройство: например, Samsung A52"><input class="inp" id="fVer" maxlength="20" placeholder="Версия приложения (Настройки → внизу)">
+      <textarea id="fText" rows="3" maxlength="1200" placeholder="Что не так?"></textarea><button class="btn" data-act="report">📝 Отправить форму</button></div>
+    <h2>Видео: как установить</h2>
     <video id="vid" controls playsinline preload="none" poster="/media/install-ru.webp"><source id="vidSrc" src="/media/install-ru.mp4" type="video/mp4"></video>
     <div style="height:12px"></div>
-    <a class="btn" id="supBtn" href="https://t.me/Apexx_support">💬 <span id="supT">Написать в поддержку</span></a>
-    <a class="btn ghost" href="/help/" id="helpAll">📖 <span id="helpAllT">Вся справка</span></a>
+    <a class="btn ghost" id="supBtn" href="https://t.me/Apexx_support">💬 Поддержка в Telegram</a>
+    <a class="btn ghost" href="/help/" id="helpAll">📖 Вся справка</a>
   </section>
 
   <!-- Подписка -->
   <section data-tab="sub" hidden>
-    <h2 id="hSub">Подписка</h2>
-    <div class="card"><b id="subT">Срок, остаток дней и трафик</b><div class="dim" id="subD">Бот пришлёт их в чат — по вашему Telegram. Ссылку подписки он никогда не показывает.</div></div>
-    <a class="btn" data-start="sub" href="#">📅 <span id="subB">Показать мою подписку</span></a>
-    <a class="btn ghost" id="renew" href="https://t.me/Apexx_support">💳 <span id="renewT">Продлить — через поддержку</span></a>
-    <h2 id="hFriends">Друзья</h2>
-    <div class="card"><div class="dim" id="frD">Пригласите друга по своей ссылке — за каждых трёх приглашённых бывает бонус к подписке.</div></div>
-    <a class="btn ghost" data-start="invite" href="#">🤝 <span id="frB">Моя ссылка для друзей</span></a>
-    <div class="card" style="margin-top:12px"><div class="dim" id="subWhere">Срок виден и в приложении: Настройки → Подписка.</div></div>
+    <h2>Подписка</h2>
+    <div class="card"><b>Срок, остаток дней и трафик</b><div class="dim">Бот пришлёт их в чат — по вашему Telegram. Ссылку подписки он никогда не показывает.</div></div>
+    <button class="btn" data-act="sub">📅 Показать мою подписку</button>
+    <button class="btn ghost" data-act="remind">🔔 Напомнить о продлении</button>
+    <a class="btn ghost" id="renew" href="https://t.me/Apexx_support">💳 Продлить — через поддержку</a>
+    <h2>Друзья</h2>
+    <div class="card" id="refCard"><div class="dim">Ваша ссылка для друзей — за каждых трёх приглашённых бывает бонус к подписке.</div>
+      <div class="link" id="refLink" hidden></div>
+      <div class="row" id="refBtns" hidden><button class="btn" id="refShare" type="button">📤 Поделиться</button><button class="btn ghost" id="refCopy" type="button">📋 Копировать</button></div>
+      <button class="btn ghost" data-act="invite">🤝 Сколько я пригласил</button></div>
+    <div class="dim" style="margin-top:8px">Срок виден и в приложении: Настройки → Подписка.</div>
   </section>
 
   <!-- Телевизор -->
   <section data-tab="tv" hidden>
-    <h2 id="hTv">На телевизор</h2>
-    <div class="card"><ol class="steps" id="tvSteps">
+    <h2>На телевизор</h2>
+    <div class="card"><ol class="steps">
       <li><b>Откройте браузер на телевизоре</b> и наберите пультом адрес ниже — скачается приложение для Android TV.</li>
       <li><b>Разрешите установку</b>, когда телевизор спросит, и откройте APEX CLIENT.</li>
       <li><b>Добавьте подписку</b>: удобнее всего — ссылкой-приглашением. Сделайте её на телефоне и откройте на телевизоре.</li>
       <li><b>Управление с пульта</b>: OK на щите включает VPN, стрелками выбирается страна.</li></ol></div>
     <div class="addr" id="tvAddr">dubstep2004.github.io/tv</div>
-    <button class="btn ghost" id="copy" type="button">📋 <span id="copyT">Скопировать адрес</span></button>
-    <a class="btn" href="/apex-client/invite/" id="invBtn">🔗 <span id="invT">Сделать ссылку-приглашение для ТВ</span></a>
-    <a class="btn ghost" href="/help/#tv" id="tvHelp">📖 <span id="tvHelpT">Подробно с картинками</span></a>
+    <button class="btn ghost" id="copy" type="button">📋 Скопировать адрес</button>
+    <a class="btn" href="/apex-client/invite/">🔗 Сделать ссылку-приглашение для ТВ</a>
+    <a class="btn ghost" href="/help/#tv">📖 Подробно с картинками</a>
+  </section>
+
+  <!-- Ещё -->
+  <section data-tab="more" hidden>
+    <h2>Викторина</h2>
+    <div class="card quiz" id="quiz"></div>
+    <h2>Рассылки</h2>
+    <div class="row"><button class="btn ghost" data-act="stop">🔕 Не получать</button><button class="btn ghost" data-act="video">🎬 Видео в чат</button></div>
+    <h2>Ссылки</h2>
+    <a class="btn ghost" href="/">🌐 Сайт APEX CLIENT</a>
+    <a class="btn ghost" href="/versions/">🗂 Все версии и часы Wear OS</a>
+    <a class="btn ghost" href="/original/">🛡 Как проверить, что приложение оригинальное</a>
+    <a class="btn ghost" href="https://github.com/Dubstep2004/apex-client">💻 Открытый код на GitHub</a>
   </section>
 </main>
+<div class="toast" id="toast" hidden></div>
 
 <nav class="tabs" role="tablist">
-  <button role="tab" data-go="home" aria-selected="true"><span>🛡</span><i id="tbHome">Главная</i></button>
-  <button role="tab" data-go="help" aria-selected="false"><span>💬</span><i id="tbHelp">Помощь</i></button>
-  <button role="tab" data-go="sub" aria-selected="false"><span>📅</span><i id="tbSub">Подписка</i></button>
-  <button role="tab" data-go="tv" aria-selected="false"><span>📺</span><i id="tbTv">ТВ</i></button>
+  <button role="tab" data-go="home" aria-selected="true"><span>🛡</span><i>Главная</i></button>
+  <button role="tab" data-go="help" aria-selected="false"><span>💬</span><i>Помощь</i></button>
+  <button role="tab" data-go="sub" aria-selected="false"><span>📅</span><i>Подписка</i></button>
+  <button role="tab" data-go="tv" aria-selected="false"><span>📺</span><i>ТВ</i></button>
+  <button role="tab" data-go="more" aria-selected="false"><span>✨</span><i>Ещё</i></button>
 </nav>
 
 <script>
 const W = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null // в обычном браузере — без Telegram
 try { W && W.ready(); W && W.expand() } catch (e) {}
-const qs = new URLSearchParams(location.search)
-const lc = qs.get('lang') || (W && W.initDataUnsafe && W.initDataUnsafe.user && W.initDataUnsafe.user.language_code) || navigator.language || 'ru'
-const EN = !/^(ru|uk|be|kk)/.test(lc)
+const qs = new URLSearchParams(location.search), U = (W && W.initDataUnsafe && W.initDataUnsafe.user) || null
 const BOT = /^[A-Za-z0-9_]{4,32}$/.test(qs.get('bot') || '') ? qs.get('bot') : ''
-const SUPPORT = 'https://t.me/Apexx_support'
-const L = EN ? { stT: 'Checking servers…', ok: 'All servers are working', okS: 'No maintenance or outages right now', bad: 'Some servers have an outage', badS: 'We are fixing it — autopilot switches you over', warn: 'Some servers are under maintenance', slow: 'Some servers are slower than usual', warnS: 'Autopilot avoids them automatically', err: 'Could not load the status', off: 'Status is not published right now', m: 'maintenance', s: 'slower than usual', until: 'until', up: 'days of the last 30 without issues',
-    hApp: 'App', dlT: 'Download the app', ver: 'Download version', newsH: "What's new", stLinkT: 'Status and 90-day history', hHelp: 'Help', q: 'What happened? E.g. cannot connect', noHit: 'Nothing found — write to support, we will answer.', hVid: 'Video: how to install', supT: 'Write to support', helpAllT: 'Full help',
-    hSub: 'Subscription', subT: 'Expiry date, days left and traffic', subD: 'The bot sends them to the chat by your Telegram account. It never shows your subscription link.', subB: 'Show my subscription', renewT: 'Renew — via support', hFriends: 'Friends', frD: 'Invite a friend with your link — every three friends may bring a subscription bonus.', frB: 'My invite link', subWhere: 'You can also see it in the app: Settings → Subscription.',
-    hTv: 'On a TV', tvSteps: ['<b>Open the browser on the TV</b> and type the address below with the remote — the Android TV app will download.', '<b>Allow the install</b> when the TV asks and open APEX CLIENT.', '<b>Add your subscription</b> — easiest with an invite link: make it on your phone and open it on the TV.', '<b>Remote control</b>: OK on the shield turns VPN on, arrows pick the country.'], copyT: 'Copy the address', copied: 'Copied', invT: 'Make an invite link for the TV', tvHelpT: 'Step by step with pictures', tbHome: 'Home', tbHelp: 'Help', tbSub: 'Subscription', tbTv: 'TV', noBot: 'Open this page from the bot to see it in the chat' }
-  : { ok: 'Все серверы работают', okS: 'Сейчас нет ни техработ, ни сбоев', bad: 'Есть сбой у части серверов', badS: 'Уже чиним — автопилот переключит вас', warn: 'Часть серверов на обслуживании', slow: 'Часть серверов медленнее обычного', warnS: 'Автопилот сам их обходит', err: 'Не удалось загрузить статус', off: 'Статус сейчас не публикуется', m: 'обслуживание', s: 'медленнее обычного', until: 'до', up: 'дней из 30 без проблем', ver: 'Скачать версию', copied: 'Скопировано', noBot: 'Откройте эту страницу из бота, чтобы ответ пришёл в чат' }
+// Открыто кнопкой «📱 APEX» внизу чата — можно отправить боту действие (sendData); из меню или ссылки — ведём в чат по ссылке
+const CAN_SEND = !!(W && W.sendData && !(W.initDataUnsafe && W.initDataUnsafe.query_id))
+const SITE = 'https://dubstep2004.github.io', CFG = 'Dubstep2004/apex-client'
+let SUPPORT = 'https://t.me/Apexx_support'
 const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]))
-const loc = EN ? 'en' : 'ru'
-if (EN) {
-  document.documentElement.lang = 'en'
-  Object.entries(L).forEach(([k, v]) => { const el = $(k); if (el && typeof v === 'string') el.textContent = v })
-  $('q').placeholder = L.q; $('tvSteps').innerHTML = L.tvSteps.map(x => '<li>' + x + '</li>').join('')
-  $('vid').poster = '/media/install-en.webp'; $('vidSrc').src = '/media/install-en.mp4'; $('helpAll').href = '/help/?lang=en'; $('stLink').href = '/status/?lang=en'; $('tvHelp').href = '/help/?lang=en#tv'
-}
+function toast(t) { const el = $('toast'); el.textContent = t; el.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => el.hidden = true, 2600) }
+const tgOpen = u => W ? (/^https:\/\/t\.me\//.test(u) ? W.openTelegramLink(u) : W.openLink(u)) : open(u, '_blank')
 
-// Вкладки (номер запоминаем на время, чтобы «Назад» в Telegram работал)
+// Вкладки
 function go(t) {
   document.querySelectorAll('[data-tab]').forEach(s => s.hidden = s.dataset.tab !== t)
   document.querySelectorAll('[data-go]').forEach(b => b.setAttribute('aria-selected', b.dataset.go === t))
   try { W && W.HapticFeedback && W.HapticFeedback.selectionChanged() } catch (e) {}
-  if (W && W.BackButton) t === 'home' ? W.BackButton.hide() : W.BackButton.show()
+  try { W && W.BackButton && (t === 'home' ? W.BackButton.hide() : W.BackButton.show()) } catch (e) {}
   scrollTo(0, 0)
 }
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go))
 try { W && W.BackButton && W.BackButton.onClick(() => go('home')) } catch (e) {}
-if (/^(help|sub|tv)$/.test(qs.get('tab') || '')) go(qs.get('tab'))
+if (/^(help|sub|tv|more)$/.test(qs.get('tab') || '')) go(qs.get('tab'))
+document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W) return; e.preventDefault(); tgOpen(a.href) })
 
-// Ссылки: в Telegram открываем по-телеграмовски; кнопки «в бота» — t.me/бот?start=…
-document.querySelectorAll('[data-start]').forEach(a => { a.href = BOT ? `https://t.me/${BOT}?start=${a.dataset.start}` : SUPPORT; if (!BOT) a.title = L.noBot })
-document.addEventListener('click', e => {
-  const a = e.target.closest('a'); if (!a || !W || !W.openLink || a.getAttribute('href').startsWith('#')) return
-  e.preventDefault(); if (/^https:\/\/t\.me\//.test(a.href)) { W.openTelegramLink(a.href); if (a.dataset.start) setTimeout(() => W.close(), 300) } else W.openLink(a.href)
+// Действия для бота. Через кнопку внизу — сразу боту (окно закроется, ответ придёт в чат); иначе — открываем чат с командой
+const START = { sub: 'sub', invite: 'invite', status: 'status', report: 'report', video: 'video', remind: '', stop: '', news: '', ask: '', cmp: '' }
+function act(a, extra) {
+  const d = Object.assign({ a }, extra || {})
+  if (CAN_SEND) { try { W.HapticFeedback && W.HapticFeedback.notificationOccurred('success') } catch (e) {} W.sendData(JSON.stringify(d)); return }
+  if (!BOT) { tgOpen(SUPPORT); return }
+  if (START[a]) return tgOpen(`https://t.me/${BOT}?start=${START[a]}`)
+  if (a === 'ask' && navigator.clipboard) navigator.clipboard.writeText(d.text || '').catch(() => {})
+  toast(a === 'ask' ? 'Текст скопирован — вставьте его в чат с ботом' : a === 'cmp' ? 'Напишите в чат: «не работает ' + (d.name || '…') + '»' : 'Напишите в чат команду /' + a)
+  setTimeout(() => tgOpen(`https://t.me/${BOT}`), 900)
+}
+document.querySelectorAll('[data-act]').forEach(b => b.onclick = () => {
+  const a = b.dataset.act
+  if (a === 'cmp') { const n = $('cmpName').value.trim(); if (!/^[\p{L} -]{2,20}$/u.test(n)) return toast('Напишите страну буквами, например «Германия»'); return act('cmp', { name: n }) }
+  if (a === 'ask') { const t = $('askT').value.trim(); if (t.length < 3) return toast('Опишите вопрос хотя бы парой слов'); return act('ask', { text: t, human: $('human').checked }) }
+  if (a === 'report') { const t = $('fText').value.trim(); if (t.length < 3) return toast('Напишите, что не так'); return act('report', { device: $('fDev').value.trim(), ver: $('fVer').value.trim(), text: t }) }
+  act(a)
 })
-$('copy').onclick = () => { const t = 'https://' + $('tvAddr').textContent; (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => { $('copyT').textContent = L.copied || 'Скопировано' }).catch(() => {}) }
+if (W && W.platform) $('fDev').value = { android: 'Android', ios: 'iPhone', tdesktop: 'Компьютер', macos: 'Mac', web: 'Браузер' }[W.platform] || ''
+
+// Ссылка для друзей — считаем прямо здесь: t.me/бот?start=ref_<ваш номер>
+if (BOT && U && U.id) {
+  const ref = `https://t.me/${BOT}?start=ref_${U.id}`; $('refLink').textContent = ref; $('refLink').hidden = $('refBtns').hidden = false
+  $('refCopy').onclick = () => (navigator.clipboard ? navigator.clipboard.writeText(ref) : Promise.reject()).then(() => toast('Ссылка скопирована')).catch(() => toast(ref))
+  $('refShare').onclick = () => tgOpen('https://t.me/share/url?url=' + encodeURIComponent(ref) + '&text=' + encodeURIComponent('APEX CLIENT — VPN, который сам находит дорогу'))
+}
+$('copy').onclick = () => (navigator.clipboard ? navigator.clipboard.writeText('https://' + $('tvAddr').textContent) : Promise.reject()).then(() => toast('Адрес скопирован')).catch(() => {})
 
 // Статус серверов и полоска за 30 дней
-const CFG = 'Dubstep2004/apex-client', t = Math.floor(Date.now() / 60000)
 const raw = (p, ttl) => fetch('https://raw.githubusercontent.com/' + CFG + '/main/' + p + '?t=' + ttl).then(r => r.ok ? r.json() : Promise.reject())
-raw('docs/config/app.json', t).then(c => {
+raw('docs/config/app.json', Math.floor(Date.now() / 60000)).then(c => {
   const now = Date.now(), live = b => !b.preview && (!b.from || now >= b.from) && (!b.to || now < b.to), hero = $('hero')
-  if (c.links && /^https:\/\/t\.me\//.test(c.links.support || '')) { $('supBtn').href = $('renew').href = c.links.support }
-  if (c.show && c.show.status === false) { hero.dataset.s = 'warn'; $('stT').textContent = L.off; return }
+  if (c.links && /^https:\/\/t\.me\//.test(c.links.support || '')) { SUPPORT = c.links.support; $('supBtn').href = $('renew').href = SUPPORT }
+  if (c.show && c.show.status === false) { hero.dataset.s = 'warn'; $('stT').textContent = 'Статус сейчас не публикуется'; return }
   const alert = (c.banners || []).filter(live).some(b => b.level === 'alert')
   const cur = Object.entries((c.servers || {}).status || {}).filter(([, v]) => !v.preview && (!v.from || now >= v.from) && (!v.until || now < v.until))
   const maint = cur.some(([, v]) => v.state === 'maintenance')
   hero.dataset.s = alert ? 'bad' : cur.length ? 'warn' : 'ok'
-  $('stT').textContent = alert ? L.bad : maint ? L.warn : cur.length ? L.slow : L.ok
-  $('stS').textContent = alert ? L.badS : cur.length ? L.warnS : L.okS
-  if (cur.length) { $('now').hidden = false; $('now').innerHTML = cur.map(([n, v]) => `<li>${v.state === 'maintenance' ? '🔧' : '🐢'} <b>${esc(n)}</b><small>${v.state === 'maintenance' ? L.m : L.s}${v.until ? ' · ' + L.until + ' ' + new Date(v.until).toLocaleString(loc, { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}${v.note ? ' · ' + esc(v.note) : ''}</small></li>`).join('') }
-}).catch(() => { $('hero').dataset.s = 'warn'; $('stT').textContent = L.err })
+  $('stT').textContent = alert ? 'Есть сбой у части серверов' : maint ? 'Часть серверов на обслуживании' : cur.length ? 'Часть серверов медленнее обычного' : 'Все серверы работают'
+  $('stS').textContent = alert ? 'Уже чиним — автопилот переключит вас' : cur.length ? 'Автопилот сам их обходит' : 'Сейчас нет ни техработ, ни сбоев'
+  if (cur.length) { $('now').hidden = false; $('now').innerHTML = cur.map(([n, v]) => `<li>${v.state === 'maintenance' ? '🔧' : '🐢'} <b>${esc(n)}</b><small>${v.state === 'maintenance' ? 'обслуживание' : 'медленнее обычного'}${v.until ? ' · до ' + new Date(v.until).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}${v.note ? ' · ' + esc(v.note) : ''}</small></li>`).join('') }
+}).catch(() => { $('hero').dataset.s = 'warn'; $('stT').textContent = 'Не удалось загрузить статус' })
 raw('docs/stats/uptime.json', Math.floor(Date.now() / 3600000)).then(u => {
   const days = u.days || {}, D = 864e5, key = x => new Date(x + 3 * 36e5).toISOString().slice(0, 10); let bad = 0, h = ''
   for (let i = 29; i >= 0; i--) { const k = days[key(Date.now() - i * D)]; if (k) bad++; h += `<i${k ? ` data-k="${k}"` : ''}></i>` }
-  $('strip').innerHTML = h; $('upt').textContent = `${30 - bad} ${L.up}`
+  $('strip').innerHTML = h; $('upt').textContent = `${30 - bad} из 30 дней без проблем`
 }).catch(() => { $('strip').hidden = true })
-
-// Последняя версия и «Что нового» из описания релиза
 fetch('https://api.github.com/repos/' + CFG + '/releases/latest').then(r => r.ok ? r.json() : Promise.reject()).then(r => {
   const apk = (r.assets || []).find(a => /^apex-client-.*\.apk$/.test(a.name)); if (apk) $('dl').href = apk.browser_download_url
-  $('dlT').textContent = L.ver + ' ' + r.tag_name.replace(/^v/, '')
+  $('dlT').textContent = 'Скачать версию ' + r.tag_name.replace(/^v/, '')
   const items = String(r.body || '').split('---')[0].split('\n').filter(l => /^- /.test(l)).map(l => l.slice(2).replace(/\*\*|`/g, '')).slice(0, 4)
-  if (items.length && !EN) { $('newsCard').hidden = false; $('news').innerHTML = items.map(x => '<li>' + esc(x) + '</li>').join('') }
+  if (items.length) { $('newsCard').hidden = false; $('news').innerHTML = items.map(x => '<li>' + esc(x) + '</li>').join('') }
 }).catch(() => {})
 
 // Помощь: темы бота (те же, что отвечает бот) + поиск
-const SITE = 'https://dubstep2004.github.io'
-const fill = s => String(s || '').replaceAll('{сайт}', SITE).replaceAll('{поддержка}', $('supBtn').href)
+const fill = s => String(s || '').replaceAll('{сайт}', SITE).replaceAll('{поддержка}', SUPPORT)
 const linkify = s => esc(s).replace(/https:\/\/[^\s<]+/g, u => `<a href="${u}">${u.replace(/^https:\/\//, '')}</a>`)
-const EN_TOPICS = [
-  { title: '📥 How to install', text: 'Open ' + SITE + '/en/ on your phone and tap «Download». Open the file, tap «Install», paste your subscription link and tap the shield.' },
-  { title: '🔌 Cannot connect', text: 'Turn on autopilot — it picks a working server. Update the subscription: Settings → Subscription → «Update». Still not working? Open «Network check» on the home screen and send the result to support.' },
-  { title: '🔄 Update the app', text: 'The app shows a banner when a new version is out. Or download it here: ' + SITE + '/update/' }]
 let TOP = []
 function renderTopics() {
   const q = $('q').value.trim().toLowerCase(), list = TOP.filter(x => !q || (x.title + ' ' + x.text + ' ' + (x.words || []).join(' ')).toLowerCase().includes(q))
   $('topics').innerHTML = list.map(x => `<details${q && list.length <= 2 ? ' open' : ''}><summary>${esc(x.title)}</summary><div class="a">${linkify(fill(x.text))}</div></details>`).join('')
   $('noHit').hidden = list.length > 0
+  if (q && !list.length && !$('askT').value) $('askT').value = $('q').value
 }
 $('q').addEventListener('input', renderTopics)
-;(EN ? Promise.resolve({ topics: EN_TOPICS }) : fetch('/apex-client/tg/bot.json?t=' + Math.floor(Date.now() / 600000)).then(r => r.ok ? r.json() : Promise.reject()))
-  .then(c => { TOP = (c.topics || []).filter(x => x && x.title && x.text).slice(0, 30); renderTopics() })
-  .catch(() => { TOP = EN ? EN_TOPICS : []; renderTopics() })
+fetch('/apex-client/tg/bot.json?t=' + Math.floor(Date.now() / 600000)).then(r => r.ok ? r.json() : Promise.reject())
+  .then(c => { TOP = (c.topics || []).filter(x => x && x.title && x.text).slice(0, 30); renderTopics() }).catch(() => renderTopics())
+
+// Викторина — та же, что /quiz в боте
+const QUIZ = [
+  ['Что делает автопилот?', ['Сам выбирает рабочий сервер', 'Выключает интернет', 'Удаляет подписку'], 0, 'Автопилот проверяет серверы и подключается к лучшему.'],
+  ['Где обновить подписку?', ['Настройки → Подписка → «Обновить»', 'В магазине приложений', 'Нигде, она вечная'], 0, 'После продления нажмите «Обновить» — серверы подтянутся.'],
+  ['Что делать, если не подключается?', ['Открыть «Проверка сети» и прислать итог', 'Переустановить телефон', 'Ждать неделю'], 0, '«Проверка сети» на главном покажет, где проблема.'],
+  ['Как узнать, что вышла новая версия?', ['Приложение покажет плашку «Вышла версия»', 'Никак', 'Только по СМС'], 0, 'Приложение само проверяет обновления.'],
+  ['Можно ли пересылать свою ссылку подписки?', ['Нет, это ваш личный ключ', 'Да, всем друзьям', 'Только в общий чат'], 0, 'Друзей зовите ссылкой для друзей — она во вкладке «Подписка».']]
+let qi = 0, score = 0
+function quiz() {
+  const el = $('quiz')
+  if (qi >= QUIZ.length) { el.innerHTML = `<b>🏁 Правильных ответов: ${score} из ${QUIZ.length}</b>${score === QUIZ.length ? '<div class="dim">Вы знаете APEX CLIENT на отлично 🏆</div>' : ''}<div style="height:10px"></div><button class="btn ghost" id="qAgain">Ещё раз</button>`; $('qAgain').onclick = () => { qi = score = 0; quiz() }; return }
+  const [q, opts, ok, why] = QUIZ[qi]
+  el.innerHTML = `<div class="dim">Вопрос ${qi + 1} из ${QUIZ.length}</div><b>${esc(q)}</b><div style="height:8px"></div>` + opts.map((o, j) => `<button class="opt" data-j="${j}">${esc(o)}</button>`).join('') + '<div class="dim" id="qWhy"></div>'
+  el.querySelectorAll('.opt').forEach(b => b.onclick = () => {
+    if (el.dataset.done === String(qi)) return; el.dataset.done = String(qi)
+    const j = +b.dataset.j; b.dataset.r = j === ok ? 'y' : 'n'; el.querySelector(`[data-j="${ok}"]`).dataset.r = 'y'; if (j === ok) score++
+    try { W && W.HapticFeedback && W.HapticFeedback.notificationOccurred(j === ok ? 'success' : 'error') } catch (e) {}
+    $('qWhy').textContent = (j === ok ? '✅ ' : '❌ ') + why; setTimeout(() => { qi++; quiz() }, 1600)
+  })
+}
+quiz()
 </script>
 </body>
 </html>
