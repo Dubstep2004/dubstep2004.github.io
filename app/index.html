@@ -183,7 +183,7 @@
     </div>
     <h2>APEX CLIENT</h2>
     <div class="list">
-      <a class="it" href="/news/" style="--c:#22d3ee"><span class="ic">📰</span><span><b>Новости</b><small>Посты канала на сайте</small></span></a>
+      <a class="it" id="newsLink" href="/news/" style="--c:#22d3ee"><span class="ic">📰</span><span><b>Новости</b><small>Посты канала на сайте</small></span></a>
       <a class="it" href="/" style="--c:#7b6cff"><span class="ic">🌐</span><span><b>Сайт</b><small>dubstep2004.github.io</small></span></a>
       <a class="it" href="/versions/" style="--c:#22d3ee"><span class="ic">🗂</span><span><b>Все версии</b><small>И приложение для часов Wear OS</small></span></a>
       <a class="it" href="/original/" style="--c:#34d399"><span class="ic">🛡</span><span><b>Проверка оригинала</b><small>Как убедиться, что приложение не подменили</small></span></a>
@@ -383,6 +383,7 @@ raw('docs/config/app.json', Math.floor(Date.now() / 60000)).then(c => {
   $('stS').textContent = alert ? 'Уже чиним — автопилот переключит вас' : cur.length ? 'Автопилот сам их обходит' : 'Сейчас нет ни техработ, ни сбоев'
   if (cur.length) { $('now').hidden = false; $('now').innerHTML = cur.map(([n, v]) => `<li>${v.state === 'maintenance' ? '🔧' : '🐢'} <b>${esc(n)}</b><small>${v.state === 'maintenance' ? 'обслуживание' : 'медленнее обычного'}${v.until ? ' · до ' + new Date(v.until).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) : ''}${v.note ? ' · ' + esc(v.note) : ''}</small></li>`).join('') }
 }).catch(() => { $('hero').dataset.s = 'warn'; $('stT').textContent = 'Не удалось загрузить статус' })
+raw('docs/config/site.json', Math.floor(Date.now() / 600000)).then(c => { if (c.show && c.show.news === false) $('newsLink').hidden = true }).catch(() => {})
 raw('docs/stats/uptime.json', Math.floor(Date.now() / 3600000)).then(u => {
   const days = u.days || {}, D = 864e5, key = x => new Date(x + 3 * 36e5).toISOString().slice(0, 10); let bad = 0, h = ''
   for (let i = 29; i >= 0; i--) { const k = days[key(Date.now() - i * D)]; if (k) bad++; h += `<i${k ? ` data-k="${k}"` : ''}></i>` }

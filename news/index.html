@@ -35,10 +35,12 @@ const $ = id => document.getElementById(id), esc = s => String(s).replace(/[&<>"
 const linkify = s => esc(s).replace(/https:\/\/[^\s<]+/g, u => `<a href="${u}" rel="noopener">${u.replace(/^https:\/\//, '').slice(0, 60)}</a>`)
 const raw = p => fetch('https://raw.githubusercontent.com/Dubstep2004/apex-client/main/' + p + '?t=' + Math.floor(Date.now() / 300000)).then(r => r.ok ? r.json() : Promise.reject())
 raw('docs/config/app.json').then(c => { if (c.links && /^https:\/\/t\.me\//.test(c.links.channel || '')) $('chan').href = c.links.channel }).catch(() => {})
-raw('docs/stats/channel.json').then(d => {
+// Новости можно выключить в пульте: «Визитка» → «Новости канала» (site.json → show.news)
+raw('docs/config/site.json').then(c => { if (c.show && c.show.news === false) { $('list').innerHTML = '<p class="dim">Новости временно скрыты — все свежие новости в Telegram-канале.</p>'; window.NEWS_OFF = true } }).catch(() => {})
+.finally(() => !window.NEWS_OFF && raw('docs/stats/channel.json').then(d => {
   const posts = (d.posts || []).filter(p => p.text)
   $('list').innerHTML = posts.map(p => `<article class="post"><time>${new Date(p.at).toLocaleString('ru', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' })}</time><p>${linkify(p.text)}</p>${p.url ? `<a class="more" href="${p.url}" rel="noopener">${p.photo ? '🖼 С картинкой — открыть в Telegram' : 'Открыть в Telegram'} →</a>` : ''}</article>`).join('') || '<p class="dim">Новостей пока нет — загляните в канал.</p>'
-}).catch(() => { $('list').innerHTML = '<p class="dim">Новости появятся здесь скоро — пока загляните в канал.</p>' })
+}).catch(() => { $('list').innerHTML = '<p class="dim">Новости появятся здесь скоро — пока загляните в канал.</p>' }))
 </script>
 </body>
 </html>
