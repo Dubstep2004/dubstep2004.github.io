@@ -227,9 +227,10 @@
 </nav>
 
 <script>
-const W = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null // в обычном браузере — без Telegram
+// Внутри Telegram? (кнопка внизу чата открывает окно без подписи initData — это нормально)
+const W = window.Telegram && Telegram.WebApp && Telegram.WebApp.platform && Telegram.WebApp.platform !== 'unknown' ? Telegram.WebApp : null
 try { W && W.ready(); W && W.expand(); W && W.setHeaderColor && W.setHeaderColor('#08080e'); W && W.setBackgroundColor && W.setBackgroundColor('#08080e'); W && W.setBottomBarColor && W.setBottomBarColor('#08080e') } catch (e) {}
-const qs = new URLSearchParams(location.search), U = (W && W.initDataUnsafe && W.initDataUnsafe.user) || null
+const qs = new URLSearchParams(location.search), U = (W && W.initDataUnsafe && W.initDataUnsafe.user) || (/^\d{3,15}$/.test(qs.get('u') || '') ? { id: +qs.get('u') } : null)
 // Имя бота приходит в адресе от самого бота; запоминаем — тогда кнопки работают и при открытии без него
 let BOT = /^[A-Za-z0-9_]{4,32}$/.test(qs.get('bot') || '') ? qs.get('bot') : ''
 try { if (BOT) localStorage.setItem('apex_bot', BOT); else BOT = (localStorage.getItem('apex_bot') || '').replace(/[^A-Za-z0-9_]/g, '') } catch (e) {}
@@ -262,7 +263,9 @@ async function api(act, extra) {
 }
 function admOffline(msg) { $('admOn').hidden = true; $('admOff').hidden = false; if (msg) $('admOffT').textContent = msg }
 async function admLoad() {
-  if (!W || !API) return admOffline(!W ? 'Откройте её кнопкой «📱 Админ-панель» внизу чата с ботом.' : 'У бота нет https-адреса, поэтому панель открывает экраны прямо в чате. Для полной панели: бот на Cloudflare или на сервере — домен с https (BOT_PUBLIC_URL).')
+  if (!W) return admOffline('Откройте её в Telegram: «🛠 Админ» → «📱 Открыть админ-панель».')
+  if (!API) return admOffline('Кнопки ниже открывают экраны прямо в чате. Полная панель здесь — когда у бота есть https-адрес (Cloudflare — сам; свой сервер — домен и BOT_PUBLIC_URL).')
+  if (!W.initData) return admOffline('Кнопки ниже открывают экраны прямо в чате. Полная панель — кнопкой «📱 Открыть админ-панель» в сообщении «🛠 Админ».')
   let st; try { st = await api('state') } catch (e) { return admOffline(e.message === 'forbidden' ? '⛔ Эта панель только для владельца бота.' : 'Бот не ответил: ' + e.message) }
   $('admOff').hidden = true; $('admOn').hidden = false; $('aOwner').hidden = st.role !== 'owner'
   $('aToday').textContent = st.today || '🛟 Вы помощник: отвечайте на вопросы ниже.'
@@ -295,7 +298,7 @@ if (ADM) {
   $('admMain').hidden = false; $('admTab').hidden = false; document.querySelector('nav.tabs').classList.add('six')
   $('aReload').onclick = admLoad; let ut; $('aUq').oninput = () => { clearTimeout(ut); ut = setTimeout(admUsers, 400) }
   $('aBcGo').onclick = () => { const t = $('aBc').value.trim(); if (t.length < 2) return toast('Напишите текст'); W.showConfirm('Отправить рассылку всем, кто писал боту?', ok => ok && api('bc', { text: t }).then(r => { toast(`📣 Рассылка запущена: ${r.n} чел.`); $('aBc').value = '' }).catch(e => toast('⚠️ ' + e.message))) }
-  document.querySelectorAll('[data-adm]').forEach(b => b.onclick = () => CAN_SEND ? W.sendData(JSON.stringify({ a: 'adm', s: b.dataset.adm })) : toast('Откройте кнопкой «📱 Админ-панель» внизу чата'))
+  document.querySelectorAll('[data-adm]').forEach(b => b.onclick = () => CAN_SEND ? W.sendData(JSON.stringify({ a: 'adm', s: b.dataset.adm })) : BOT ? tgOpen('https://t.me/' + BOT + '?text=' + encodeURIComponent({ today: '/today', q: '/queue', users: '/users', feat: '/settings' }[b.dataset.adm] || '/admin')) : toast('Откройте в Telegram'))
   go('adm'); admLoad()
 }
 document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W) return; e.preventDefault()
