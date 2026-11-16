@@ -78,6 +78,8 @@
     </div>
     <h2>Приложение</h2>
     <a class="btn" id="dl" href="https://github.com/Dubstep2004/apex-client/releases/latest">⬇️ <span id="dlT">Скачать приложение</span></a>
+    <div class="card" id="dlHelp" hidden><b>Не скачивается?</b><div class="dim">Встроенный браузер Telegram иногда не сохраняет файлы. Скопируйте ссылку и откройте её в Chrome или другом браузере — файл скачается сам.</div>
+      <div class="row" style="margin-top:10px"><button class="btn ghost" id="dlCopy" type="button">📋 Копировать</button><button class="btn ghost" id="dlExt" type="button">🌐 В браузере</button></div></div>
     <div class="card" id="newsCard" hidden><div class="dim" style="margin-bottom:4px">Что нового в приложении</div><ul class="news" id="news"></ul></div>
     <div class="row"><a class="btn ghost" href="/status/">🛰 Серверы сейчас</a><a class="btn ghost" id="chan" href="https://t.me/apex_client_news">📰 Новости канала</a></div>
     <div class="card"><b>Сервер не работает?</b><div class="dim">Напишите страну — если таких жалоб несколько, поддержка сразу узнает.</div>
@@ -183,7 +185,12 @@ function go(t) {
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go))
 try { W && W.BackButton && W.BackButton.onClick(() => go('home')) } catch (e) {}
 if (/^(help|sub|tv|more)$/.test(qs.get('tab') || '')) go(qs.get('tab'))
-document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W) return; e.preventDefault(); tgOpen(a.href) })
+document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W) return; e.preventDefault()
+  if (a.id === 'dl') { $('dlHelp').hidden = false; try { W.openLink(a.href, { try_instant_view: false }) } catch (x) { W.openLink(a.href) } return } // файл: сразу и подсказка, если Telegram не скачает
+  tgOpen(a.href) })
+$('dlCopy').onclick = () => (navigator.clipboard ? navigator.clipboard.writeText($('dl').href) : Promise.reject()).then(() => toast('Ссылка скопирована — вставьте её в Chrome')).catch(() => toast($('dl').href))
+// Android: просим систему открыть ссылку в Chrome (если он есть), а не во встроенном браузере Telegram
+$('dlExt').onclick = () => { const u = $('dl').href; if (W && W.platform === 'android') { try { W.openLink('intent://' + u.replace(/^https:\/\//, '') + '#Intent;scheme=https;package=com.android.chrome;end') } catch (x) { W.openLink(u) } } else if (W) W.openLink(u); else location.href = u }
 
 // Действия для бота. Через кнопку внизу — сразу боту (окно закроется, ответ придёт в чат); иначе — открываем чат с командой
 const START = { sub: 'sub', invite: 'invite', status: 'status', report: 'report', video: 'video', remind: '', stop: '', news: '', ask: '', cmp: '' }
