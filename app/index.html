@@ -77,6 +77,13 @@
     background: rgba(19,19,28,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid var(--edge); border-radius: 24px; padding: 6px; box-shadow: 0 12px 34px rgba(0,0,0,.45); }
   nav.tabs button { border: 0; background: none; color: var(--dim); font: inherit; font-size: 11px; font-weight: 700; padding: 6px 0 5px; border-radius: 18px; cursor: pointer; }
   nav.tabs button span { display: block; font-size: 20px; line-height: 1.25; } nav.tabs button i { font-style: normal; }
+  nav.tabs.six { grid-template-columns: repeat(6, 1fr); } nav.tabs.six button { font-size: 10px; }
+  .sw { display: flex; align-items: center; gap: 12px; padding: 11px 16px; } .sw + .sw { border-top: 1px solid var(--edge); } .sw span { flex: 1; }
+  .sw input { appearance: none; width: 46px; height: 28px; border-radius: 99px; background: var(--high); border: 1px solid var(--edge); position: relative; cursor: pointer; transition: background .2s; flex: 0 0 auto; }
+  .sw input::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: #fff; transition: transform .2s; } .sw input:checked { background: var(--accent); } .sw input:checked::after { transform: translateX(18px); }
+  .qa { background: var(--surface); border: 1px solid var(--edge); border-radius: 20px; padding: 14px; margin: 0 0 8px; } .qa .who { font-weight: 700; } .qa .t { color: var(--dim); margin: 4px 0 8px; white-space: pre-line; }
+  .mini { display: inline-flex; border: 0; font: inherit; font-size: 13px; font-weight: 700; color: var(--text); background: var(--high); border-radius: 12px; padding: 7px 12px; margin: 0 6px 6px 0; cursor: pointer; } .mini.pri { background: var(--accent); }
+  .pre { white-space: pre-line; font-size: 15px; }
   nav.tabs button[aria-selected=true] { color: #fff; background: color-mix(in srgb, var(--accent) 30%, transparent); }
 </style>
 </head>
@@ -183,6 +190,31 @@
     </div>
   </section>
 </main>
+<!-- Админ-панель: только владелец. Данные приходят от бота, бот проверяет подпись Telegram — по ссылке без неё ничего не покажет -->
+<main id="admMain" hidden><section data-tab="adm" hidden>
+  <h2>Админ-панель</h2>
+  <div id="admOff" class="card" hidden><b>Панель работает внутри бота</b><div class="dim" id="admOffT">Откройте её кнопкой «📱 Админ-панель» внизу чата с ботом.</div>
+    <div class="list" style="margin-top:12px" id="admChat">
+      <button class="it" data-adm="today"><span class="ic">📊</span><span><b>Сегодня</b><small>Сводка придёт в чат</small></span></button>
+      <button class="it" data-adm="q"><span class="ic">📥</span><span><b>Вопросы</b><small>Без ответа</small></span></button>
+      <button class="it" data-adm="users"><span class="ic">👥</span><span><b>Пользователи</b></span></button>
+      <button class="it" data-adm="bc"><span class="ic">📣</span><span><b>Рассылки и канал</b></span></button>
+      <button class="it" data-adm="feat"><span class="ic">⚙️</span><span><b>Функции бота</b></span></button>
+      <button class="it" data-adm="menu"><span class="ic">🛠</span><span><b>Вся панель</b></span></button></div></div>
+  <div id="admOn" hidden>
+    <div class="card pre" id="aToday"></div>
+    <h2 id="aQh">Вопросы без ответа</h2><div id="aQ"></div>
+    <div id="aOwner">
+      <h2>Рассылка всем</h2>
+      <div class="card"><textarea id="aBc" rows="3" maxlength="3500" placeholder="Текст рассылки"></textarea><button class="btn" id="aBcGo" style="margin:0">📣 Отправить всем</button></div>
+      <h2>Пользователи</h2>
+      <div class="card"><input class="search" id="aUq" placeholder="🔎 Имя, @ник или номер" style="margin:0 0 8px"><div id="aU" class="dim">Последние писавшие боту появятся здесь</div></div>
+      <h2>Функции бота</h2><div id="aF"></div>
+      <h2 id="aEh" hidden>Последние ошибки</h2><div class="card pre dim" id="aE" hidden></div>
+    </div>
+    <button class="btn ghost" id="aReload">🔄 Обновить</button>
+  </div>
+</section></main>
 <div class="toast" id="toast" hidden></div>
 
 <nav class="tabs" role="tablist">
@@ -191,6 +223,7 @@
   <button role="tab" data-go="sub" aria-selected="false"><span>📅</span><i>Подписка</i></button>
   <button role="tab" data-go="tv" aria-selected="false"><span>📺</span><i>ТВ</i></button>
   <button role="tab" data-go="more" aria-selected="false"><span>✨</span><i>Ещё</i></button>
+  <button role="tab" data-go="adm" aria-selected="false" id="admTab" hidden><span>🛠</span><i>Админ</i></button>
 </nav>
 
 <script>
@@ -211,6 +244,7 @@ const tgOpen = u => W ? (/^https:\/\/t\.me\//.test(u) ? W.openTelegramLink(u) : 
 // Вкладки
 function go(t) {
   document.querySelectorAll('[data-tab]').forEach(s => s.hidden = s.dataset.tab !== t)
+  if ($('admMain')) $('admMain').hidden = t !== 'adm'; document.querySelector('main').hidden = t === 'adm'
   document.querySelectorAll('[data-go]').forEach(b => b.setAttribute('aria-selected', b.dataset.go === t))
   try { W && W.HapticFeedback && W.HapticFeedback.selectionChanged() } catch (e) {}
   try { W && W.BackButton && (t === 'home' ? W.BackButton.hide() : W.BackButton.show()) } catch (e) {}
@@ -219,6 +253,50 @@ function go(t) {
 document.querySelectorAll('[data-go]').forEach(b => b.onclick = () => go(b.dataset.go))
 try { W && W.BackButton && W.BackButton.onClick(() => go('home')) } catch (e) {}
 if (/^(help|sub|tv|more)$/.test(qs.get('tab') || '')) go(qs.get('tab'))
+// ── Админ-панель (кнопка «📱 Админ-панель» у владельца). Защита — на стороне бота: он проверяет подпись Telegram и номер владельца
+const ADM = qs.get('adm') === '1', API = /^https:\/\/[A-Za-z0-9.-]+(:\d+)?(\/[\w./-]*)?$/.test(qs.get('api') || '') ? qs.get('api').replace(/\/+$/, '') : ''
+async function api(act, extra) {
+  const r = await fetch(API + '/api/app', { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify(Object.assign({ init: W.initData, act }, extra || {})) })
+  const b = await r.json().catch(() => ({})); if (r.status === 403) throw new Error('forbidden'); if (b.error) throw new Error(b.error); return b
+}
+function admOffline(msg) { $('admOn').hidden = true; $('admOff').hidden = false; if (msg) $('admOffT').textContent = msg }
+async function admLoad() {
+  if (!W || !API) return admOffline(!W ? 'Откройте её кнопкой «📱 Админ-панель» внизу чата с ботом.' : 'У бота нет https-адреса, поэтому панель открывает экраны прямо в чате. Для полной панели: бот на Cloudflare или на сервере — домен с https (BOT_PUBLIC_URL).')
+  let st; try { st = await api('state') } catch (e) { return admOffline(e.message === 'forbidden' ? '⛔ Эта панель только для владельца бота.' : 'Бот не ответил: ' + e.message) }
+  $('admOff').hidden = true; $('admOn').hidden = false; $('aOwner').hidden = st.role !== 'owner'
+  $('aToday').textContent = st.today || '🛟 Вы помощник: отвечайте на вопросы ниже.'
+  $('aQh').textContent = `Вопросы без ответа · ${st.q.length}`
+  $('aQ').innerHTML = st.q.map(x => `<div class="qa" data-q="${x.id}"><div class="who">${esc(x.name || 'человек')}${x.en ? ' · EN' : ''} <span class="dim">· ${new Date(x.at).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' })}</span></div><div class="t">${esc(x.text)}</div>
+    <textarea rows="2" maxlength="4000" placeholder="Ответ — бот отправит человеку"></textarea>${(st.quick || []).slice(0, 4).map((t, i) => `<button class="mini" data-tpl="${i}">⚡ ${esc(t.slice(0, 22))}…</button>`).join('')}<div><button class="mini pri" data-send>✉️ Ответить</button><button class="mini" data-done>✓ Решено</button></div></div>`).join('') || '<div class="card dim">Вопросов без ответа нет 👍</div>'
+  $('aQ').querySelectorAll('.qa').forEach(el => {
+    const id = +el.dataset.q, ta = el.querySelector('textarea')
+    el.querySelectorAll('[data-tpl]').forEach(b => b.onclick = () => { ta.value = st.quick[+b.dataset.tpl]; ta.focus() })
+    el.querySelector('[data-send]').onclick = () => api('reply', { qid: id, text: ta.value }).then(() => { toast('✅ Ответ отправлен'); el.remove() }).catch(e => toast('⚠️ ' + e.message))
+    el.querySelector('[data-done]').onclick = () => api('done', { qid: id }).then(() => { toast('✓ Закрыто'); el.remove() }).catch(e => toast('⚠️ ' + e.message))
+  })
+  if (st.role !== 'owner') return
+  $('aF').innerHTML = st.feats.map(g => `<h2 style="margin-top:12px">${esc(g.name)}</h2><div class="list">${g.items.map(f => `<label class="sw"><span>${esc(f.name)}</span><input type="checkbox" data-k="${f.k}"${f.on ? ' checked' : ''}></label>`).join('')}</div>`).join('')
+  $('aF').querySelectorAll('[data-k]').forEach(i => i.onchange = () => api('feat', { k: i.dataset.k }).then(r => { i.checked = r.on; toast((r.on ? '✅ Включено: ' : '▫️ Выключено: ') + i.closest('.sw').textContent.trim()) }).catch(e => { i.checked = !i.checked; toast('⚠️ ' + e.message) }))
+  $('aE').hidden = $('aEh').hidden = !(st.errs || []).length; $('aE').textContent = (st.errs || []).map(e => new Date(e.at).toLocaleString('ru', { day: 'numeric', month: 'short', hour: '2-digit', minute: '2-digit' }) + ' — ' + e.where + ': ' + e.msg).join('\n')
+  admUsers()
+}
+async function admUsers() {
+  const b = await api('users', { q: $('aUq').value }).catch(e => ({ list: [], err: e.message }))
+  $('aU').innerHTML = b.list.map(u => `<div class="qa" data-u="${u.id}"><div class="who">${u.blocked ? '🚫 ' : '👤 '}${esc(u.name || u.id)} ${u.un ? '<span class="dim">@' + esc(u.un) + '</span>' : ''}</div>
+    <button class="mini" data-m>✉️ Написать</button><button class="mini" data-b="${u.blocked ? 'unban' : 'ban'}">${u.blocked ? '✅ Разбанить' : '🚫 Забанить'}</button></div>`).join('') || (b.err ? '⚠️ ' + esc(b.err) : 'Никого не нашлось')
+  $('aU').querySelectorAll('[data-u]').forEach(el => {
+    const uid = +el.dataset.u
+    el.querySelector('[data-b]').onclick = e => { const a = e.target.dataset.b; W.showConfirm(a === 'ban' ? 'Забанить? Бот перестанет отвечать этому человеку.' : 'Разбанить?', ok => ok && api(a, { uid }).then(() => { toast('Готово'); admUsers() }).catch(x => toast('⚠️ ' + x.message))) }
+    el.querySelector('[data-m]').onclick = () => W.showPopup({ title: 'Сообщение', message: 'Напишите текст в поле рассылки выше и нажмите здесь ещё раз — отправлю только этому человеку.', buttons: [{ id: 'send', type: 'default', text: 'Отправить текст из поля' }, { type: 'cancel' }] }, id => { if (id !== 'send') return; const t = $('aBc').value.trim(); if (!t) return toast('Сначала напишите текст в поле рассылки'); api('msg', { uid, text: t }).then(() => toast('✅ Отправлено')).catch(x => toast('⚠️ ' + x.message)) })
+  })
+}
+if (ADM) {
+  $('admMain').hidden = false; $('admTab').hidden = false; document.querySelector('nav.tabs').classList.add('six')
+  $('aReload').onclick = admLoad; let ut; $('aUq').oninput = () => { clearTimeout(ut); ut = setTimeout(admUsers, 400) }
+  $('aBcGo').onclick = () => { const t = $('aBc').value.trim(); if (t.length < 2) return toast('Напишите текст'); W.showConfirm('Отправить рассылку всем, кто писал боту?', ok => ok && api('bc', { text: t }).then(r => { toast(`📣 Рассылка запущена: ${r.n} чел.`); $('aBc').value = '' }).catch(e => toast('⚠️ ' + e.message))) }
+  document.querySelectorAll('[data-adm]').forEach(b => b.onclick = () => CAN_SEND ? W.sendData(JSON.stringify({ a: 'adm', s: b.dataset.adm })) : toast('Откройте кнопкой «📱 Админ-панель» внизу чата'))
+  go('adm'); admLoad()
+}
 document.addEventListener('click', e => { const a = e.target.closest('a'); if (!a || !W) return; e.preventDefault()
   if (a.id === 'dl') { $('dlHelp').hidden = false; try { W.openLink(a.href, { try_instant_view: false }) } catch (x) { W.openLink(a.href) } return } // файл: сразу и подсказка, если Telegram не скачает
   tgOpen(a.href) })

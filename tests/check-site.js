@@ -49,6 +49,7 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
       if (u.startsWith('/app/')) { // мини-приложение: 4 вкладки, переключаются
         for (const t of ['help', 'sub', 'tv', 'more', 'home']) { await p.click(`[data-go=${t}]`); if (await p.$eval(`[data-tab=${t}]`, e => e.hidden)) bad(W, 'мини-приложение: не открылась вкладка ' + t) }
         if (!(await p.textContent('#tvAddr')).includes('dubstep2004.github.io/tv')) bad(W, 'мини-приложение: нет адреса для ТВ') }
+      if (u.startsWith('/app/') && await p.isVisible('#admTab')) bad(W, 'мини-приложение: вкладка «Админ» видна без кнопки владельца')
       if (u.startsWith('/status/')) { await p.waitForFunction(() => document.querySelectorAll('#bars i').length === 90, null, { timeout: 5000 }).catch(() => {})
         if ((await p.$$('#bars i')).length !== 90 || (await p.$$('#bars i[data-k=m]')).length !== 1) bad(W, 'статус: нет полоски истории за 90 дней')
         if (!(await p.textContent('#events')).includes('Нидерланды')) bad(W, 'статус: нет списка событий') }
