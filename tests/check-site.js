@@ -55,6 +55,16 @@ const problems = [], bad = (w, m) => { problems.push(w + ': ' + m); console.log(
         if (!(await p.textContent('#events')).includes('Нидерланды')) bad(W, 'статус: нет списка событий') }
       await p.close()
     }
+  // Служебные страницы (новости, проверка рекламы, ТВ): без ошибок JS и с текстом; новости выключаются из пульта
+  for (const [u, show, want] of [['/news/', true, 'Вышла версия'], ['/news/', false, 'временно скрыты'], ['/adtest/', true, 'Проверка блокировки'], ['/tv/', true, 'для телевизора']]) {
+    const p = await b.newPage({ viewport: { width: 390, height: 844 } }); const errs = []; p.on('pageerror', e => errs.push(e.message))
+    await p.route(/raw\.githubusercontent|api\.github|jsdelivr/, rt => { const r = rt.request().url(); rt.fulfill({ status: 200, contentType: 'application/json', headers: { 'access-control-allow-origin': '*' }, body: JSON.stringify(r.includes('site.json') ? { show: { news: show } } : r.includes('channel.json') ? { posts: [{ id: 1, at: Date.now(), text: 'Вышла версия 3.24.0', url: 'https://t.me/a/1' }] } : { tag_name: 'v3.24.0', assets: [] }) }) })
+    await p.route(/^https:\/\/(?!raw\.githubusercontent|api\.github|jsdelivr)/, rt => rt.abort())
+    await p.goto('http://localhost:8198' + u); await p.waitForTimeout(1200)
+    if (errs.length) bad(u, 'ошибка JS: ' + errs[0])
+    if (!(await p.textContent('body')).includes(want)) bad(u, 'нет текста «' + want + '»' + (show ? '' : ' (новости выключены)'))
+    await p.close()
+  }
   await b.close(); srv.close()
   console.log(problems.length ? `\nНайдено проблем: ${problems.length}` : '\n✓ Визитка — без ошибок')
   process.exit(problems.length ? 1 : 0)
