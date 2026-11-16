@@ -6,105 +6,128 @@
 <title>APEX CLIENT</title>
 <meta name="description" content="Мини-приложение APEX CLIENT: статус серверов, подписка, помощь и подключение телевизора.">
 <meta name="robots" content="noindex">
+<meta name="theme-color" content="#08080e">
 <link rel="icon" href="/apex-client/invite/icon.png">
 <script src="https://telegram.org/js/telegram-web-app.js"></script>
 <style>
   @font-face { font-family: "Manrope"; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-cyrillic.woff2) format("woff2"); unicode-range: U+0400-045F; }
   @font-face { font-family: "Manrope"; font-display: swap; font-weight: 200 800; src: url(/fonts/manrope-latin.woff2) format("woff2"); unicode-range: U+0000-00FF; }
-  @font-face { font-family: "Unbounded"; font-display: swap; font-weight: 200 900; src: url(/fonts/unbounded-cyrillic.woff2) format("woff2"); unicode-range: U+0400-045F; }
-  @font-face { font-family: "Unbounded"; font-display: swap; font-weight: 200 900; src: url(/fonts/unbounded-latin.woff2) format("woff2"); unicode-range: U+0000-00FF; }
-  /* Цвета — из темы Telegram; в браузере — свои (тёмная и светлая) */
-  :root { --bg: var(--tg-theme-bg-color, #0a0d1c); --card: var(--tg-theme-secondary-bg-color, #131830); --text: var(--tg-theme-text-color, #eef1fa);
-    --dim: var(--tg-theme-hint-color, #8c93b0); --link: var(--tg-theme-link-color, #22d3ee); --btn: var(--tg-theme-button-color, #6d5cff); --btnt: var(--tg-theme-button-text-color, #fff);
-    --ok: #2fd38b; --warn: #f5b759; --bad: #f0616d; --s: var(--ok); --line: color-mix(in srgb, var(--dim) 22%, transparent); }
-  @media (prefers-color-scheme: light) { :root { --bg: var(--tg-theme-bg-color, #f3f4fa); --card: var(--tg-theme-secondary-bg-color, #fff); --text: var(--tg-theme-text-color, #12152a); --dim: var(--tg-theme-hint-color, #5b6283); --link: var(--tg-theme-link-color, #0b8fb0); } }
+  /* Цвета приложения APEX (оформление «APEX 2.0»): глубокий фон, мягкое свечение акцента, крупные скругления */
+  :root { --base: #08080e; --surface: #13131c; --high: #1e1e2a; --edge: rgba(255,255,255,.06); --text: #f4f4f7; --dim: #8e8e9a;
+    --accent: #7b6cff; --accent2: #22d3ee; --ok: #34d399; --warn: #f5b759; --bad: #f0616d; --s: var(--ok); --r: 26px; color-scheme: dark; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.5 "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
-  main { max-width: 520px; margin: 0 auto; padding: 14px 16px calc(96px + env(safe-area-inset-bottom)); }
+  html, body { margin: 0; background: var(--base); color: var(--text); font: 16px/1.45 "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif; }
+  body::before { content: ""; position: fixed; inset: -20% -30% auto; height: 70vh; pointer-events: none; z-index: 0;
+    background: radial-gradient(50% 50% at 30% 40%, rgba(123,108,255,.28), transparent 70%), radial-gradient(40% 45% at 80% 30%, rgba(34,211,238,.16), transparent 70%); filter: blur(10px); }
+  main { position: relative; z-index: 1; max-width: 520px; margin: 0 auto; padding: 10px 16px calc(110px + env(safe-area-inset-bottom)); }
   [hidden] { display: none !important; }
-  a { color: var(--link); } a:focus-visible, button:focus-visible, summary:focus-visible, input:focus-visible { outline: 2px solid var(--link); outline-offset: 2px; }
-  h2 { font-family: "Unbounded", "Manrope", sans-serif; font-size: 19px; letter-spacing: -.01em; margin: 22px 0 10px; }
-  .card { background: var(--card); border-radius: 20px; padding: 16px; margin: 0 0 12px; }
+  a { color: var(--accent2); } :focus-visible { outline: 2px solid var(--accent2); outline-offset: 2px; }
+  .top { display: flex; align-items: center; gap: 10px; padding: 6px 2px 4px; } .top img { width: 32px; height: 32px; border-radius: 10px; }
+  .top b { font-size: 17px; letter-spacing: .02em; } .chip { margin-left: auto; font-size: 12px; font-weight: 700; color: var(--dim); background: var(--surface); border: 1px solid var(--edge); border-radius: 99px; padding: 4px 10px; }
+  h2 { font-size: 13px; font-weight: 700; color: var(--dim); margin: 22px 6px 8px; letter-spacing: .02em; }
+  .card { background: var(--surface); border: 1px solid var(--edge); border-radius: var(--r); padding: 16px; margin: 0 0 10px; }
   .dim { color: var(--dim); font-size: 14px; }
 
-  /* Главное: щит, который дышит цветом состояния серверов */
-  .hero { position: relative; text-align: center; padding: 26px 16px 20px; border-radius: 28px; overflow: hidden; background: radial-gradient(120% 90% at 50% 0%, color-mix(in srgb, var(--s) 22%, var(--card)) 0%, var(--card) 62%); }
-  .hero[data-s=warn] { --s: var(--warn); } .hero[data-s=bad] { --s: var(--bad); }
-  .shield { width: 112px; height: 128px; margin: 0 auto 12px; display: block; filter: drop-shadow(0 10px 30px color-mix(in srgb, var(--s) 45%, transparent)); }
-  .shield path { fill: var(--s); transition: fill .5s; } .shield .ring { fill: none; stroke: var(--s); stroke-width: 3; opacity: .35; transform-origin: 56px 64px; }
-  @media (prefers-reduced-motion: no-preference) { .shield .ring { animation: ring 2.8s ease-out infinite; } @keyframes ring { from { transform: scale(.9); opacity: .5 } to { transform: scale(1.35); opacity: 0 } } }
-  .hero b { display: block; font-family: "Unbounded", "Manrope", sans-serif; font-size: 20px; line-height: 1.25; letter-spacing: -.01em; }
-  .hero .dim { margin-top: 4px; }
-  .strip { display: grid; grid-template-columns: repeat(30, 1fr); gap: 2px; height: 22px; margin: 16px 0 4px; }
-  .strip i { border-radius: 2px; background: var(--ok); opacity: .8; } .strip i[data-k=s] { background: #f5d06f; } .strip i[data-k=m] { background: var(--warn); } .strip i[data-k=a] { background: var(--bad); }
-  .now { list-style: none; padding: 0; margin: 10px 0 0; text-align: left; } .now li { padding: 8px 0; border-top: 1px solid var(--line); } .now small { display: block; color: var(--dim); }
-  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; cursor: pointer; text-align: center; text-decoration: none; font: inherit; font-weight: 800; color: var(--btnt); background: var(--btn); border-radius: 16px; padding: 14px; margin: 0 0 10px; }
-  .btn.ghost { background: var(--card); color: var(--text); }
-  .news { margin: 0; padding-left: 18px; } .news li { margin: 6px 0; color: var(--dim); font-size: 15px; }
+  /* Щит — как на главном экране приложения: свечение цвета состояния, кнопка питания */
+  .hero { text-align: center; padding: 18px 0 6px; } .hero[data-s=warn] { --s: var(--warn); } .hero[data-s=bad] { --s: var(--bad); }
+  .orb { position: relative; width: 196px; height: 196px; margin: 4px auto 14px; display: grid; place-items: center; }
+  .orb::before { content: ""; position: absolute; inset: -18px; border-radius: 50%; background: radial-gradient(closest-side, color-mix(in srgb, var(--s) 38%, transparent), transparent 72%); }
+  .orb .ring { position: absolute; inset: 8px; border-radius: 50%; border: 2px solid color-mix(in srgb, var(--s) 45%, transparent); }
+  @media (prefers-reduced-motion: no-preference) { .orb .ring { animation: ring 3s ease-out infinite; } .orb .ring.b { animation-delay: 1.5s; } @keyframes ring { from { transform: scale(.82); opacity: .9 } to { transform: scale(1.12); opacity: 0 } } }
+  .orb svg { position: relative; width: 132px; height: 150px; filter: drop-shadow(0 14px 34px color-mix(in srgb, var(--s) 55%, transparent)); }
+  .orb .sh { fill: url(#shg); } .orb .pw { fill: none; stroke: #fff; stroke-width: 9; stroke-linecap: round; }
+  .hero .st { font-size: 24px; font-weight: 800; letter-spacing: -.01em; color: color-mix(in srgb, var(--s) 70%, #fff); }
+  .hero .dim { margin-top: 2px; }
+  .strip { display: grid; grid-template-columns: repeat(30, 1fr); gap: 3px; height: 20px; margin: 18px 4px 6px; }
+  .strip i { border-radius: 3px; background: color-mix(in srgb, var(--ok) 75%, transparent); } .strip i[data-k=s] { background: #f5d06f; } .strip i[data-k=m] { background: var(--warn); } .strip i[data-k=a] { background: var(--bad); }
+  .now { list-style: none; padding: 0; margin: 12px 0 0; text-align: left; } .now li { background: var(--surface); border: 1px solid var(--edge); border-radius: 18px; padding: 10px 14px; margin-top: 8px; } .now small { display: block; color: var(--dim); }
 
-  /* Помощь */
-  .search { width: 100%; border: 1px solid var(--line); background: var(--card); color: var(--text); font: inherit; border-radius: 14px; padding: 12px 14px; margin: 0 0 10px; }
-  details { background: var(--card); border-radius: 16px; margin: 0 0 8px; } summary { cursor: pointer; list-style: none; padding: 14px 16px; font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
-  summary::-webkit-details-marker { display: none; } summary::after { content: "+"; color: var(--dim); font-weight: 400; } details[open] summary::after { content: "–"; }
+  /* Кнопки */
+  .btn { display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; border: 0; cursor: pointer; text-decoration: none; font: inherit; font-weight: 800; color: #fff;
+    background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 45%, var(--accent2))); border-radius: 20px; padding: 15px; margin: 0 0 10px; box-shadow: 0 10px 28px rgba(123,108,255,.32); }
+  .btn.ghost { background: var(--high); box-shadow: none; color: var(--text); font-weight: 700; }
+  .btn:active { transform: scale(.98); }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .row .btn { margin: 0; }
+
+  /* Строки-пункты, как в настройках приложения */
+  .list { background: var(--surface); border: 1px solid var(--edge); border-radius: var(--r); overflow: hidden; margin: 0 0 10px; }
+  .it { display: flex; align-items: center; gap: 14px; width: 100%; padding: 13px 16px; border: 0; background: none; color: var(--text); font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+  .it + .it { border-top: 1px solid var(--edge); } .it:active { background: var(--high); }
+  .ic { flex: 0 0 38px; height: 38px; border-radius: 12px; display: grid; place-items: center; font-size: 19px; background: color-mix(in srgb, var(--c, var(--accent)) 20%, var(--surface)); }
+  .it b { display: block; font-weight: 700; } .it small { display: block; color: var(--dim); font-size: 13px; margin-top: 1px; }
+  .it::after { content: "›"; margin-left: auto; color: var(--dim); font-size: 22px; line-height: 1; }
+
+  .news { margin: 6px 0 0; padding-left: 18px; } .news li { margin: 5px 0; color: var(--dim); font-size: 14px; }
+  .search, .inp, textarea { width: 100%; border: 1px solid var(--edge); background: var(--high); color: var(--text); font: inherit; border-radius: 16px; padding: 12px 14px; margin: 6px 0 10px; resize: vertical; }
+  .search { margin: 0 0 10px; }
+  label.chk { display: flex; gap: 8px; align-items: center; color: var(--dim); font-size: 14px; margin: -2px 0 10px; } label.chk input { accent-color: var(--accent); }
+  details { background: var(--surface); border: 1px solid var(--edge); border-radius: 20px; margin: 0 0 8px; } summary { cursor: pointer; list-style: none; padding: 14px 16px; font-weight: 700; display: flex; justify-content: space-between; gap: 10px; }
+  summary::-webkit-details-marker { display: none; } summary::after { content: "›"; color: var(--dim); transition: transform .2s; font-size: 20px; line-height: 1; } details[open] summary::after { transform: rotate(90deg); }
   details .a { padding: 0 16px 14px; color: var(--dim); white-space: pre-line; font-size: 15px; }
-  video { width: 100%; border-radius: 16px; background: #000; display: block; aspect-ratio: 9 / 16; max-height: 60vh; object-fit: contain; }
-
-  /* ТВ: короткий адрес крупно — его набирают пультом */
-  .addr { font-family: "Unbounded", "Manrope", sans-serif; font-size: clamp(15px, 4.9vw, 24px); letter-spacing: -.02em; text-align: center; padding: 18px 8px; border-radius: 18px; border: 2px dashed var(--line); margin: 8px 0 12px; white-space: nowrap; overflow-x: auto; user-select: all; }
+  video { width: 100%; border-radius: var(--r); background: #000; display: block; aspect-ratio: 9 / 16; max-height: 60vh; object-fit: contain; border: 1px solid var(--edge); }
+  .addr { font-size: clamp(15px, 4.9vw, 22px); font-weight: 800; letter-spacing: -.01em; text-align: center; padding: 18px 8px; border-radius: 20px; border: 2px dashed rgba(123,108,255,.45); color: #c9c2ff; margin: 0 0 10px; white-space: nowrap; overflow-x: auto; user-select: all; }
   ol.steps { padding-left: 20px; margin: 0; } ol.steps li { margin: 8px 0; color: var(--dim); } ol.steps b { color: var(--text); }
+  .link { word-break: break-all; font-size: 14px; background: var(--high); border-radius: 14px; padding: 10px 12px; margin: 10px 0; user-select: all; }
+  .quiz button.opt { display: block; width: 100%; text-align: left; border: 1px solid var(--edge); background: var(--high); color: var(--text); font: inherit; padding: 12px 14px; border-radius: 16px; margin: 0 0 8px; cursor: pointer; }
+  .quiz button.opt[data-r=y] { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 18%, var(--high)); } .quiz button.opt[data-r=n] { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, var(--high)); }
+  .toast { position: fixed; left: 50%; bottom: calc(96px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--high); border: 1px solid var(--edge); color: var(--text); padding: 11px 16px; border-radius: 16px; font-weight: 700; font-size: 14px; max-width: 90vw; z-index: 9; box-shadow: 0 10px 30px rgba(0,0,0,.5); }
 
-  /* Вкладки внизу, как в приложениях */
-  textarea, .inp { width: 100%; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; border-radius: 12px; padding: 10px 12px; margin: 6px 0 10px; resize: vertical; }
-  label.chk { display: flex; gap: 8px; align-items: center; color: var(--dim); font-size: 14px; margin: -2px 0 10px; }
-  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; } .row .btn { margin: 0 0 10px; }
-  .toast { position: fixed; left: 50%; bottom: calc(86px + env(safe-area-inset-bottom)); transform: translateX(-50%); background: var(--text); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-weight: 700; font-size: 14px; max-width: 90vw; z-index: 9; }
-  .quiz button.opt { display: block; width: 100%; text-align: left; border: 1px solid var(--line); background: var(--bg); color: var(--text); font: inherit; padding: 12px 14px; border-radius: 12px; margin: 0 0 8px; cursor: pointer; }
-  .quiz button.opt[data-r=y] { border-color: var(--ok); background: color-mix(in srgb, var(--ok) 16%, var(--bg)); } .quiz button.opt[data-r=n] { border-color: var(--bad); background: color-mix(in srgb, var(--bad) 14%, var(--bg)); }
-  .link { word-break: break-all; font-size: 14px; color: var(--text); background: var(--bg); border-radius: 10px; padding: 10px; margin: 8px 0 10px; user-select: all; }
-  nav.tabs { position: fixed; left: 0; right: 0; bottom: 0; display: grid; grid-template-columns: repeat(5, 1fr); background: color-mix(in srgb, var(--bg) 86%, transparent); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border-top: 1px solid var(--line); padding: 6px 6px calc(6px + env(safe-area-inset-bottom)); }
-  nav.tabs button { border: 0; background: none; color: var(--dim); font: inherit; font-size: 12px; font-weight: 700; padding: 6px 0; border-radius: 12px; cursor: pointer; }
-  nav.tabs button i { font-style: normal; } nav.tabs button span { display: block; font-size: 22px; line-height: 1.2; } nav.tabs button[aria-selected=true] { color: var(--text); background: var(--card); }
+  /* Нижняя панель — плавающая, как в приложении */
+  nav.tabs { position: fixed; z-index: 5; left: 12px; right: 12px; bottom: calc(10px + env(safe-area-inset-bottom)); max-width: 496px; margin: 0 auto; display: grid; grid-template-columns: repeat(5, 1fr);
+    background: rgba(19,19,28,.82); backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px); border: 1px solid var(--edge); border-radius: 24px; padding: 6px; box-shadow: 0 12px 34px rgba(0,0,0,.45); }
+  nav.tabs button { border: 0; background: none; color: var(--dim); font: inherit; font-size: 11px; font-weight: 700; padding: 6px 0 5px; border-radius: 18px; cursor: pointer; }
+  nav.tabs button span { display: block; font-size: 20px; line-height: 1.25; } nav.tabs button i { font-style: normal; }
+  nav.tabs button[aria-selected=true] { color: #fff; background: color-mix(in srgb, var(--accent) 30%, transparent); }
 </style>
 </head>
 <body>
 <main>
+  <div class="top"><img src="/apex-client/invite/icon.png" alt=""><b>APEX CLIENT</b><span class="chip" id="verChip">VPN</span></div>
+
   <!-- Главная -->
   <section data-tab="home">
     <div class="hero" id="hero" data-s="ok">
-      <svg class="shield" viewBox="0 0 112 128" aria-hidden="true"><circle class="ring" cx="56" cy="64" r="50"/><path d="M56 6 98 22v34c0 30-18 54-42 66C32 110 14 86 14 56V22Z"/><path d="m40 64 11 11 22-24" fill="none" stroke="#fff" stroke-width="8" stroke-linecap="round" stroke-linejoin="round" style="fill:none"/></svg>
-      <b id="stT">Проверяем серверы…</b><div class="dim" id="stS"></div>
+      <div class="orb"><i class="ring"></i><i class="ring b"></i>
+        <svg viewBox="0 0 132 150" aria-hidden="true"><defs><linearGradient id="shg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="var(--s)"/><stop offset="1" stop-color="color-mix(in srgb, var(--s) 55%, #0b0b14)"/></linearGradient></defs>
+          <path class="sh" d="M66 6 120 26v42c0 36-23 64-54 78C35 132 12 104 12 68V26Z"/><path class="pw" d="M66 46v26"/><path class="pw" d="M50 56a24 24 0 1 0 32 0"/></svg></div>
+      <div class="st" id="stT">Проверяем серверы…</div><div class="dim" id="stS"></div>
       <div class="strip" id="strip"></div><div class="dim" id="upt"></div>
       <ul class="now" id="now" hidden></ul>
     </div>
-    <h2>Приложение</h2>
+    <div style="height:14px"></div>
     <a class="btn" id="dl" href="https://github.com/Dubstep2004/apex-client/releases/latest">⬇️ <span id="dlT">Скачать приложение</span></a>
-    <div class="card" id="dlHelp" hidden><b>Не скачивается?</b><div class="dim">Встроенный браузер Telegram иногда не сохраняет файлы. Скопируйте ссылку и откройте её в Chrome или другом браузере — файл скачается сам.</div>
-      <div class="row" style="margin-top:10px"><button class="btn ghost" id="dlCopy" type="button">📋 Копировать</button><button class="btn ghost" id="dlExt" type="button">🌐 В браузере</button></div></div>
-    <div class="card" id="newsCard" hidden><div class="dim" style="margin-bottom:4px">Что нового в приложении</div><ul class="news" id="news"></ul></div>
-    <div class="row"><a class="btn ghost" href="/status/">🛰 Серверы сейчас</a><a class="btn ghost" id="chan" href="https://t.me/apex_client_news">📰 Новости канала</a></div>
+    <div class="card" id="dlHelp" hidden><b>Не скачивается?</b><div class="dim">Встроенный браузер Telegram иногда не сохраняет файлы. Откройте ссылку в Chrome — файл скачается сам.</div>
+      <div class="row" style="margin-top:12px"><button class="btn ghost" id="dlCopy" type="button">📋 Копировать</button><button class="btn ghost" id="dlExt" type="button">🌐 В браузере</button></div></div>
+    <div class="card" id="newsCard" hidden><b>Что нового</b><ul class="news" id="news"></ul></div>
+    <h2>Серверы</h2>
+    <div class="list">
+      <a class="it" href="/status/" style="--c:#22d3ee"><span class="ic">🛰</span><span><b>Серверы сейчас</b><small>Статус и история за 90 дней</small></span></a>
+      <a class="it" id="chan" href="https://t.me/apex_client_news" style="--c:#818cf8"><span class="ic">📰</span><span><b>Новости канала</b><small>Обновления и техработы</small></span></a>
+    </div>
     <div class="card"><b>Сервер не работает?</b><div class="dim">Напишите страну — если таких жалоб несколько, поддержка сразу узнает.</div>
-      <input class="inp" id="cmpName" maxlength="20" placeholder="Например: Германия" autocomplete="off"><button class="btn" data-act="cmp">📣 Сообщить</button></div>
-    <a class="btn ghost" href="/status/" id="stLink">📈 История статуса за 90 дней</a>
+      <input class="inp" id="cmpName" maxlength="20" placeholder="Например: Германия" autocomplete="off"><button class="btn ghost" data-act="cmp" style="margin:0">📣 Сообщить</button></div>
   </section>
 
   <!-- Помощь -->
   <section data-tab="help" hidden>
-    <h2>Помощь</h2>
-    <input class="search" id="q" type="search" placeholder="Что случилось? Например: не подключается" aria-label="Поиск по темам">
+    <h2>Частые вопросы</h2>
+    <input class="search" id="q" type="search" placeholder="🔎 Что случилось? Например: не подключается" aria-label="Поиск по темам">
     <div id="topics"><p class="dim">…</p></div>
     <p class="dim" id="noHit" hidden>Готового ответа нет — задайте вопрос ниже, ответим.</p>
     <h2>Задать вопрос</h2>
     <div class="card"><textarea id="askT" rows="3" maxlength="1500" placeholder="Опишите, что случилось"></textarea>
       <label class="chk"><input type="checkbox" id="human"> Сразу человеку, без готовых ответов</label>
-      <button class="btn" data-act="ask">✉️ Отправить в поддержку</button><div class="dim">Ответ придёт в чат с ботом.</div></div>
+      <button class="btn" data-act="ask" style="margin:0 0 6px">✉️ Отправить в поддержку</button><div class="dim">Ответ придёт в чат с ботом.</div></div>
     <h2>Сообщить о проблеме</h2>
     <div class="card"><input class="inp" id="fDev" maxlength="80" placeholder="Устройство: например, Samsung A52"><input class="inp" id="fVer" maxlength="20" placeholder="Версия приложения (Настройки → внизу)">
-      <textarea id="fText" rows="3" maxlength="1200" placeholder="Что не так?"></textarea><button class="btn" data-act="report">📝 Отправить форму</button></div>
+      <textarea id="fText" rows="3" maxlength="1200" placeholder="Что не так?"></textarea><button class="btn ghost" data-act="report" style="margin:0">📝 Отправить форму</button></div>
     <h2>Видео: как установить</h2>
     <video id="vid" controls playsinline preload="none" poster="/media/install-ru.webp"><source id="vidSrc" src="/media/install-ru.mp4" type="video/mp4"></video>
-    <div style="height:12px"></div>
-    <a class="btn ghost" id="supBtn" href="https://t.me/Apexx_support">💬 Поддержка в Telegram</a>
-    <a class="btn ghost" href="/help/" id="helpAll">📖 Вся справка</a>
+    <div style="height:10px"></div>
+    <div class="list">
+      <a class="it" id="supBtn" href="https://t.me/Apexx_support" style="--c:#34d399"><span class="ic">💬</span><span><b>Поддержка в Telegram</b><small>Ответит человек</small></span></a>
+      <a class="it" href="/help/" id="helpAll" style="--c:#818cf8"><span class="ic">📖</span><span><b>Вся справка</b><small>Установка, ТВ, часы, настройки</small></span></a>
+    </div>
   </section>
 
   <!-- Подписка -->
@@ -112,41 +135,52 @@
     <h2>Подписка</h2>
     <div class="card"><b>Срок, остаток дней и трафик</b><div class="dim">Бот пришлёт их в чат — по вашему Telegram. Ссылку подписки он никогда не показывает.</div></div>
     <button class="btn" data-act="sub">📅 Показать мою подписку</button>
-    <button class="btn ghost" data-act="remind">🔔 Напомнить о продлении</button>
-    <a class="btn ghost" id="renew" href="https://t.me/Apexx_support">💳 Продлить — через поддержку</a>
+    <div class="list">
+      <button class="it" data-act="remind" style="--c:#f5b759"><span class="ic">🔔</span><span><b>Напомнить о продлении</b><small>За 3 дня до конца</small></span></button>
+      <a class="it" id="renew" href="https://t.me/Apexx_support" style="--c:#34d399"><span class="ic">💳</span><span><b>Продлить</b><small>Через поддержку</small></span></a>
+    </div>
     <h2>Друзья</h2>
-    <div class="card" id="refCard"><div class="dim">Ваша ссылка для друзей — за каждых трёх приглашённых бывает бонус к подписке.</div>
+    <div class="card" id="refCard"><b>Ваша ссылка для друзей</b><div class="dim">За приглашённых друзей бывает бонус к подписке.</div>
       <div class="link" id="refLink" hidden></div>
-      <div class="row" id="refBtns" hidden><button class="btn" id="refShare" type="button">📤 Поделиться</button><button class="btn ghost" id="refCopy" type="button">📋 Копировать</button></div>
-      <button class="btn ghost" data-act="invite">🤝 Сколько я пригласил</button></div>
-    <div class="dim" style="margin-top:8px">Срок виден и в приложении: Настройки → Подписка.</div>
+      <div class="row" id="refBtns" hidden style="margin-bottom:10px"><button class="btn" id="refShare" type="button">📤 Поделиться</button><button class="btn ghost" id="refCopy" type="button">📋 Копировать</button></div>
+      <button class="btn ghost" data-act="invite" style="margin:0">🤝 Сколько я пригласил</button></div>
+    <div class="dim" style="margin:8px 6px">Срок виден и в приложении: Настройки → Подписка.</div>
   </section>
 
   <!-- Телевизор -->
   <section data-tab="tv" hidden>
-    <h2>На телевизор</h2>
+    <h2>Подписка на телевизор — без пульта</h2>
     <div class="card"><ol class="steps">
-      <li><b>Откройте браузер на телевизоре</b> и наберите пультом адрес ниже — скачается приложение для Android TV.</li>
-      <li><b>Разрешите установку</b>, когда телевизор спросит, и откройте APEX CLIENT.</li>
-      <li><b>Добавьте подписку</b>: удобнее всего — ссылкой-приглашением. Сделайте её на телефоне и откройте на телевизоре.</li>
-      <li><b>Управление с пульта</b>: OK на щите включает VPN, стрелками выбирается страна.</li></ol></div>
-    <div class="addr" id="tvAddr">dubstep2004.github.io/tv</div>
-    <button class="btn ghost" id="copy" type="button">📋 Скопировать адрес</button>
-    <a class="btn" href="/apex-client/invite/">🔗 Сделать ссылку-приглашение для ТВ</a>
-    <a class="btn ghost" href="/help/#tv">📖 Подробно с картинками</a>
+      <li>На телевизоре откройте APEX CLIENT и нажмите <b>«Сканировать QR-код»</b> — на экране появится код.</li>
+      <li>Нажмите кнопку ниже и <b>наведите камеру</b> на код на телевизоре.</li>
+      <li>Откроется страница телевизора — <b>вставьте ссылку подписки</b> (в приложении на телефоне: Настройки → Подписка) и нажмите «Отправить».</li></ol>
+      <div class="dim" style="margin-top:8px">Телефон и телевизор должны быть в одной домашней сети Wi-Fi.</div></div>
+    <button class="btn" id="scanTv" type="button">📷 Сканировать код с телевизора</button>
+    <h2>Установить на телевизор</h2>
+    <div class="card"><div class="dim" style="margin-bottom:10px">Откройте браузер на телевизоре и наберите пультом — скачается приложение:</div>
+      <div class="addr" id="tvAddr">dubstep2004.github.io/tv</div><button class="btn ghost" id="copy" type="button" style="margin:0">📋 Скопировать адрес</button></div>
+    <div class="list">
+      <a class="it" href="/apex-client/invite/" style="--c:#22d3ee"><span class="ic">🔗</span><span><b>Ссылка-приглашение</b><small>Ещё один способ добавить подписку на ТВ</small></span></a>
+      <a class="it" href="/help/#tv" style="--c:#818cf8"><span class="ic">📖</span><span><b>Подробно с картинками</b><small>Установка и управление с пульта</small></span></a>
+    </div>
   </section>
 
   <!-- Ещё -->
   <section data-tab="more" hidden>
     <h2>Викторина</h2>
     <div class="card quiz" id="quiz"></div>
-    <h2>Рассылки</h2>
-    <div class="row"><button class="btn ghost" data-act="stop">🔕 Не получать</button><button class="btn ghost" data-act="video">🎬 Видео в чат</button></div>
-    <h2>Ссылки</h2>
-    <a class="btn ghost" href="/">🌐 Сайт APEX CLIENT</a>
-    <a class="btn ghost" href="/versions/">🗂 Все версии и часы Wear OS</a>
-    <a class="btn ghost" href="/original/">🛡 Как проверить, что приложение оригинальное</a>
-    <a class="btn ghost" href="https://github.com/Dubstep2004/apex-client">💻 Открытый код на GitHub</a>
+    <h2>Бот</h2>
+    <div class="list">
+      <button class="it" data-act="video" style="--c:#f472b6"><span class="ic">🎬</span><span><b>Видео в чат</b><small>Ролик «Как установить» придёт от бота</small></span></button>
+      <button class="it" data-act="stop" style="--c:#8e8e9a"><span class="ic">🔕</span><span><b>Не получать рассылки</b><small>Ответы поддержки будут приходить</small></span></button>
+    </div>
+    <h2>APEX CLIENT</h2>
+    <div class="list">
+      <a class="it" href="/" style="--c:#7b6cff"><span class="ic">🌐</span><span><b>Сайт</b><small>dubstep2004.github.io</small></span></a>
+      <a class="it" href="/versions/" style="--c:#22d3ee"><span class="ic">🗂</span><span><b>Все версии</b><small>И приложение для часов Wear OS</small></span></a>
+      <a class="it" href="/original/" style="--c:#34d399"><span class="ic">🛡</span><span><b>Проверка оригинала</b><small>Как убедиться, что приложение не подменили</small></span></a>
+      <a class="it" href="https://github.com/Dubstep2004/apex-client" style="--c:#8e8e9a"><span class="ic">💻</span><span><b>Открытый код</b><small>GitHub</small></span></a>
+    </div>
   </section>
 </main>
 <div class="toast" id="toast" hidden></div>
@@ -161,7 +195,7 @@
 
 <script>
 const W = window.Telegram && Telegram.WebApp && Telegram.WebApp.initData ? Telegram.WebApp : null // в обычном браузере — без Telegram
-try { W && W.ready(); W && W.expand() } catch (e) {}
+try { W && W.ready(); W && W.expand(); W && W.setHeaderColor && W.setHeaderColor('#08080e'); W && W.setBackgroundColor && W.setBackgroundColor('#08080e'); W && W.setBottomBarColor && W.setBottomBarColor('#08080e') } catch (e) {}
 const qs = new URLSearchParams(location.search), U = (W && W.initDataUnsafe && W.initDataUnsafe.user) || null
 // Имя бота приходит в адресе от самого бота; запоминаем — тогда кнопки работают и при открытии без него
 let BOT = /^[A-Za-z0-9_]{4,32}$/.test(qs.get('bot') || '') ? qs.get('bot') : ''
@@ -220,6 +254,12 @@ if (BOT && U && U.id) {
 }
 $('copy').onclick = () => (navigator.clipboard ? navigator.clipboard.writeText('https://' + $('tvAddr').textContent) : Promise.reject()).then(() => toast('Адрес скопирован')).catch(() => {})
 
+// ТВ: сканируем QR-код с экрана телевизора камерой Telegram и открываем страницу телевизора в домашней сети
+$('scanTv').onclick = () => {
+  if (!W || !W.showScanQrPopup) return toast('Откройте окно в Telegram — или наведите камеру телефона на код на телевизоре')
+  W.showScanQrPopup({ text: 'Наведите на QR-код на экране телевизора' }, t => { if (/^http:\/\/(192\.168|10\.|172\.(1[6-9]|2\d|3[01]))[\d.]*:\d+\//.test(t || '')) { W.closeScanQrPopup(); W.openLink(t); return true } })
+}
+
 // Статус серверов и полоска за 30 дней
 const raw = (p, ttl) => fetch('https://raw.githubusercontent.com/' + CFG + '/main/' + p + '?t=' + ttl).then(r => r.ok ? r.json() : Promise.reject())
 raw('docs/config/app.json', Math.floor(Date.now() / 60000)).then(c => {
@@ -242,7 +282,7 @@ raw('docs/stats/uptime.json', Math.floor(Date.now() / 3600000)).then(u => {
 }).catch(() => { $('strip').hidden = true })
 fetch('https://api.github.com/repos/' + CFG + '/releases/latest').then(r => r.ok ? r.json() : Promise.reject()).then(r => {
   const apk = (r.assets || []).find(a => /^apex-client-.*\.apk$/.test(a.name)); if (apk) $('dl').href = apk.browser_download_url
-  $('dlT').textContent = 'Скачать версию ' + r.tag_name.replace(/^v/, '')
+  $('dlT').textContent = 'Скачать версию ' + r.tag_name.replace(/^v/, ''); $('verChip').textContent = r.tag_name
   const items = String(r.body || '').split('---')[0].split('\n').filter(l => /^- /.test(l)).map(l => l.slice(2).replace(/\*\*|`/g, '')).slice(0, 4)
   if (items.length) { $('newsCard').hidden = false; $('news').innerHTML = items.map(x => '<li>' + esc(x) + '</li>').join('') }
 }).catch(() => {})
